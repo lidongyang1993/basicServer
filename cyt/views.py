@@ -1,3 +1,4 @@
+import copy
 import os
 import time
 
@@ -13,6 +14,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from tools.config import *
 from django.views.decorators.http import require_POST
 from jobs.api_frame.case.read_and_add import *
+from jobs.api_frame.case.check_plan import Check
 
 KEY_FILE = 'key'
 
@@ -43,12 +45,16 @@ def add_case_by_module(request: WSGIRequest):
     keys = [
         {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
         {KEY.NAME: FILED.MODULE, KEY.MUST: True, KEY.TYPE: str},
+        {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str},
 
     ]
 
     def run_func(data):
         add_data = data.get(FILED.DATA, None)
-        add_module = data.get(FILED.MODULE.PARAMS, None)
+        add_module = data.get(FILED.MODULE, None)
+        data_check = copy.deepcopy(Check().check_plan(add_data))
+        if data_check.get(RESULT.CODE) != 0:
+            return {"check": data_check}
         if add_module == "test_module_001":
             add_plan_into_module_001(add_data)
         if add_module == "test_module_002":
@@ -59,7 +65,7 @@ def add_case_by_module(request: WSGIRequest):
             add_plan_into_module_004(add_data)
         if add_module == "test_module_005":
             add_plan_into_module_005(add_data)
-        return None
+        return {"check": data_check}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)

@@ -37,7 +37,7 @@ def add_plan_into_module(name, data: json):
     back_up_plan(name, read_data)
     file_path = BASE_DIR / "./{}.json".format(name)
     file = open(file_path, "w")
-    read_data += data
+    read_data += [data]
     file.write(json.dumps(read_data, ensure_ascii=False))
     file.close()
 
