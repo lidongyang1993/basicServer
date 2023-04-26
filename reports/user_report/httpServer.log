@@ -1,0 +1,5 @@
+::ffff:127.0.0.1 - - [26/Apr/2023 14:44:27] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [26/Apr/2023 14:44:28] code 404, message File not found
+::ffff:127.0.0.1 - - [26/Apr/2023 14:44:28] "GET /favicon.ico HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [26/Apr/2023 14:44:29] "GET /wangyu/ HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [26/Apr/2023 14:44:31] "GET /wangyu/test_module_001--%3C2023-04-26%3E%3C06_40_33%3E.html HTTP/1.1" 200 -

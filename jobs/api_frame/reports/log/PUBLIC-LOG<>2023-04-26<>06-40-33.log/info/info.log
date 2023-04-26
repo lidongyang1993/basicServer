@@ -1,0 +1,221 @@
+2023-04-26 06:40:33,785 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行测试用例
+2023-04-26 06:40:33,785 [MainThread:4346643840] [main_logger:51] [INFO]- ==>名称:申报状态初始化-1
+2023-04-26 06:40:33,785 [MainThread:4346643840] [main_logger:51] [INFO]- ==>描述:获取公司信息-初始化申报状态-税费种核定
+2023-04-26 06:40:33,785 [MainThread:4346643840] [main_logger:51] [INFO]- ==>当前全局变量：【{'PWD': 'c4ca4238a0b923820dcc509a6f75849b', 'TEST_HOST': 'https://d-k8s-fbr-fp.bigfintax.com', 'USER_NAME': 'wangyu.yang'}】
+2023-04-26 06:40:33,785 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行用例步骤
+2023-04-26 06:40:33,785 [MainThread:4346643840] [main_logger:51] [INFO]- ==>名称:查询税费种
+2023-04-26 06:40:33,785 [MainThread:4346643840] [main_logger:51] [INFO]- ==>描述:通过公司名字查询公司税费种信息，并确认查询结果的数据准确与否
+2023-04-26 06:40:33,786 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行接口请求
+2023-04-26 06:40:33,786 [MainThread:4346643840] [main_logger:51] [INFO]- ==>名称:查询税费种接口
+2023-04-26 06:40:33,786 [MainThread:4346643840] [main_logger:51] [INFO]- ==>描述:通过公司名字查询公司税费种信息
+2023-04-26 06:40:33,786 [MainThread:4346643840] [main_logger:51] [INFO]- ===>从全局变量中，引用参数:【{'PWD': 'c4ca4238a0b923820dcc509a6f75849b', 'TEST_HOST': 'https://d-k8s-fbr-fp.bigfintax.com', 'USER_NAME': 'wangyu.yang'}】
+2023-04-26 06:40:33,786 [MainThread:4346643840] [main_logger:51] [INFO]- ===>请求数据:【查询税费种接口, https://d-k8s-fbr-fp.bigfintax.com/business/taxIdent/companyData, [{'name': 'sEcho', 'value': 3}, {'name': 'iDisplayLength', 'value': 10}, {'name': 'iDisplayStart', 'value': 0}, {'name': 'orgName', 'value': '新世纪钢铁有限公司'}, {'name': 'clientCode', 'value': '201910301300'}, {'name': 'virtual', 'value': 'N'}, {'name': 'parentName', 'value': ''}, {'name': 'orgTaxArea', 'value': ''}, {'name': 'groupId', 'value': ''}, {'name': 'verifyStatus', 'value': ''}, {'name': 'taxIsOpen', 'value': '1'}, {'name': 'totalBranch', 'value': ''}, {'name': 'gtbtCode', 'value': ''}, {'name': 'cwbbType', 'value': ''}, {'name': 'qysdsZsfs', 'value': ''}, {'name': 'declareType', 'value': ''}, {'name': 'projectCode', 'value': ''}, {'name': 'taxType', 'value': ''}, {'name': 'collectionProject', 'value': ''}, {'name': 'collectionItem', 'value': ''}, {'name': 'jsName', 'value': ''}]】
+2023-04-26 06:40:33,864 [MainThread:4346643840] [main_logger:51] [INFO]- ========>出现异常，停止运行：【DoneError, Expecting value: line 2 column 1 (char 1)】
+2023-04-26 06:40:33,866 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行测试用例
+2023-04-26 06:40:33,866 [MainThread:4346643840] [main_logger:51] [INFO]- ==>名称:申报状态初始化-2
+2023-04-26 06:40:33,866 [MainThread:4346643840] [main_logger:51] [INFO]- ==>描述:获取公司信息-初始化申报状态-税费种核定
+2023-04-26 06:40:33,866 [MainThread:4346643840] [main_logger:51] [INFO]- ==>当前全局变量：【{'PWD': 'c4ca4238a0b923820dcc509a6f75849b', 'TEST_HOST': 'https://d-k8s-fbr-fp.bigfintax.com', 'USER_NAME': 'wangyu.yang'}】
+2023-04-26 06:40:33,866 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行用例步骤
+2023-04-26 06:40:33,866 [MainThread:4346643840] [main_logger:51] [INFO]- ==>名称:登录插件
+2023-04-26 06:40:33,866 [MainThread:4346643840] [main_logger:51] [INFO]- ==>描述:使用账号密码登录
+2023-04-26 06:40:34,095 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行用例步骤
+2023-04-26 06:40:34,095 [MainThread:4346643840] [main_logger:51] [INFO]- ==>名称:查询税费种
+2023-04-26 06:40:34,095 [MainThread:4346643840] [main_logger:51] [INFO]- ==>描述:通过公司名字查询公司税费种信息，并确认查询结果的数据准确与否
+2023-04-26 06:40:34,095 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行接口请求
+2023-04-26 06:40:34,095 [MainThread:4346643840] [main_logger:51] [INFO]- ==>名称:查询税费种接口
+2023-04-26 06:40:34,095 [MainThread:4346643840] [main_logger:51] [INFO]- ==>描述:通过公司名字查询公司税费种信息
+2023-04-26 06:40:34,095 [MainThread:4346643840] [main_logger:51] [INFO]- ===>从全局变量中，引用参数:【{'PWD': 'c4ca4238a0b923820dcc509a6f75849b', 'TEST_HOST': 'https://d-k8s-fbr-fp.bigfintax.com', 'USER_NAME': 'wangyu.yang', 'cookies': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX25hbWUiOiJ3YW5neXUueWFuZyIsInNjb3BlIjoiU1pZSCIsImV4cCI6MTY4MzA5NTg0MywianRpIjoiMTYxRThCNEMyMjA2MkE5RTA0QzlGN0Q0MTM5RTlCOEYifQ.3-2UTmUoxU23v-kpi0a7_KInIExKKTB8gcZKfUK2iqU'}】
+2023-04-26 06:40:34,095 [MainThread:4346643840] [main_logger:51] [INFO]- ===>请求数据:【查询税费种接口, https://d-k8s-fbr-fp.bigfintax.com/business/taxIdent/companyData, [{'name': 'sEcho', 'value': 3}, {'name': 'iDisplayLength', 'value': 10}, {'name': 'iDisplayStart', 'value': 0}, {'name': 'orgName', 'value': '新世纪钢铁有限公司'}, {'name': 'clientCode', 'value': '201910301300'}, {'name': 'virtual', 'value': 'N'}, {'name': 'parentName', 'value': ''}, {'name': 'orgTaxArea', 'value': ''}, {'name': 'groupId', 'value': ''}, {'name': 'verifyStatus', 'value': ''}, {'name': 'taxIsOpen', 'value': '1'}, {'name': 'totalBranch', 'value': ''}, {'name': 'gtbtCode', 'value': ''}, {'name': 'cwbbType', 'value': ''}, {'name': 'qysdsZsfs', 'value': ''}, {'name': 'declareType', 'value': ''}, {'name': 'projectCode', 'value': ''}, {'name': 'taxType', 'value': ''}, {'name': 'collectionProject', 'value': ''}, {'name': 'collectionItem', 'value': ''}, {'name': 'jsName', 'value': ''}]】
+2023-04-26 06:40:34,739 [MainThread:4346643840] [main_logger:51] [INFO]- ===>请求结果:【{
+  "sEcho" : null,
+  "iTotalRecords" : 1,
+  "iTotalDisplayRecords" : 1,
+  "aaData" : [ {
+    "id" : 1000091866,
+    "isRemoved" : "0",
+    "version" : 0,
+    "createDate" : 1656259200000,
+    "createBy" : "dongxinping",
+    "modifyDate" : 1677048626000,
+    "modifyBy" : "loginTaskReceived",
+    "tableName" : null,
+    "orgCode" : "201910301501",
+    "orgName" : "新世纪钢铁有限公司",
+    "companyAbbr" : null,
+    "parentId" : 1000092214,
+    "parentName" : "其他",
+    "tenantId" : null,
+    "coId" : null,
+    "orgType" : "F5212",
+    "orgTypeDetail" : "超级市场零售",
+    "orgTaxNum" : "976238123213346482",
+    "boolTaxEntity" : null,
+    "platformNo" : "00000008",
+    "lev" : null,
+    "rank" : null,
+    "boolLeaf" : 1,
+    "note" : null,
+    "nodeType" : 2,
+    "registerType" : null,
+    "registerDate" : null,
+    "virtual" : "N",
+    "verifyStatus" : null,
+    "verifyMessage" : null,
+    "verifySendDate" : null,
+    "verifyModifyDate" : null,
+    "dlFile" : null,
+    "provinceId" : null,
+    "province" : null,
+    "cityId" : null,
+    "city" : null,
+    "areaId" : null,
+    "area" : null,
+    "address" : null,
+    "businessProvinceId" : null,
+    "businessProvince" : null,
+    "businessCityId" : null,
+    "businessCity" : null,
+    "businessAreaId" : null,
+    "businessArea" : null,
+    "businessAddress" : null,
+    "businessScope" : null,
+    "taxpayerQualify" : "1",
+    "tranDate" : "",
+    "taxpayerLevel" : "01",
+    "accountingSystem" : "07",
+    "businessTax2Vat" : "",
+    "orgLinkman" : "1",
+    "orgPhone" : "13112341234",
+    "registeredCapital" : null,
+    "paidUpCapital" : null,
+    "bankName" : null,
+    "bankCode" : null,
+    "bankAccount" : null,
+    "ext1" : null,
+    "registerCode" : "",
+    "orgIcon" : null,
+    "isFDQ" : "N",
+    "qyxxPassword" : null,
+    "administrativeDivision" : null,
+    "isCustoms" : "0",
+    "customsCode" : "",
+    "customsAccredit" : "",
+    "totalBranch" : "",
+    "zzsZfjg" : "",
+    "qysdsSjjg" : "",
+    "zzsSjjg" : "",
+    "accountName" : null,
+    "fdqStartDate" : "",
+    "fdqEndDate" : "",
+    "isExportCompany" : "N",
+    "exportType" : "",
+    "taxPerson" : "1",
+    "taxPhone" : "13112341234",
+    "taxPassword" : "1",
+    "taxCertificate" : "sfz",
+    "taxIdCard" : "110105196812272168",
+    "legalPerson" : null,
+    "legalPhone" : null,
+    "legalPassword" : null,
+    "legalCertificate" : null,
+    "legalIdCard" : null,
+    "financeLinkman" : null,
+    "financePhone" : null,
+    "financePassword" : null,
+    "financeCertificate" : null,
+    "financeIdCard" : null,
+    "buyTicketPerson" : null,
+    "buyTicketPhone" : null,
+    "buyTicketPassword" : null,
+    "buyTicketCertificate" : null,
+    "buyTicketIdCard" : null,
+    "authTaxPerson" : null,
+    "authTaxPhone" : null,
+    "authTaxPassword" : null,
+    "authTaxCertificate" : null,
+    "authTaxIdCard" : null,
+    "attachedLinkman" : null,
+    "attachedPhone" : null,
+    "attachedPassword" : null,
+    "attachedCertificate" : null,
+    "attachedIdCard" : null,
+    "ordinaryAdminPerson" : null,
+    "ordinaryAdminPhone" : null,
+    "ordinaryAdminPassword" : null,
+    "ordinaryAdminCertificate" : null,
+    "ordinaryAdminIdCard" : null,
+    "othersPerson" : null,
+    "othersPhone" : null,
+    "othersPassword" : null,
+    "othersCertificate" : null,
+    "othersIdCard" : null,
+    "clientCode" : "201910301300",
+    "summaryDeclare" : "N",
+    "summaryVat" : "N",
+    "summaryCit" : "N",
+    "vatType" : "",
+    "citType" : "",
+    "taxKeeperInfo" : "",
+    "taxBureauInfo" : "",
+    "isSyncYhb" : null,
+    "taxProvince" : "",
+    "taxCity" : "",
+    "taxArea" : "11",
+    "taxIsOpen" : "1",
+    "orgTaxArea" : "11",
+    "isKqDeclare" : null,
+    "kqOrgTaxNum" : null,
+    "isTestCp" : "N",
+    "outCompanyCode" : null,
+    "qysdsZfjg" : null,
+    "showTimeStart" : null,
+    "showTimeEnd" : null,
+    "orgTaxNo" : "",
+    "cshFile" : null,
+    "zcFile" : null,
+    "cdSn" : null,
+    "authorizationCode" : null,
+    "keyIsEnterprises" : "Y",
+    "regAddressIssue" : null,
+    "qysdsIsDlscjybm" : null,
+    "qysdsDlscjybm" : null,
+    "clientCodeExt" : null,
+    "businessScopeTax" : null,
+    "businessScopeInput" : null,
+    "businessScopeOutput" : null,
+    "whetherSummaryXfs" : "N",
+    "xfsSummaryType" : null,
+    "xfsZfjg" : null,
+    "xfsSjjg" : null,
+    "serviceProperty" : null,
+    "servicePropertyBig" : null,
+    "servicePropertySmall" : null,
+    "summaryAccounting" : null,
+    "businessFormatId" : null,
+    "status" : null,
+    "regProvinceId" : null,
+    "regProvince" : null,
+    "regCityId" : null,
+    "regCity" : null,
+    "regAreaId" : null,
+    "regArea" : null,
+    "regAddress" : null,
+    "establishedDate" : null,
+    "orgTaxInfo" : null,
+    "orgTaxMessage" : null,
+    "caexpiry" : null,
+    "vidpid" : null,
+    "client_CODE" : null,
+    "usbport" : null
+  } ]
+}】
+2023-04-26 06:40:34,740 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行提取器
+2023-04-26 06:40:34,741 [MainThread:4346643840] [main_logger:51] [INFO]- ===>提取结果:【{'iTotalRecords': 1}】
+2023-04-26 06:40:34,741 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行提取器
+2023-04-26 06:40:34,741 [MainThread:4346643840] [main_logger:51] [INFO]- ===>提取结果:【{'res_id': 1000091866}】
+2023-04-26 06:40:34,741 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行提取器
+2023-04-26 06:40:34,741 [MainThread:4346643840] [main_logger:51] [INFO]- ===>提取结果:【{'orgName': '新世纪钢铁有限公司'}】
+2023-04-26 06:40:34,741 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行验证器
+2023-04-26 06:40:34,742 [MainThread:4346643840] [main_logger:51] [INFO]- ===>验证结果:【'1'=='1', True】
+2023-04-26 06:40:34,742 [MainThread:4346643840] [main_logger:51] [INFO]- 开始执行验证器
+2023-04-26 06:40:34,742 [MainThread:4346643840] [main_logger:51] [INFO]- ===>验证结果:【'新世纪钢铁有限公司'=='新世纪钢铁有限公司', True】
