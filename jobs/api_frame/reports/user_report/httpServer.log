@@ -1,7 +1,0 @@
-::ffff:127.0.0.1 - - [26/Apr/2023 14:42:57] code 404, message File not found
-::ffff:127.0.0.1 - - [26/Apr/2023 14:42:57] "GET /wangyu/ HTTP/1.1" 404 -
-::ffff:127.0.0.1 - - [26/Apr/2023 14:42:58] code 404, message File not found
-::ffff:127.0.0.1 - - [26/Apr/2023 14:42:58] "GET /wangyu/ HTTP/1.1" 404 -
-::ffff:127.0.0.1 - - [26/Apr/2023 14:43:10] "GET / HTTP/1.1" 200 -
-::ffff:127.0.0.1 - - [26/Apr/2023 14:43:13] "GET /wangyu.yang/ HTTP/1.1" 200 -
-::ffff:127.0.0.1 - - [26/Apr/2023 14:43:17] "GET /wangyu.yang/test_module_001--%3C2023-04-26%3E%3C14_30_37%3E.html HTTP/1.1" 200 -
