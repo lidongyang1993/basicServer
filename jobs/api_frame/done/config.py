@@ -11,27 +11,17 @@
 class BASICS:
     NAME = "name"
     DESC = "desc"
-    PARAMS = "params"
-    CIRCULATE = "circulate"
 
 class PLAN:
-    SELF = "plan"
     CASE = "case"
     VARIABLE = "variable"
 
-class CIRCULATE:  # 循环插件
-    TYPE = "type"
-    INT = "int"
-    LIST = "list"
-    NUMBER = "number"
-    VALUE = "value"
 
 class HANDLERS:
     TYPE = "type"
-    VALUE = "value"
     NUMBER = "number"
 
-
+    PARAMS = "params"
     ASSERTS = "asserts"
     EXTRACT = "extract"
     CALC = "calculate"
@@ -46,16 +36,9 @@ class Error:
 
 class MSG:
     START = "开始执行{}"
-    RUN_ONE = "普通执行"
-    RUN_INT = "固定循环执行【{}】次"
-    RUN_LIST = "动态循环执行【{}】次"
-    RUN_CIRCULATE = "循环执行{}，循环节点【{}】"
-    CIRC_ERROR = "循环执行失败，失败节点【{}】"
     NAME = "==>名称:{}"
     DECS = "==>描述:{}"
-    PARAMS = "==>参数:{}"
     GLOBAL_VALUE = "==>当前全局变量：【{}】"
-    RUN_ASSERTS = "执行验证器: 验证【{}】"
     RESULT_ASSERTS = "===>验证结果:【{}, {}】"
     RESULT_REQUEST = "===>请求结果:【{}】"
     REQUEST_DATA = "===>请求数据:【{}, {}, {}】"
@@ -65,36 +48,31 @@ class MSG:
     STOP_RUN = "========>出现异常，停止运行：【{}, {}】"
 
 class CASE:
-    SELF = "case"
     STEP = "step"
     REDATA = "reData"
     VARIABLE = "variable"
 
 class STEP:
-    SELF = "step"
     CASE = "case"
     TYPE = "type"  # 步骤类型，用于区分插件和请求
     HANDLERS = "handlers"
     PARAMS = "params"
     REDATA = "reData"
     REQUEST = "request"
-    PLUGIN = "plugIn"
     STEP_NUMBER = "stepNumber"
 
 class PLUGIN:
     TYPE = "type"
     LOGIN = "login"
+    PARAMS = "params"
 
 class LOGIN:
-    SELF = "login"
     USER_NAME = "user_name"
     PASS_WORD = "pass_word"
 
 
 class EXTRACT:
-    SELF = "extract"
     FIELD = "field"
-    FUNC = "func"
     PATH = "path"
     CONDITION = "condition"
     TYPE = "type"
@@ -103,7 +81,6 @@ class HOST:
     TEST = "https://d-k8s-sso-fp.bigfintax.com"
 
 class REQUEST:
-    SELF = "request"
     HOST = "host"
     URL = "url"
     PATH = "path"
@@ -113,7 +90,6 @@ class REQUEST:
     DATA = "data"
     HEADERS = "headers"
     COOKIES = "cookies"
-    RESPONSE = "response"
 
     HTML = "html"
     JSON = "json"

@@ -60,7 +60,7 @@ def add_case_by_module(request: WSGIRequest):
         if add_module == "test_module_002":
             add_plan_into_module_002(add_data)
         if add_module == "test_module_003":
-            add_plan_into_module_002(add_data)
+            add_plan_into_module_003(add_data)
         if add_module == "test_module_004":
             add_plan_into_module_004(add_data)
         if add_module == "test_module_005":

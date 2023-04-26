@@ -164,7 +164,7 @@ class RunGlobal:
             self.case = self.params.get(STEP.CASE)
             self.handlers = self.params.get(STEP.HANDLERS)
             self.reData = self.params.get(STEP.REDATA)
-            self.request = self.params.get(BASICS.PARAMS)
+            self.request = self.params.get(STEP.PARAMS)
             self.type = self.params.get(STEP.TYPE, None)
             self.stepNumber = self.params.get(STEP.STEP_NUMBER)
 
@@ -173,18 +173,22 @@ class RunGlobal:
 
         def func(self):
             if self.type != STEP.REQUEST:
-                return self.plug_in(self.params.get(BASICS.PARAMS))
-            self.requests(self.params.get(BASICS.PARAMS))
+                return self.plug_in(self.params.get(STEP.PARAMS))
+            self.requests(self.params.get(STEP.PARAMS))
             self.request_run.main()
 
         def plug_in(self, params):
             if params.get(PLUGIN.TYPE) == PLUGIN.LOGIN:
-                login_params = params.get(BASICS.PARAMS)
-                user = login_params.get(LOGIN.USER_NAME)
-                pwd = login_params.get(LOGIN.PASS_WORD)
-                user = self.data_replace(user, RunGlobal.global_value)
-                pwd = self.data_replace(pwd, RunGlobal.global_value)
-                self.plugIn.test_login(user, pwd)
+                login_params = params.get(PLUGIN.PARAMS)
+                self.login(login_params)
+
+        def login(self, params):
+            user = params.get(LOGIN.USER_NAME)
+            pwd = params.get(LOGIN.PASS_WORD)
+            user = self.data_replace(user, RunGlobal.global_value)
+            pwd = self.data_replace(pwd, RunGlobal.global_value)
+            self.plugIn.test_login(user, pwd)
+
 
         def handlers_run(self):
             if not self.handlers:
@@ -206,12 +210,17 @@ class RunGlobal:
             super().after()
 
         def asserts(self, params):
-            asserts = RunGlobal.RunAsserts(params.get(BASICS.PARAMS))
+            asserts = RunGlobal.RunAsserts(
+                params.get(HANDLERS.PARAMS)
+            )
             asserts.main()
             self.handlers_list.append(asserts)
 
         def extract(self, params):
-            extract = RunGlobal.RunExtract(params.get(BASICS.PARAMS), response=self.request_run.result)
+            extract = RunGlobal.RunExtract(
+                params.get(HANDLERS.PARAMS),
+                response=self.request_run.result
+            )
             extract.main()
             self.handlers_list.append(extract)
 

@@ -83,14 +83,16 @@ class Check:
     def check_plugin(self, data):
         keys = [
             {KEY.NAME: f.PLUGIN.TYPE, KEY.MUST: True, KEY.TYPE: str},
-            {KEY.NAME: f.BASICS.PARAMS, KEY.MUST: True, KEY.TYPE: dict}
+            {KEY.NAME: f.PLUGIN.PARAMS, KEY.MUST: True, KEY.TYPE: dict}
 
         ]
         check = self.public_check(data, keys)
         if not check.get(RESULT.CODE) == 0:
             return check
         if data.get(f.PLUGIN.TYPE) == f.PLUGIN.LOGIN:
-            _check = self.check_login(data.get(f.BASICS.PARAMS))
+            _check = self.check_login(
+                data.get(f.PLUGIN.PARAMS)
+            )
             if not _check.get(RESULT.CODE) == 0:
                 return _check
         return check
@@ -115,11 +117,11 @@ class Check:
             return check
 
         if data.get(f.HANDLERS.TYPE) == f.HANDLERS.ASSERTS:
-            asserts_check = self.check_asserts(data.get(f.BASICS.PARAMS))
+            asserts_check = self.check_asserts(data.get(f.HANDLERS.PARAMS))
             if not (asserts_check.get(RESULT.CODE) == 0):
                 return asserts_check
         if data.get(f.HANDLERS.TYPE) == f.HANDLERS.EXTRACT:
-            extract_check = self.check_extract(data.get(f.BASICS.PARAMS))
+            extract_check = self.check_extract(data.get(f.HANDLERS.PARAMS))
             if not (extract_check.get(RESULT.CODE) == 0):
                 return extract_check
         if data.get(f.HANDLERS.TYPE) == f.HANDLERS.CALC:
@@ -169,7 +171,3 @@ if __name__ == '__main__':
     for plan in module_001:
         cc = Check().check_plan(plan)
         pass
-    # for plan in module_001:
-    #     for _ in plan.get(f.BASICS.PARAMS).get(f.PLAN.CASE):
-    #         cc = Check().check_case(_)
-    #         pass
