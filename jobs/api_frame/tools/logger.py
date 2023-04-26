@@ -16,13 +16,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
-def init_log(service_name):
+def init_log(service_name, path="reports/log"):
     """
     进行 logger 配置
     :return:
     """
     # 日志基础路径
-    log_path = BASE_DIR / "reports/log"
+    log_path = BASE_DIR / path
     # 服务 日志路径
     service_log_path = os.path.join(log_path, service_name)
     # info 日志路径

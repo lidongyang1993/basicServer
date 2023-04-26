@@ -8,7 +8,7 @@ from django.shortcuts import render
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from jobs.api_frame.done.runGlobal import *
 from tools.basics import RequestBasics
 from django.core.handlers.wsgi import WSGIRequest
 from tools.config import *
@@ -33,6 +33,34 @@ def call_back_file(request: WSGIRequest):
         f.write(re)
         f.close()
         return f.name
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+@csrf_exempt
+@require_POST
+def check_case(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
+        {KEY.NAME: FILED.TYPE, KEY.MUST: True, KEY.TYPE: str},
+    ]
+
+    def run_func(data):
+        check_data = data.get(FILED.DATA, None)
+        check_type = data.get(FILED.TYPE, None)
+        if check_type == "plan":
+            data_check = copy.deepcopy(Check().check_plan(check_data))
+        elif check_type == "case":
+            data_check = copy.deepcopy(Check().check_case(check_data))
+        elif check_type == "step":
+            data_check = copy.deepcopy(Check().check_step(check_data))
+        elif check_type == "request":
+            data_check = copy.deepcopy(Check().check_request(check_data))
+        else:
+            return None
+        return {"check": data_check}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -91,6 +119,29 @@ def run_case_by_module(request: WSGIRequest):
         command = "/bin/sh start_run.sh {} {} {} {}".format(user, test_module, report_name, report_desc)
         os.system(command)
         return {"report_url": "http://0.0.0.0:9000/{}".format(user)}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+@csrf_exempt
+@require_POST
+def run_case_by_module_test(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
+        {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str},
+
+    ]
+
+    def run_func(data):
+        plan = data.get(FILED.DATA, None)
+        user = data.get(FILED.USER, None)
+        run = RunGlobal("{}".format(user))
+        run.make_log("reports/user_log/test_{}".format(user))
+        run_plan = run.RunPlan(plan)
+        run_plan.main()
+
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)

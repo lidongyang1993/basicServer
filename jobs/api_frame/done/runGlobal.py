@@ -25,8 +25,11 @@ class RunGlobal:
     def __init__(self, name):
         self.file_name = time_strf_time_for_file_name(name, ".log")
 
-    def make_log(self):
-        RunGlobal.Logger = init_log(self.file_name)
+    def make_log(self, path=None):
+        if not path:
+            RunGlobal.Logger = init_log(self.file_name)
+            return
+        RunGlobal.Logger = init_log(self.file_name, path)
 
     class PublicPlugIn:
         @staticmethod
