@@ -14,7 +14,6 @@ class Check:
     @staticmethod
     def public_check(data, keys):
         self_check = assertsFiledBasic(data, keys)
-        print(data)
         if not self_check.assert_fields():
             return self_check.error
         return self_check.result.NORMAL

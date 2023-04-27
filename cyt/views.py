@@ -22,9 +22,7 @@ KEY_FILE = 'key'
 @csrf_exempt
 @require_POST
 def call_back_file(request: WSGIRequest):
-    keys = [
-
-    ]
+    keys = []
 
     def run_func(data):
         file_name = str(int(time.time()))
@@ -44,23 +42,26 @@ def call_back_file(request: WSGIRequest):
 def check_case(request: WSGIRequest):
     keys = [
         {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
-        {KEY.NAME: FILED.TYPE, KEY.MUST: True, KEY.TYPE: str},
+        {KEY.NAME: FILED.TYPE, KEY.MUST: True, KEY.TYPE: str}
     ]
 
     def run_func(data):
         check_data = data.get(FILED.DATA, None)
         check_type = data.get(FILED.TYPE, None)
+        check = Check()
         if check_type == "plan":
-            data_check = copy.deepcopy(Check().check_plan(check_data))
+            data_check = check.check_plan(check_data)
         elif check_type == "case":
-            data_check = copy.deepcopy(Check().check_case(check_data))
+            data_check = check.check_case(check_data)
         elif check_type == "step":
-            data_check = copy.deepcopy(Check().check_step(check_data))
+            data_check = check.check_step(check_data)
         elif check_type == "request":
-            data_check = copy.deepcopy(Check().check_request(check_data))
+            data_check = check.check_request(check_data)
         else:
             return None
-        return {"check": data_check}
+        if data_check.get(RESULT.CODE) == 0:
+            return {"result": True}
+        return {"result": json.loads(json.dumps(data_check))}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -73,8 +74,7 @@ def add_case_by_module(request: WSGIRequest):
     keys = [
         {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
         {KEY.NAME: FILED.MODULE, KEY.MUST: True, KEY.TYPE: str},
-        {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str},
-
+        {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str}
     ]
 
     def run_func(data):
@@ -82,7 +82,7 @@ def add_case_by_module(request: WSGIRequest):
         add_module = data.get(FILED.MODULE, None)
         data_check = copy.deepcopy(Check().check_plan(add_data))
         if data_check.get(RESULT.CODE) != 0:
-            return {"check": data_check}
+            return {"result": json.loads(json.dumps(data_check))}
         if add_module == "test_module_001":
             add_plan_into_module_001(add_data)
         if add_module == "test_module_002":
@@ -93,7 +93,7 @@ def add_case_by_module(request: WSGIRequest):
             add_plan_into_module_004(add_data)
         if add_module == "test_module_005":
             add_plan_into_module_005(add_data)
-        return {"check": data_check}
+        return {"result": True}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -107,8 +107,7 @@ def run_case_by_module(request: WSGIRequest):
         {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str},
         {KEY.NAME: FILED.MODULE, KEY.MUST: True, KEY.TYPE: str},
         {KEY.NAME: FILED.REPORT_NAME, KEY.MUST: True, KEY.TYPE: str},
-        {KEY.NAME: FILED.REPORT_DESC, KEY.MUST: True, KEY.TYPE: str},
-
+        {KEY.NAME: FILED.REPORT_DESC, KEY.MUST: True, KEY.TYPE: str}
     ]
 
     def run_func(data):
@@ -118,7 +117,7 @@ def run_case_by_module(request: WSGIRequest):
         report_desc = data.get(FILED.REPORT_DESC, None)
         command = "/bin/sh start_run.sh {} {} {} {}".format(user, test_module, report_name, report_desc)
         os.system(command)
-        return {"report_url": "http://0.0.0.0:9000/{}".format(user)}
+        return {"report_url": HOST.REPORT_SERVER}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -130,8 +129,7 @@ def run_case_by_module(request: WSGIRequest):
 def run_case_by_module_test(request: WSGIRequest):
     keys = [
         {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
-        {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str},
-
+        {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str}
     ]
 
     def run_func(data):
@@ -141,6 +139,7 @@ def run_case_by_module_test(request: WSGIRequest):
         run.make_log("reports/user_log/test_{}".format(user))
         run_plan = run.RunPlan(plan)
         run_plan.main()
+        return {"log_url": HOST.REPORT_SERVER}
 
 
     req = RequestBasics(request, keys)

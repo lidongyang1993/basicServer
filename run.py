@@ -21,4 +21,4 @@ report_desc = args.report_desc
 user = args.user
 test_module = args.test_module
 
-StartRun(report_name, report_desc, user, test_module).make_run()
+StartRun(report_name, report_desc, user, test_module, path="jobs/api_frame/reports/{}").make_run()

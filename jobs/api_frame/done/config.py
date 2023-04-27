@@ -79,6 +79,8 @@ class EXTRACT:
 
 class HOST:
     TEST = "https://d-k8s-sso-fp.bigfintax.com"
+    REPORT_SERVER = "http://0.0.0.0:9000/user_report"
+    LOG_SERVER = "http://0.0.0.0:9000/log_server"
 
 class REQUEST:
     HOST = "host"

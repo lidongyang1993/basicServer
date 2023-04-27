@@ -91,11 +91,11 @@ class TestPublic(unittest.TestCase):
 
 class StartRun:
 
-    def __init__(self, title, desc, user_number, module):
+    def __init__(self, title, desc, user_number, module, path="reports/user_report/{}"):
         self.file_name = "{}--<%Y-%m-%d><%H_%M_%S>".format(module)
         self.desc = desc
         self.title = title
-        self.dir = "reports/user_report/{}".format(user_number)
+        self.dir = path.format(user_number)
         self.user = user_number
         self.module = module
 

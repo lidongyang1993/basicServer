@@ -31,6 +31,7 @@ class RunGlobal:
             return
         RunGlobal.Logger = init_log(self.file_name, path)
 
+
     class PublicPlugIn:
         @staticmethod
         def data_replace(params, variable):
