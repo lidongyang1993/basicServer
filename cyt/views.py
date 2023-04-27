@@ -139,7 +139,7 @@ def run_case_by_module_test(request: WSGIRequest):
         run.make_log("reports/user_log/test_{}".format(user))
         run_plan = run.RunPlan(plan)
         run_plan.main()
-        return {"log_url": HOST.REPORT_SERVER}
+        return {"log_url": HOST.LOG_SERVER}
 
 
     req = RequestBasics(request, keys)

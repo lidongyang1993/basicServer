@@ -40,7 +40,6 @@ def get_case_list(plan):
         return res
     p = r.RunPlan(plan)
     p.before()
-    print(plan)
     for _ in plan.get(PLAN.CASE):
         res.append({CASE: _, TITLE: _.get(BASICS.NAME), DESC: _.get(BASICS.DESC)})
     return res

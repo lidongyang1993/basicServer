@@ -24,20 +24,20 @@ def init_log(service_name, path="reports/log"):
     # 日志基础路径
     log_path = BASE_DIR / path
     # 服务 日志路径
-    service_log_path = os.path.join(log_path, service_name)
+    service_log_path = os.path.join(log_path)
     # info 日志路径
-    service_info_log_path = os.path.join(service_log_path, 'info')
-    # error 日志路径
-    service_error_log_path = os.path.join(service_log_path, 'error')
+    # service_info_log_path = os.path.join(service_log_path, 'info')
+    # # error 日志路径
+    # # service_error_log_path = os.path.join(service_log_path, 'error')
 
     standard_format = "%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(levelname)s]- %(message)s"
 
     # 创建路径
-    if not os.path.exists(service_info_log_path):
-        os.makedirs(service_info_log_path, mode=0o777)
-
-    if not os.path.exists(service_error_log_path):
-        os.makedirs(service_error_log_path, mode=0o777)
+    if not os.path.exists(service_log_path):
+        os.makedirs(service_log_path, mode=0o777)
+    #
+    # if not os.path.exists(service_error_log_path):
+    #     os.makedirs(service_error_log_path, mode=0o777)
 
 
     # 创建logger
@@ -45,9 +45,9 @@ def init_log(service_name, path="reports/log"):
     logger.setLevel(logging.DEBUG)
 
     # 创建handler 用于写入日志文件
-    info_handler = TimedRotatingFileHandler(service_info_log_path + "/info.log", when='MIDNIGHT', interval=1, backupCount=60,
-                                            encoding='utf-8')
-    info_handler.setLevel(logging.DEBUG)
+    info_handler = TimedRotatingFileHandler(log_path / (service_name + "info.log"), when='MIDNIGHT', interval=1, backupCount=60,
+                                            encoding='GBK')
+    info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(logging.Formatter(standard_format))
     # 设置 切分后日志文件名的时间格式 默认 filename+"." + suffix
     # filename="mylog" suffix设置，会生成文件名为mylog.2020-02-25.log
@@ -58,15 +58,13 @@ def init_log(service_name, path="reports/log"):
 
     # 创建handler 用于写入日志文件
     # TimedRotatingFileHandler 创建固定时间间隔的日志
-    error_handler = TimedRotatingFileHandler(service_error_log_path + "/error.log", when='MIDNIGHT', interval=1,
-                                             backupCount=60,
-                                             encoding='utf-8')
-    error_handler.setLevel(logging.ERROR)
-    error_handler.setFormatter(logging.Formatter(standard_format))
-    error_handler.suffix = "%Y-%m-%d.log"
-    error_handler.extMatch = re.compile(r"^\d{4}-\d{2}-\d{2}.log$")
+    c_handler = logging.StreamHandler()
+    c_handler.setLevel(logging.INFO)
+    c_handler.setFormatter(logging.Formatter(standard_format))
+    # error_handler.suffix = "%Y-%m-%d.log"
+    # error_handler.extMatch = re.compile(r"^\d{4}-\d{2}-\d{2}.log$")
 
     # 处理器添加到logger
     logger.addHandler(info_handler)
-    logger.addHandler(error_handler)
+    logger.addHandler(c_handler)
     return logger

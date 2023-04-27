@@ -55,6 +55,11 @@ class RunGlobal:
             RunGlobal.Logger.info(msg)
 
         @staticmethod
+        def log_msg_debug(msg, underline=False, enter=False, semicolon=True):
+            RunGlobal.PublicPlugIn.add_msg_list(msg, underline=underline, enter=enter, semicolon=semicolon)
+            RunGlobal.Logger.debug(msg)
+
+        @staticmethod
         def add_msg_list(msg, underline=False, enter=False, semicolon=True):
             res = SYMBOL.NONE
             if underline:
@@ -91,6 +96,7 @@ class RunGlobal:
                 self.logger(MSG.NAME.format(self.name))
             if self.desc:
                 self.logger(MSG.DECS.format(str(self.desc)))
+
 
         def before(self):
             self.result = None
@@ -174,6 +180,11 @@ class RunGlobal:
 
             self.request_run = None
             self.handlers_list = []
+
+
+        def init_msg(self):
+            super().init_msg()
+            self.logger(MSG.PARAMS.format(str(self.params)))
 
         def func(self):
             if self.type != STEP.REQUEST:
@@ -298,6 +309,11 @@ class RunGlobal:
             self.response = response
             self.code = None
 
+        def init_msg(self):
+            super().init_msg()
+            self.logger(MSG.PARAMS.format(str(self.params)))
+
+
         def quote(self):
             self.path = self.data_replace(self.path, RunGlobal.global_value)
             self.condition = self.data_replace(self.condition, RunGlobal.global_value)
@@ -331,12 +347,18 @@ class RunGlobal:
     class RunAsserts(RunBasics):
         RUN_TYPE = OTHER.YANG_ZHENG_QI
 
+
         def __init__(self, params):
             super().__init__(params)
             self.left = self.params[ASSERTS.VALUE_LEFT]
             self.func_assert = self.params[ASSERTS.FUNC]
             self.right = self.params[ASSERTS.VALUE_RIGHT]
             self.code = None
+
+        def init_msg(self):
+            super().init_msg()
+            self.logger(MSG.PARAMS.format(str(self.params)))
+
 
         def quote(self):
             self.left = data_replace(self.left, RunGlobal.global_value)

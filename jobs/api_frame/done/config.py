@@ -38,6 +38,7 @@ class MSG:
     START = "开始执行{}"
     NAME = "==>名称:{}"
     DECS = "==>描述:{}"
+    PARAMS = "==>当前参数:【{}】"
     GLOBAL_VALUE = "==>当前全局变量：【{}】"
     RESULT_ASSERTS = "===>验证结果:【{}, {}】"
     RESULT_REQUEST = "===>请求结果:【{}】"
