@@ -97,6 +97,9 @@ class REQUEST:
     HTML = "html"
     JSON = "json"
 
+class COOKIES:
+    TEST_CAS_ASSERT_TOKEN = "test_cas_access_token"
+
 class OTHER:
     BASICS = "basics"
     YANG_ZHENG_QI = "验证器"
