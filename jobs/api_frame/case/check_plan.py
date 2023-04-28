@@ -7,7 +7,7 @@
 # @Software: PyCharm
 from jobs.api_frame.done import config as f
 from tools.basics import assertsFiledBasic
-from tools.config import *
+from config.field import *
 
 
 class Check:

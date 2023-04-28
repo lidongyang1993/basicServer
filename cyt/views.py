@@ -2,8 +2,6 @@ import copy
 import os
 import time
 
-from django.shortcuts import render
-
 # Create your views here.
 
 from django.http import JsonResponse
@@ -11,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from jobs.api_frame.done.runGlobal import *
 from tools.basics import RequestBasics
 from django.core.handlers.wsgi import WSGIRequest
-from tools.config import *
+from config.field import *
 from django.views.decorators.http import require_POST
 from jobs.api_frame.case.read_and_add import *
 from jobs.api_frame.case.check_plan import Check
