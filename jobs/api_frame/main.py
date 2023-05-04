@@ -16,6 +16,7 @@ from unittestreport import TestRunner, ddt, list_data
 
 from jobs.api_frame.done.runGlobal import *
 from jobs.api_frame.case import *
+from jobs.api_frame.tools.send_wChat import send_test_report
 
 RUNNING = "RUNNING"
 CASE = "CASE"
@@ -105,7 +106,17 @@ class StartRun:
             os.makedirs(self.dir)
         runner = TestRunner(suite=suite, filename=filename, tester=self.user, desc=self.desc, title=self.title,
                             report_dir=self.dir)
-        runner.run(thread_count=1)
+        result = runner.run(thread_count=1)
+        pass_case = result.get("success")
+        all_case = result.get("all")
+        fail_case = result.get("all")
+        from tools.read_cnf import read_data
+        host = read_data("file_server", "host")
+        port = read_data("file_server", "port")
+        call_url = "http://{}:{}/user_report/{}/{}".format(host, port, self.user, runner.filename)
+        send_test_report(self.user, self.module, all_case, pass_case, fail_case, call_url)
+        pass
+
 
     def make_dir(self):
         if not os.path.exists(self.dir):

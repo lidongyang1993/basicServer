@@ -45,7 +45,7 @@ def init_log(service_name, path="reports/log"):
     logger.setLevel(logging.DEBUG)
 
     # 创建handler 用于写入日志文件
-    info_handler = TimedRotatingFileHandler(log_path / (service_name + "info.log"), when='MIDNIGHT', interval=1, backupCount=60,
+    info_handler = TimedRotatingFileHandler(log_path / (service_name + "info.json"), when='MIDNIGHT', interval=1, backupCount=60,
                                             encoding='utf-8')
     info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(logging.Formatter(standard_format))
