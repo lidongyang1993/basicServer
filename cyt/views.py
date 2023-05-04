@@ -81,21 +81,43 @@ def add_case_by_module(request: WSGIRequest):
         data_check = copy.deepcopy(Check().check_plan(add_data))
         if data_check.get(RESULT.CODE) != 0:
             return {"result": json.loads(json.dumps(data_check))}
-        if add_module == "test_module_001":
-            add_plan_into_module_001(add_data)
-        if add_module == "test_module_002":
-            add_plan_into_module_002(add_data)
-        if add_module == "test_module_003":
-            add_plan_into_module_003(add_data)
-        if add_module == "test_module_004":
-            add_plan_into_module_004(add_data)
-        if add_module == "test_module_005":
-            add_plan_into_module_005(add_data)
+        if add_module in module_list:
+            add_plan_into_module(add_module, add_data)
+        else:
+            return {"result": False, "info": "还未定义的模块，禁止添加用例"}
         return {"result": True}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
+
+@csrf_exempt
+@require_POST
+def update_case_by_module(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
+        {KEY.NAME: FILED.MODULE, KEY.MUST: True, KEY.TYPE: str},
+        {KEY.NAME: FILED.NAME, KEY.MUST: True, KEY.TYPE: str},
+    ]
+
+    def run_func(data):
+        update_data = data.get(FILED.DATA, None)
+        update_name = data.get(FILED.NAME, None)
+        update_module = data.get(FILED.MODULE, None)
+        data_check = copy.deepcopy(Check().check_plan(update_data))
+        if data_check.get(RESULT.CODE) != 0:
+            return {"result": json.loads(json.dumps(data_check))}
+        if update_module in module_list:
+            update_plan_into_module(update_name, update_module, update_data)
+        else:
+            return {"result": False, "info": "未知的模块，禁止更新用例"}
+        return {"result": True}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
 
 
 @csrf_exempt

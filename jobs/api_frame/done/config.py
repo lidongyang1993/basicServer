@@ -62,6 +62,8 @@ class STEP:
     REQUEST = "request"
     STEP_NUMBER = "stepNumber"
 
+    SLEEP = "sleep"
+
 class PLUGIN:
     TYPE = "type"
     LOGIN = "login"

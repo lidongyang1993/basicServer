@@ -5,6 +5,8 @@
 # @Site    : 
 # @File    : timeFile.py
 # @Software: PyCharm
+import json
+import time
 from json import JSONDecodeError
 from jobs.api_frame.basics import *
 from jobs.api_frame.tools.logger import init_log
@@ -177,6 +179,7 @@ class RunGlobal:
             self.request = self.params.get(STEP.PARAMS)
             self.type = self.params.get(STEP.TYPE, None)
             self.stepNumber = self.params.get(STEP.STEP_NUMBER)
+            self.sleep = self.params.get(STEP.SLEEP, None)
 
             self.request_run = None
             self.handlers_list = []
@@ -223,6 +226,11 @@ class RunGlobal:
         def after(self):
             self.handlers_run()
             super().after()
+            self.sleep_time()
+
+        def sleep_time(self):
+            if self.sleep:
+                time.sleep(self.sleep)
 
         def asserts(self, params):
             asserts = RunGlobal.RunAsserts(
@@ -274,7 +282,7 @@ class RunGlobal:
             self.quote()
 
         def func(self):
-            self.logger(MSG.REQUEST_DATA.format(self.name, self.url, self.data))
+            self.logger(MSG.REQUEST_DATA.format(self.name, self.url, json.dumps(self.data)))
             try:
                 self.response = http_client_util(self.url, self.method,
                                                  self.post_type, self.data,

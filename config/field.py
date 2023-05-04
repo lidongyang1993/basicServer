@@ -45,3 +45,5 @@ class FILED:
     REPORT_DESC = "report_desc"
 
     TYPE = "type"
+    NAME = "name"
+    DESC = "desc"

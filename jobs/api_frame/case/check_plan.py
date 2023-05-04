@@ -41,7 +41,7 @@ class Check:
             {KEY.NAME: f.BASICS.DESC, KEY.MUST: True, KEY.TYPE: str},
             {KEY.NAME: f.CASE.STEP, KEY.MUST: True, KEY.TYPE: list},
             {KEY.NAME: f.CASE.REDATA, KEY.MUST: None, KEY.TYPE: dict},
-            {KEY.NAME: f.PLAN.VARIABLE, KEY.MUST: True, KEY.TYPE: dict}
+            {KEY.NAME: f.PLAN.VARIABLE, KEY.MUST: False, KEY.TYPE: dict}
         ]
         check = self.public_check(data, keys)
         if not check.get(RESULT.CODE) == 0:
@@ -60,6 +60,7 @@ class Check:
             {KEY.NAME: f.STEP.PARAMS, KEY.MUST: True, KEY.TYPE: dict},
             {KEY.NAME: f.STEP.TYPE, KEY.MUST: True, KEY.TYPE: str},
             {KEY.NAME: f.STEP.HANDLERS, KEY.MUST: True, KEY.TYPE: list},
+            {KEY.NAME: f.STEP.SLEEP, KEY.MUST: False, KEY.TYPE: int},
         ]
         check = self.public_check(data, keys)
         if not check.get(RESULT.CODE) == 0:
@@ -132,7 +133,7 @@ class Check:
         keys = [
             {KEY.NAME: f.EXTRACT.PATH, KEY.MUST: True, KEY.TYPE: str},
             {KEY.NAME: f.EXTRACT.FIELD, KEY.MUST: True, KEY.TYPE: str},
-            {KEY.NAME: f.EXTRACT.CONDITION, KEY.MUST: None, KEY.TYPE: str},
+            {KEY.NAME: f.EXTRACT.CONDITION, KEY.MUST: None, KEY.TYPE: list},
             {KEY.NAME: f.EXTRACT.TYPE, KEY.MUST: True, KEY.TYPE: str}
 
         ]

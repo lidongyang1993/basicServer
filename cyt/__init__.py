@@ -7,6 +7,7 @@ class ForTest:
         path('callBackFile', views.call_back_file),
         path('case/run', views.run_case_by_module),
         path('case/add', views.add_case_by_module),
+        path('case/update', views.update_case_by_module),
         path('case/check', views.check_case),
         path('case/debug', views.run_case_by_module_test),
     ]
