@@ -1,7 +1,7 @@
 import copy
 import os
+import shutil
 import time
-
 # Create your views here.
 
 from django.http import JsonResponse
@@ -16,6 +16,7 @@ from jobs.api_frame.case.check_plan import Check
 
 KEY_FILE = 'key'
 
+BASE_DIR = Path(__file__).resolve().parent.parent / "jobs/api_frame"
 
 @csrf_exempt
 @require_POST
@@ -137,7 +138,7 @@ def run_case_by_module(request: WSGIRequest):
         report_desc = data.get(FILED.REPORT_DESC, None)
         command = "/bin/sh start_run.sh {} {} {} {}".format(user, test_module, report_name, report_desc)
         os.system(command)
-        return {"report_url": HOST.REPORT_SERVER}
+        return {"report_url": None}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -156,10 +157,14 @@ def run_case_by_module_test(request: WSGIRequest):
         plan = data.get(FILED.DATA, None)
         user = data.get(FILED.USER, None)
         run = RunGlobal("{}".format(user))
-        run.make_log("reports/user_log/test_{}".format(user))
+        path = BASE_DIR / "reports/user_log/{}/".format(user)
+        if not os.path.exists(path):
+            os.mkdir(path)
+        shutil.rmtree(path)
+        run.make_log(path)
         run_plan = run.RunPlan(plan)
         run_plan.main()
-        return {"log_url": HOST.LOG_SERVER}
+        return {"log_url": None}
 
 
     req = RequestBasics(request, keys)
