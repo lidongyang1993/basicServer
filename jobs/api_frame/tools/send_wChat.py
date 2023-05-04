@@ -14,7 +14,7 @@ def send_msg(w_chat_url, data):
 
 
 def send_test_report(user, module, total, pass_case, fail_case, call_url, w_chat_url=url):
-    name = "用例执行记录\n"
+    name = "用例执行通告\n"
     us = ">执行用户：<font color=\"comment\">{}</font>\n".format(user)
     mo = ">执行模块:<font color=\"comment\">{}</font>\n".format(module)
     to = ">共执行：<font color=\"comment\">{}条</font>\n".format(total)

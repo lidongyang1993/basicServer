@@ -18,6 +18,8 @@ from jobs.api_frame.done.runGlobal import *
 from jobs.api_frame.case import *
 from jobs.api_frame.tools.send_wChat import send_test_report
 
+from tools.read_cnf import read_data
+
 RUNNING = "RUNNING"
 CASE = "CASE"
 TITLE = "title"
@@ -109,8 +111,7 @@ class StartRun:
         result = runner.run(thread_count=1)
         pass_case = result.get("success")
         all_case = result.get("all")
-        fail_case = result.get("all")
-        from tools.read_cnf import read_data
+        fail_case = result.get("fail")
         host = read_data("file_server", "host")
         port = read_data("file_server", "port")
         call_url = "http://{}:{}/user_report/{}/{}".format(host, port, self.user, runner.filename)
