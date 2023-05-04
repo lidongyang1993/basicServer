@@ -46,7 +46,7 @@ def init_log(service_name, path="reports/log"):
 
     # 创建handler 用于写入日志文件
     info_handler = TimedRotatingFileHandler(log_path / (service_name + "info.log"), when='MIDNIGHT', interval=1, backupCount=60,
-                                            encoding='GBK')
+                                            encoding='utf-8')
     info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(logging.Formatter(standard_format))
     # 设置 切分后日志文件名的时间格式 默认 filename+"." + suffix
@@ -66,5 +66,5 @@ def init_log(service_name, path="reports/log"):
 
     # 处理器添加到logger
     logger.addHandler(info_handler)
-    logger.addHandler(c_handler)
+    # logger.addHandler(c_handler)
     return logger
