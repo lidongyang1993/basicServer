@@ -6,7 +6,7 @@
 # @File    : send_wChat.py
 # @Software: PyCharm
 import requests
-
+url = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=80f83c8f-7ab2-404b-a4b8-977bd4caeb64"
 
 
 def send_msg(w_chat_url, data):
