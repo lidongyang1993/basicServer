@@ -14,7 +14,7 @@ from jobs.api_frame.tools.logger import init_log
 from jobs.api_frame.tools.login import get_login_session
 from jobs.api_frame.tools.readResponse import *
 from jobs.api_frame.tools.replace import data_replace
-from jobs.api_frame.done.config import *
+from jobs.api_frame.done.field import *
 from jobs.api_frame.tools.timeFile import time_strf_time_for_file_name
 
 

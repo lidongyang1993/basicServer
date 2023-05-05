@@ -60,6 +60,7 @@ class STEP:
     PARAMS = "params"
     REDATA = "reData"
     REQUEST = "request"
+    PLUGIN = "plugIn"
     STEP_NUMBER = "stepNumber"
 
     SLEEP = "sleep"
@@ -98,9 +99,12 @@ class REQUEST:
 
     HTML = "html"
     JSON = "json"
+    FORM = "form"
 
-class COOKIES:
-    TEST_CAS_ASSERT_TOKEN = "test_cas_access_token"
+class METHOD:
+    POST = "POST"
+    GET = "GET"
+
 
 class OTHER:
     BASICS = "basics"
@@ -114,7 +118,6 @@ class OTHER:
     JIE_GUO_BAO_GAO = "结果报告"
 
 class ASSERTS:
-    SELF = "asserts"
     VALUE_LEFT = "value_left"
     VALUE_RIGHT = "value_right"
     FUNC = "func"
@@ -126,4 +129,3 @@ class SYMBOL:
     EQUAL = "="
     NONE = ''
     ARROWS = "==>"
-

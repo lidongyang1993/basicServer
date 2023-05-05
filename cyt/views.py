@@ -13,10 +13,14 @@ from config.field import *
 from django.views.decorators.http import require_POST
 from jobs.api_frame.case.read_and_add import *
 from jobs.api_frame.case.check_plan import Check
+from tools.read_cnf import read_data
+
+SERVER_HOST = read_data("file_server", "host")
 
 KEY_FILE = 'key'
 
 BASE_DIR = Path(__file__).resolve().parent.parent / "jobs/api_frame"
+
 
 @csrf_exempt
 @require_POST
@@ -59,8 +63,8 @@ def check_case(request: WSGIRequest):
         else:
             return None
         if data_check.get(RESULT.CODE) == 0:
-            return {"result": True}
-        return {"result": json.loads(json.dumps(data_check))}
+            return {"result": True, "info": None}
+        return {"result": False, "info": data_check}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -79,14 +83,14 @@ def add_case_by_module(request: WSGIRequest):
     def run_func(data):
         add_data = data.get(FILED.DATA, None)
         add_module = data.get(FILED.MODULE, None)
-        data_check = copy.deepcopy(Check().check_plan(add_data))
+        data_check = Check().check_plan(add_data)
         if data_check.get(RESULT.CODE) != 0:
-            return {"result": json.loads(json.dumps(data_check))}
+            return {"result": False, "info": data_check}
         if add_module in module_list:
             add_plan_into_module(add_module, add_data)
         else:
             return {"result": False, "info": "还未定义的模块，禁止添加用例"}
-        return {"result": True}
+        return {"result": True, "info": None}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -106,19 +110,18 @@ def update_case_by_module(request: WSGIRequest):
         update_data = data.get(FILED.DATA, None)
         update_name = data.get(FILED.NAME, None)
         update_module = data.get(FILED.MODULE, None)
-        data_check = copy.deepcopy(Check().check_plan(update_data))
+        data_check = Check().check_plan(update_data)
         if data_check.get(RESULT.CODE) != 0:
-            return {"result": json.loads(json.dumps(data_check))}
+            return {"result": False, "info": data_check}
         if update_module in module_list:
             update_plan_into_module(update_name, update_module, update_data)
         else:
             return {"result": False, "info": "未知的模块，禁止更新用例"}
-        return {"result": True}
+        return {"result": True, "info": None}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
-
 
 
 @csrf_exempt
@@ -138,7 +141,7 @@ def run_case_by_module(request: WSGIRequest):
         report_desc = data.get(FILED.REPORT_DESC, None)
         command = "/bin/sh start_run.sh {} {} {} {}".format(user, test_module, report_name, report_desc)
         os.system(command)
-        return {"report_url": None}
+        return {"report_url": "http://" + SERVER_HOST + ":9000/user_report"}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -164,8 +167,7 @@ def run_case_by_module_test(request: WSGIRequest):
         run.make_log(path)
         run_plan = run.RunPlan(plan)
         run_plan.main()
-        return {"log_url": None}
-
+        return {"log_url": "http://" + SERVER_HOST + ":9000/user_log/{}/".format(user)}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)

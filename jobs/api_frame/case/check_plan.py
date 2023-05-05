@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : check_plan.py
 # @Software: PyCharm
-from jobs.api_frame.done import config as f
+from jobs.api_frame.done import field as f
 from tools.basics import assertsFiledBasic
 from config.field import *
 

@@ -116,7 +116,6 @@ class StartRun:
         port = read_data("file_server", "port")
         call_url = "http://{}:{}/user_report/{}/{}".format(host, port, self.user, runner.filename)
         send_test_report(self.user, self.module, all_case, pass_case, fail_case, call_url)
-        pass
 
 
     def make_dir(self):
