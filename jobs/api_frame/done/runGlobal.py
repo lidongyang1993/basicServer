@@ -47,10 +47,10 @@ class RunGlobal:
             RunGlobal.global_value.update(value)
 
         @staticmethod
-        def test_login(user, pwd):
+        def test_login(user, pwd, filed):
             host = HOST.TEST
             cookies = get_login_session(host, user, pwd)
-            RunGlobal.global_value.update({REQUEST.COOKIES: cookies})
+            RunGlobal.global_value.update({filed: cookies})
 
         @staticmethod
         def log_msg_info(msg, underline=False, enter=False, semicolon=True):
@@ -204,9 +204,10 @@ class RunGlobal:
         def login(self, params):
             user = params.get(LOGIN.USER_NAME)
             pwd = params.get(LOGIN.PASS_WORD)
+            cookies_field = params.get(LOGIN.COOKIES_FIELD)
             user = self.data_replace(user, RunGlobal.global_value)
             pwd = self.data_replace(pwd, RunGlobal.global_value)
-            self.plugIn.test_login(user, pwd)
+            self.plugIn.test_login(user, pwd, cookies_field)
 
 
         def handlers_run(self):
@@ -337,6 +338,7 @@ class RunGlobal:
                 return
             try:
                 if self.params.get(EXTRACT.TYPE) == REQUEST.HTML:
+                    self.condition = EXTRACT.VALUE
                     self.result = {self.field: lxml_html(self.path, self.response, self.condition)}
 
                 if self.params.get(EXTRACT.TYPE) == REQUEST.JSON:

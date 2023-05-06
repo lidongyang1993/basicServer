@@ -101,7 +101,8 @@ class Check:
     def check_login(self, data):
         keys = [
             {KEY.NAME: f.LOGIN.USER_NAME, KEY.MUST: True, KEY.TYPE: str},
-            {KEY.NAME: f.LOGIN.PASS_WORD, KEY.MUST: True, KEY.TYPE: str}
+            {KEY.NAME: f.LOGIN.PASS_WORD, KEY.MUST: True, KEY.TYPE: str},
+            {KEY.NAME: f.LOGIN.COOKIES_FIELD, KEY.MUST: True, KEY.TYPE: str},
 
         ]
         check = self.public_check(data, keys)

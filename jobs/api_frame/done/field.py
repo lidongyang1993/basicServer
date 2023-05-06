@@ -73,6 +73,7 @@ class PLUGIN:
 class LOGIN:
     USER_NAME = "user_name"
     PASS_WORD = "pass_word"
+    COOKIES_FIELD = "cookies_field"
 
 
 class EXTRACT:
@@ -80,6 +81,7 @@ class EXTRACT:
     PATH = "path"
     CONDITION = "condition"
     TYPE = "type"
+    VALUE = "value"
 
 class HOST:
     TEST = "https://d-k8s-sso-fp.bigfintax.com"
