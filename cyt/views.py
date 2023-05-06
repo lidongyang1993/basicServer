@@ -150,6 +150,26 @@ def run_case_by_module(request: WSGIRequest):
 
 @csrf_exempt
 @require_POST
+def get_case_by_module_plan_name(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.MODULE, KEY.MUST: True, KEY.TYPE: str},
+        {KEY.NAME: FILED.NAME, KEY.MUST: True, KEY.TYPE: str}
+    ]
+
+    def run_func(data):
+        plan_name = data.get(FILED.NAME, None)
+        test_module = data.get(FILED.MODULE, None)
+        data_list = read_plan(test_module)
+        for _ in data_list:
+            if _["name"] == plan_name:
+                return _
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+@csrf_exempt
+@require_POST
 def run_case_by_module_test(request: WSGIRequest):
     keys = [
         {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
