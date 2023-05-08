@@ -5,10 +5,14 @@ from cyt import views
 class ForTest:
     urlpatterns = [
         path('callBackFile', views.call_back_file),
-        path('case/run', views.run_case_by_module),
-        path('case/add', views.add_case_by_module),
-        path('case/get', views.get_case_by_module_plan_name),
-        path('case/update', views.update_case_by_module),
-        path('case/check', views.check_case),
-        path('case/debug', views.run_case_by_module_test),
+    ]
+
+class CaseEdit:
+    urlpatterns = [
+        path('run', views.run_case_by_module),
+        path('add', views.add_case_by_module),
+        path('get', views.get_case_by_module_plan_name),
+        path('update', views.update_case_by_module),
+        path('check', views.check_case),
+        path('debug', views.run_case_by_module_test),
     ]

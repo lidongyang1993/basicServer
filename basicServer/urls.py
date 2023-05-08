@@ -21,5 +21,6 @@ import cyt
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('cyt/', include(cyt.ForTest)),
+    path('cyt/test/', include(cyt.ForTest)),
+    path('cyt/case/', include(cyt.CaseEdit)),
 ]
