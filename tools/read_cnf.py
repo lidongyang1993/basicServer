@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 def read_data(option, key):
     # read(filename) 读取文件
     cf = configparser.ConfigParser()  # 实例化
-    cf.read(BASE_DIR / "config/config.cnf", encoding='utf-8')
+    cf.read(BASE_DIR / "config/my.cnf", encoding='utf-8')
     res = cf.get(option, key)
     return res
 
