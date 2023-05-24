@@ -16,8 +16,9 @@ PATH_LOGIN = "/cas/login"
 SESSION_PATH = "/cas/captcha"
 FILE_NAME = "验证码.png"
 FILE_PATH = BASE_DIR / "done/file/"
-# LOGIN_HEADERS = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.124 Safari/537.36 Edg/102.0.1245.44"
 
+
+# LOGIN_HEADERS = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.124 Safari/537.36 Edg/102.0.1245.44"
 
 
 # 登录获取cookies中的access_token
@@ -28,10 +29,11 @@ def file_download(filename, data):
     f.close()
 
 
-def get_login_session(host, account, password):
-
+def get_login_session(host=None, account=None, password=None):
+    if host is None:
+        host = "https://d-k8s-sso-fp.bigfintax.com"
     login_data = {
-        "backUrl": "https://test-gateway.bigfintax.com",
+        "backUrl": "https://d-k8s-sso-fp.bigfintax.com",
         "account": "wangyu.yang",
         "password": "c4ca4238a0b923820dcc509a6f75849b",
         "captcha": '',
@@ -48,7 +50,9 @@ def get_login_session(host, account, password):
     res = session.get(url=host + SESSION_PATH)
     file_download(FILE_NAME, res.content)
     res_session = read_session(res.content)
-    headers = None
+    headers = {"Content-Type": "application/x-www-form-urlencoded",
+               "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.36"}
+
     login_data.update(dict(captcha=res_session))
     response = session.post(host + PATH_LOGIN, data=login_data, headers=headers, allow_redirects=False, verify=False)
     return response.cookies.get("test_cas_access_token", None)
@@ -61,4 +65,6 @@ def read_session(img_bytes):
 
 
 if __name__ == '__main__':
-    r = get_login_session("https://d-k8s-sso-fp.bigfintax.com", "wangyu.yang", password="c4ca4238a0b923820dcc509a6f75849b")
+    r = get_login_session("https://d-k8s-sso-fp.bigfintax.com", "wangyu.yang",
+                          password="c4ca4238a0b923820dcc509a6f75849b")
+    print(r)

@@ -41,6 +41,7 @@ class FILED:
     DATA = "data"
     MODULE = "module"
     USER = "user"
+    PASSWORD = "password"
     REPORT_NAME = "report_name"
     REPORT_DESC = "report_desc"
 

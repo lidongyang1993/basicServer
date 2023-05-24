@@ -192,3 +192,24 @@ def run_case_by_module_test(request: WSGIRequest):
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
+
+
+@csrf_exempt
+@require_POST
+def login_res(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str},
+        {KEY.NAME: FILED.PASSWORD, KEY.MUST: True, KEY.TYPE: str}
+    ]
+
+    def run_func(data):
+        password = data.get(FILED.PASSWORD, None)
+        user = data.get(FILED.USER, None)
+        from jobs.api_frame.tools.login import get_login_session
+
+        return {"test_cas_access_token":  get_login_session(None, user, password)}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)

@@ -47,8 +47,9 @@ class RunGlobal:
             RunGlobal.global_value.update(value)
 
         @staticmethod
-        def test_login(user, pwd, filed):
-            host = HOST.TEST
+        def test_login(user, pwd, filed, host=None):
+            if not host:
+                host = HOST.TEST
             cookies = get_login_session(host, user, pwd)
             RunGlobal.global_value.update({filed: cookies})
 
@@ -207,7 +208,7 @@ class RunGlobal:
             cookies_field = params.get(LOGIN.COOKIES_FIELD)
             user = self.data_replace(user, RunGlobal.global_value)
             pwd = self.data_replace(pwd, RunGlobal.global_value)
-            self.plugIn.test_login(user, pwd, cookies_field)
+            self.plugIn.test_login(user, pwd, cookies_field, )
 
 
         def handlers_run(self):

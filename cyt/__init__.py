@@ -5,6 +5,7 @@ from cyt import views
 class ForTest:
     urlpatterns = [
         path('callBackFile', views.call_back_file),
+        path('loginCookies', views.login_res),
     ]
 
 class CaseEdit:
