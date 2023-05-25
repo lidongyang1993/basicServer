@@ -34,7 +34,6 @@ class RunGlobal:
             return
         RunGlobal.Logger = init_log(self.file_name, path)
 
-
     class PublicPlugIn:
         @staticmethod
         def data_replace(params, variable):
@@ -88,21 +87,16 @@ class RunGlobal:
             self.result = None
             self.isPass = True
 
-
             self.plugIn = RunGlobal.PublicPlugIn
             self.logger = self.plugIn.log_msg_info
             self.data_replace = self.plugIn.data_replace
             self.update_global = self.plugIn.update_global
 
         def init_msg(self):
-            self.logger(MSG.START.format(self.RUN_TYPE))
-            if self.name:
-                self.logger(MSG.NAME.format(self.name))
-            if self.desc:
-                self.logger(MSG.DECS.format(str(self.desc)))
+            pass
 
         def end(self):
-            self.logger(MSG.END.format(self.RUN_TYPE))
+            pass
 
         def before(self):
             self.result = None
@@ -115,7 +109,6 @@ class RunGlobal:
 
         def func(self):
             pass
-
 
         def quote(self):
             pass
@@ -146,6 +139,12 @@ class RunGlobal:
                 case.main()
                 self.case_list.append(case)
 
+        def init_msg(self):
+            self.logger(MSG.PLAN_CUT_OFF.format(self.RUN_TYPE, self.name))
+
+        def end(self):
+            self.logger(MSG.PLAN_CUT_OFF.format(self.RUN_TYPE, self.name))
+
     class RunCase(RunBasics):
         RUN_TYPE = OTHER.CE_SI_YONG_LI
 
@@ -173,13 +172,10 @@ class RunGlobal:
                 step.main()
                 self.step_list.append(step)
 
-
         def init_msg(self):
             self.logger(MSG.CASE_CUT_OFF.format(self.RUN_TYPE, self.name))
-            super().init_msg()
 
         def end(self):
-            super().end()
             self.logger(MSG.CASE_CUT_OFF.format(self.RUN_TYPE, self.name))
 
     class RunStep(RunBasics):
@@ -198,14 +194,11 @@ class RunGlobal:
             self.request_run = None
             self.handlers_list = []
 
-
         def init_msg(self):
             self.logger(MSG.STEP_CUT_OFF.format(self.RUN_TYPE, self.name))
-            super().init_msg()
             self.logger(MSG.PARAMS.format(str(self.params)))
 
         def end(self):
-            super().end()
             self.logger(MSG.STEP_CUT_OFF.format(self.RUN_TYPE, self.name))
 
         def func(self):
@@ -226,7 +219,6 @@ class RunGlobal:
             user = self.data_replace(user, RunGlobal.global_value)
             pwd = self.data_replace(pwd, RunGlobal.global_value)
             self.plugIn.test_login(user, pwd, cookies_field, )
-
 
         def handlers_run(self):
             if not self.handlers:
@@ -280,7 +272,7 @@ class RunGlobal:
     class RunRequest(RunBasics):
         RUN_TYPE = OTHER.JIE_KOU_QING_QIU
 
-        def __init__(self,  params):
+        def __init__(self, params):
             super().__init__(params)
             self.url = self.params.get(REQUEST.HOST) + self.params.get(REQUEST.PATH)
             self.headers = self.params.get(REQUEST.HEADERS)
@@ -323,6 +315,13 @@ class RunGlobal:
                 self.result = str(e)
                 self.isPass = False
 
+        def init_msg(self):
+            self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
+            self.logger(MSG.PARAMS.format(str(self.params)))
+
+        def end(self):
+            self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
+
     class RunCalculate(RunBasics):
         RUN_TYPE = OTHER.JI_SUN_QI
 
@@ -338,10 +337,14 @@ class RunGlobal:
             self.response = response
             self.code = None
 
+
+
         def init_msg(self):
-            super().init_msg()
+            self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.field))
             self.logger(MSG.PARAMS.format(str(self.params)))
 
+        def end(self):
+            self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.field))
 
         def quote(self):
             self.path = self.data_replace(self.path, RunGlobal.global_value)
@@ -377,7 +380,6 @@ class RunGlobal:
     class RunAsserts(RunBasics):
         RUN_TYPE = OTHER.YANG_ZHENG_QI
 
-
         def __init__(self, params):
             super().__init__(params)
             self.left = self.params[ASSERTS.VALUE_LEFT]
@@ -386,9 +388,11 @@ class RunGlobal:
             self.code = None
 
         def init_msg(self):
-            super().init_msg()
+            self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE, self.left))
             self.logger(MSG.PARAMS.format(str(self.params)))
 
+        def end(self):
+            self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE, self.left))
 
         def quote(self):
             self.left = data_replace(self.left, RunGlobal.global_value)

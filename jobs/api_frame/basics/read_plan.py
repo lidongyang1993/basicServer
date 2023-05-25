@@ -15,7 +15,7 @@ from jobs.api_frame.tools.timeFile import time_strf_time_for_file_name
 
 BASE_DIR = Path(__file__).resolve().parent.parent / "case/data"
 
-module_list = ["module_001", "module_002", "module_003", "module_004", "module_005", "风险模块-一键扫描"]
+module_list = ["module_001", "module_002", "module_003", "module_004", "module_005", "风险模块-扫描"]
 
 def read_plan(name):
     try:
