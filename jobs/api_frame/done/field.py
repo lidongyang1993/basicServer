@@ -49,9 +49,9 @@ class MSG:
     STOP_RUN = "========>出现异常，停止运行：【{}, {}】"
     END = "执行结束-{}"
 
-    HANDLERS_CUT_OFF = "="*10 + "{}-{}" + "="*10
-    REQUEST_CUT_OFF = "="*10 + "{}-{}" + "="*10
-    ASSERT_CUT_OFF = "="*10 + "{}-{}" + "="*10
+    HANDLERS_CUT_OFF = "="*5 + "{}-{}" + "="*5
+    REQUEST_CUT_OFF = "="*5 + "{}-{}" + "="*5
+    ASSERT_CUT_OFF = "="*5 + "{}-{}" + "="*5
     EXTRACT_CUT_OFF = "="*10 + "{}-{}" + "="*10
     STEP_CUT_OFF = "="*15 + "{}-{}" + "="*15
     CASE_CUT_OFF = "="*20 + "{}-{}" + "="*20

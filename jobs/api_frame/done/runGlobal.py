@@ -388,11 +388,11 @@ class RunGlobal:
             self.code = None
 
         def init_msg(self):
-            self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE, self.left))
+            self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE))
             self.logger(MSG.PARAMS.format(str(self.params)))
 
         def end(self):
-            self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE, self.left))
+            self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE))
 
         def quote(self):
             self.left = data_replace(self.left, RunGlobal.global_value)
