@@ -72,7 +72,7 @@ class RunGlobal:
                 res += SYMBOL.SEMICOLON
             if enter:
                 res += SYMBOL.ENTER
-            print(res)
+            # print(res)
             RunGlobal.msg_list.append(res)
 
     class RunBasics:
