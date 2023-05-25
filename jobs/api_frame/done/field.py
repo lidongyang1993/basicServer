@@ -35,7 +35,7 @@ class Error:
     DoneError = "DoneError"
 
 class MSG:
-    START = "开始执行：{}-{}"
+    START = "开始执行-{}"
     NAME = "==>名称:{}"
     DECS = "==>描述:{}"
     PARAMS = "==>当前参数:【{}】"
@@ -47,7 +47,7 @@ class MSG:
     QUOTE = "===>从全局变量中，引用参数:【{}】"
     ASSERT_CODE = "'{}'{}'{}'"
     STOP_RUN = "========>出现异常，停止运行：【{}, {}】"
-    END = "执行结束：{}-{}"
+    END = "执行结束-{}"
 
     CASE_CUT_OFF = "================================{}-{}================================"
     STEP_CUT_OFF = "======================{}-{}======================"
@@ -121,7 +121,7 @@ class OTHER:
     JI_SUN_QI = "计算器"
     CE_SI_JI_HUA = "测试计划"
     CE_SI_YONG_LI = "测试用例"
-    YONG_LI_BU_ZHOU = "用例步骤"
+    YONG_LI_BU_ZHOU = "步骤"
     JIE_KOU_QING_QIU = "接口请求"
     JIE_GUO_BAO_GAO = "结果报告"
 

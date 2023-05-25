@@ -95,14 +95,14 @@ class RunGlobal:
             self.update_global = self.plugIn.update_global
 
         def init_msg(self):
-            self.logger(MSG.START.format(self.RUN_TYPE, self.name))
+            self.logger(MSG.START.format(self.RUN_TYPE))
             if self.name:
                 self.logger(MSG.NAME.format(self.name))
             if self.desc:
                 self.logger(MSG.DECS.format(str(self.desc)))
 
         def end(self):
-            self.logger(MSG.END.format(self.RUN_TYPE, self.name))
+            self.logger(MSG.END.format(self.RUN_TYPE))
 
         def before(self):
             self.result = None
