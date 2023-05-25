@@ -175,7 +175,7 @@ class RunGlobal:
 
 
         def init_msg(self):
-            self.logger(MSG.STEP_CUT_OFF.format(str(self.RUN_TYPE, self.name)))
+            self.logger(MSG.CASE_CUT_OFF.format(str(self.RUN_TYPE, self.name)))
             super().init_msg()
 
         def end(self):
