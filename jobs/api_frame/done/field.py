@@ -36,17 +36,17 @@ class Error:
 
 class MSG:
     START = "开始执行-{}"
-    NAME = "==>名称:{}"
-    DECS = "==>描述:{}"
-    PARAMS = "==>当前参数:【{}】"
-    GLOBAL_VALUE = "==>当前全局变量：【{}】"
-    RESULT_ASSERTS = "===>验证结果:【{}, {}】"
-    RESULT_REQUEST = "===>请求结果:【{}】"
-    REQUEST_DATA = "===>请求数据:【{}, {}, {}】"
-    RESULT_EXTRACT = "===>提取结果:【{}】"
-    QUOTE = "===>从全局变量中，引用参数:【{}】"
+    NAME = "名称:{}"
+    DECS = "描述:{}"
+    PARAMS = "当前参数:【{}】"
+    GLOBAL_VALUE = "当前全局变量：【{}】"
+    RESULT_ASSERTS = "验证结果:【{}, {}】"
+    RESULT_REQUEST = "请求结果:【{}】"
+    REQUEST_DATA = "请求数据:【{}, {}, {}】"
+    RESULT_EXTRACT = "提取结果:【{}】"
+    QUOTE = "从全局变量中，引用参数:【{}】"
     ASSERT_CODE = "'{}'{}'{}'"
-    STOP_RUN = "========>出现异常，停止运行：【{}, {}】"
+    STOP_RUN = "="*50 + ">出现异常，停止运行：【{}, {}】<" + "="*50
     END = "执行结束-{}"
 
     HANDLERS_CUT_OFF = "="*2 + "{}-{}" + "="*2
