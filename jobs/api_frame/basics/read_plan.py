@@ -12,10 +12,11 @@ from json import JSONDecodeError
 from pathlib import Path
 from jobs.api_frame.tools.timeFile import time_strf_time_for_file_name
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent / "case/data"
 
-module_list = ["module_001", "module_002", "module_003", "module_004", "module_005", "风险模块-扫描"]
+module_list = ["module_001", "module_002", "module_003", "module_004", "module_005",
+               "风险模块_扫描", "风险模块_看板", "风险模块_个性化", "风险模块_应对"]
+
 
 def read_plan(name):
     try:

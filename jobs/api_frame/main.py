@@ -91,8 +91,23 @@ class TestPublic(unittest.TestCase):
         self.public(data)
 
     @list_data(get_case_from_plan_list(module_006))
-    def test_module_006(self, data):
+    def test_风险模块_扫描(self, data):
         self.public(data)
+
+    @list_data(get_case_from_plan_list(module_007))
+    def test_风险模块_看板(self, data):
+        self.public(data)
+
+
+    @list_data(get_case_from_plan_list(module_008))
+    def test_风险模块_应对(self, data):
+        self.public(data)
+
+
+    @list_data(get_case_from_plan_list(module_009))
+    def test_风险模块_个性化(self, data):
+        self.public(data)
+
 
 
 class StartRun:
