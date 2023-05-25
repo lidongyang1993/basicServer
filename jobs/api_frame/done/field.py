@@ -46,6 +46,7 @@ class MSG:
     RESULT_EXTRACT = "提取结果:【{}】"
     QUOTE = "从全局变量中，引用参数:【{}】"
     ASSERT_CODE = "'{}'{}'{}'"
+    CALC_CODE = "{}{}{}"
     STOP_RUN = "="*50 + ">出现异常，停止运行：【{}, {}】<" + "="*50
     END = "执行结束-{}"
 
