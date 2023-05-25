@@ -90,6 +90,10 @@ class TestPublic(unittest.TestCase):
     def test_module_005(self, data):
         self.public(data)
 
+    @list_data(get_case_from_plan_list(module_006))
+    def test_module_006(self, data):
+        self.public(data)
+
 
 class StartRun:
 

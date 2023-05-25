@@ -15,6 +15,7 @@ module_002 = read_plan("module_002")
 module_003 = read_plan("module_003")
 module_004 = read_plan("module_004")
 module_005 = read_plan("module_005")
+module_006 = read_plan("风险模块-一键扫描")
 
 
 
