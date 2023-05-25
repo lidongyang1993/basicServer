@@ -87,7 +87,7 @@ class LOGIN:
     PASS_WORD = "pass_word"
     COOKIES_FIELD = "cookies_field"
 
-class CUL:
+class CALC:
     FIELD = "field"
     VALUE_LEFT = "value_left"
     VALUE_RIGHT = "value_right"

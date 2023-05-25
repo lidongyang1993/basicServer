@@ -330,10 +330,10 @@ class RunGlobal:
 
         def __init__(self, params):
             super().__init__(params)
-            self.field = self.params.get(CUL.FIELD)
-            self.left = self.params[CUL.VALUE_LEFT]
-            self.func_assert = self.params[CUL.FUNC]
-            self.right = self.params[CUL.VALUE_RIGHT]
+            self.field = self.params.get(CALC.FIELD)
+            self.left = self.params[CALC.VALUE_LEFT]
+            self.func_assert = self.params[CALC.FUNC]
+            self.right = self.params[CALC.VALUE_RIGHT]
             self.code = None
 
         def init_msg(self):

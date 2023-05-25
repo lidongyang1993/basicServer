@@ -127,7 +127,9 @@ class Check:
             if not (extract_check.get(RESULT.CODE) == 0):
                 return extract_check
         if data.get(f.HANDLERS.TYPE) == f.HANDLERS.CALC:
-            pass
+            calc_check = self.check_calc(data.get(f.HANDLERS.PARAMS))
+            if not (calc_check.get(RESULT.CODE) == 0):
+                return calc_check
         return check
 
     def check_extract(self, data):
@@ -141,12 +143,12 @@ class Check:
         check = self.public_check(data, keys)
         return check
 
-    def check_cul(self, data):
+    def check_calc(self, data):
         keys = [
-            {KEY.NAME: f.CUL.FIELD, KEY.MUST: True, KEY.TYPE: str},
-            {KEY.NAME: f.CUL.FUNC, KEY.MUST: True, KEY.TYPE: str},
-            {KEY.NAME: f.CUL.VALUE_LEFT, KEY.MUST: True, KEY.TYPE: [int, str]},
-            {KEY.NAME: f.CUL.VALUE_RIGHT, KEY.MUST: True, KEY.TYPE: [int, str]}
+            {KEY.NAME: f.CALC.FIELD, KEY.MUST: True, KEY.TYPE: str},
+            {KEY.NAME: f.CALC.FUNC, KEY.MUST: True, KEY.TYPE: str},
+            {KEY.NAME: f.CALC.VALUE_LEFT, KEY.MUST: True, KEY.TYPE: [int, str]},
+            {KEY.NAME: f.CALC.VALUE_RIGHT, KEY.MUST: True, KEY.TYPE: [int, str]}
 
         ]
         check = self.public_check(data, keys)
