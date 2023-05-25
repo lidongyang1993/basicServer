@@ -49,13 +49,13 @@ class MSG:
     STOP_RUN = "========>出现异常，停止运行：【{}, {}】"
     END = "执行结束-{}"
 
-    HANDLERS_CUT_OFF = "="*5 + "{}-{}" + "="*5
-    REQUEST_CUT_OFF = "="*10 + "{}-{}" + "="*10
-    ASSERT_CUT_OFF = "="*5 + "{}" + "="*5
-    EXTRACT_CUT_OFF = "="*5 + "{}-{}" + "="*5
-    STEP_CUT_OFF = "="*15 + "{}-{}" + "="*15
-    CASE_CUT_OFF = "="*20 + "{}-{}" + "="*20
-    PLAN_CUT_OFF = "="*25 + "{}-{}" + "="*25
+    HANDLERS_CUT_OFF = "="*2 + "{}-{}" + "="*2
+    REQUEST_CUT_OFF = "="*5 + "{}-{}" + "="*5
+    ASSERT_CUT_OFF = "="*2 + "{}" + "="*2
+    EXTRACT_CUT_OFF = "="*2 + "{}-{}" + "="*2
+    STEP_CUT_OFF = "="*10 + "{}-{}" + "="*10
+    CASE_CUT_OFF = "="*25 + "{}-{}" + "="*25
+    PLAN_CUT_OFF = "="*50 + "{}-{}" + "="*50
 
     SLEEP = "================【等待{}秒】================"
 
