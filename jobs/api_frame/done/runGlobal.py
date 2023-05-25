@@ -261,7 +261,9 @@ class RunGlobal:
             self.handlers_list.append(extract)
 
         def calculate(self, params):
-            self.handlers_list = RunGlobal.RunCalculate(params)
+            cal = RunGlobal.RunCalculate(params.get(HANDLERS.EXTRACT))
+            cal.main()
+            self.handlers_list.append(cal)
 
         def requests(self, params):
             self.request_run = RunGlobal.RunRequest(params)
