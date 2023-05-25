@@ -53,6 +53,7 @@ class MSG:
     REQUEST_CUT_OFF = "="*5 + "{}-{}" + "="*5
     ASSERT_CUT_OFF = "="*2 + "{}" + "="*2
     EXTRACT_CUT_OFF = "="*2 + "{}-{}" + "="*2
+    CAL_CUT_OF = "="*2 + "{}-{}" + "="*2
     STEP_CUT_OFF = "="*10 + "{}-{}" + "="*10
     CASE_CUT_OFF = "="*25 + "{}-{}" + "="*25
     PLAN_CUT_OFF = "="*50 + "{}-{}" + "="*50
@@ -85,6 +86,12 @@ class LOGIN:
     USER_NAME = "user_name"
     PASS_WORD = "pass_word"
     COOKIES_FIELD = "cookies_field"
+
+class CUL:
+    FIELD = "field"
+    VALUE_LEFT = "value_left"
+    VALUE_RIGHT = "value_right"
+    FUNC = "func"
 
 
 class EXTRACT:

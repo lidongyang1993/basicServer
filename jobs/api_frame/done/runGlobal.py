@@ -325,6 +325,44 @@ class RunGlobal:
     class RunCalculate(RunBasics):
         RUN_TYPE = OTHER.JI_SUN_QI
 
+
+        def __init__(self, params):
+            super().__init__(params)
+            self.field = self.params.get(CUL.FIELD)
+            self.left = self.params[CUL.VALUE_LEFT]
+            self.func_assert = self.params[CUL.FUNC]
+            self.right = self.params[CUL.VALUE_RIGHT]
+            self.code = None
+
+        def init_msg(self):
+            self.logger(MSG.CAL_CUT_OF.format(self.RUN_TYPE, self.field))
+            self.logger(MSG.PARAMS.format(str(self.params)))
+
+        def end(self):
+            self.logger(MSG.CAL_CUT_OF.format(self.RUN_TYPE, self.field))
+
+        def quote(self):
+            self.left = data_replace(self.left, RunGlobal.global_value)
+            self.right = data_replace(self.right, RunGlobal.global_value)
+
+        def after(self):
+            self.logger(MSG.RESULT_ASSERTS.format(self.code, str(self.result)))
+            super().after()
+
+        def before(self):
+            super().before()
+            self.left = self.data_replace(self.left, RunGlobal.global_value)
+            self.right = self.data_replace(self.right, RunGlobal.global_value)
+            self.code = MSG.ASSERT_CODE.format(str(self.left), self.func_assert, str(self.right))
+
+        def func(self):
+            self.result = eval(self.code)
+            self.update_global(
+                {
+                    self.field: self.result
+                }
+            )
+
     class RunExtract(RunBasics):
         RUN_TYPE = OTHER.TI_QU_QI
 

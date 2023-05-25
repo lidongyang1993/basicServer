@@ -141,6 +141,18 @@ class Check:
         check = self.public_check(data, keys)
         return check
 
+    def check_cul(self, data):
+        keys = [
+            {KEY.NAME: f.CUL.FIELD, KEY.MUST: True, KEY.TYPE: str},
+            {KEY.NAME: f.CUL.FUNC, KEY.MUST: True, KEY.TYPE: str},
+            {KEY.NAME: f.CUL.VALUE_LEFT, KEY.MUST: True, KEY.TYPE: [int, str]},
+            {KEY.NAME: f.CUL.VALUE_RIGHT, KEY.MUST: True, KEY.TYPE: [int, str]}
+
+        ]
+        check = self.public_check(data, keys)
+        return check
+
+
     def check_request(self, data):
         keys = [
             {KEY.NAME: f.REQUEST.HOST, KEY.MUST: True, KEY.TYPE: str},
