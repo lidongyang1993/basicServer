@@ -175,12 +175,12 @@ class RunGlobal:
 
 
         def init_msg(self):
-            self.logger(MSG.CASE_CUT_OFF.format(str(self.RUN_TYPE, self.name)))
+            self.logger(MSG.CASE_CUT_OFF.format(self.RUN_TYPE, self.name))
             super().init_msg()
 
         def end(self):
             super().end()
-            self.logger(MSG.CASE_CUT_OFF.format(str(self.RUN_TYPE, self.name)))
+            self.logger(MSG.CASE_CUT_OFF.format(self.RUN_TYPE, self.name))
 
     class RunStep(RunBasics):
         RUN_TYPE = OTHER.YONG_LI_BU_ZHOU
@@ -200,13 +200,13 @@ class RunGlobal:
 
 
         def init_msg(self):
-            self.logger(MSG.STEP_CUT_OFF.format(str(self.RUN_TYPE, self.name)))
+            self.logger(MSG.STEP_CUT_OFF.format(self.RUN_TYPE, self.name))
             super().init_msg()
             self.logger(MSG.PARAMS.format(str(self.params)))
 
         def end(self):
             super().end()
-            self.logger(MSG.STEP_CUT_OFF.format(str(self.RUN_TYPE, self.name)))
+            self.logger(MSG.STEP_CUT_OFF.format(self.RUN_TYPE, self.name))
 
         def func(self):
             if self.type != STEP.REQUEST:
