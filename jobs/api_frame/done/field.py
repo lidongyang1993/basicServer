@@ -51,7 +51,7 @@ class MSG:
 
     HANDLERS_CUT_OFF = "="*5 + "{}-{}" + "="*5
     REQUEST_CUT_OFF = "="*5 + "{}-{}" + "="*5
-    ASSERT_CUT_OFF = "="*5 + "{}-{}" + "="*5
+    ASSERT_CUT_OFF = "="*5 + "{}" + "="*5
     EXTRACT_CUT_OFF = "="*10 + "{}-{}" + "="*10
     STEP_CUT_OFF = "="*15 + "{}-{}" + "="*15
     CASE_CUT_OFF = "="*20 + "{}-{}" + "="*20
