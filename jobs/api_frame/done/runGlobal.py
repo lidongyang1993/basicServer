@@ -196,7 +196,6 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.STEP_CUT_OFF.format(self.RUN_TYPE, self.name))
-            self.logger(MSG.PARAMS.format(str(self.params)))
 
         def end(self):
             self.logger(MSG.STEP_CUT_OFF.format(self.RUN_TYPE, self.name))
@@ -297,7 +296,7 @@ class RunGlobal:
             self.quote()
 
         def func(self):
-            self.logger(MSG.REQUEST_DATA.format(self.name, self.url, json.dumps(self.data)))
+            # self.logger(MSG.REQUEST_DATA.format(self.name, self.url, json.dumps(self.data)))
             try:
                 self.response = http_client_util(self.url, self.method,
                                                  self.post_type, self.data,
@@ -319,7 +318,7 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
-            self.logger(MSG.PARAMS.format(str(self.params)))
+            self.logger(MSG.PARAMS.format(json.dumps(self.params)))
 
         def end(self):
             self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
@@ -338,7 +337,7 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.CAL_CUT_OF.format(self.RUN_TYPE, self.field))
-            self.logger(MSG.PARAMS.format(str(self.params)))
+            self.logger(MSG.PARAMS.format(json.dumps(self.params)))
 
         def end(self):
             self.logger(MSG.CAL_CUT_OF.format(self.RUN_TYPE, self.field))
@@ -381,7 +380,7 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.field))
-            self.logger(MSG.PARAMS.format(str(self.params)))
+            self.logger(MSG.PARAMS.format(json.dumps(self.params)))
 
         def end(self):
             self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.field))
@@ -429,7 +428,7 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE))
-            self.logger(MSG.PARAMS.format(str(self.params)))
+            self.logger(MSG.PARAMS.format(json.dumps(self.params)))
 
         def end(self):
             self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE))
