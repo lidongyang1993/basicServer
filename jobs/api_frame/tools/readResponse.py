@@ -5,6 +5,7 @@
 # @Site    : 
 # @File    : readResponse.py
 # @Software: PyCharm
+import json
 
 from lxml import html
 
@@ -49,6 +50,8 @@ def get_path_dict_condition(_str: str, _dict: dict, condition: [dict] = None):
     str_list = _str.split('.', 1)
     for rel in str_list:
         if rel == str_list[-1]:
+            if isinstance(_dict[rel], dict) or isinstance(_dict[rel], list):
+                return json.dumps(_dict[rel], ensure_ascii=False, separators=(',', ':'))
             return _dict[rel]
         if rel.isdigit():
             if not condition:
