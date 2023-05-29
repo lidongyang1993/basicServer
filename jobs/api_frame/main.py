@@ -112,13 +112,14 @@ class TestPublic(unittest.TestCase):
 
 class StartRun:
 
-    def __init__(self, title, desc, user_number, module, path="reports/user_report/{}"):
+    def __init__(self, title, desc, user_number, module, w_chat_url, path="reports/user_report/{}"):
         self.file_name = "{}--<%Y-%m-%d><%H_%M_%S>".format(module)
         self.desc = desc
         self.title = title
         self.dir = path.format(user_number)
         self.user = user_number
         self.module = module
+        self.w_chat_url = w_chat_url
 
     def make_run(self):
         suite = unittest.makeSuite(TestPublic, self.module)
@@ -134,7 +135,7 @@ class StartRun:
         host = read_data("file_server", "host")
         port = read_data("file_server", "port")
         call_url = "http://{}:{}/user_report/{}/{}".format(host, port, self.user, runner.filename)
-        send_test_report(self.user, self.module, all_case, pass_case, fail_case, call_url)
+        send_test_report(self.user, self.module, all_case, pass_case, fail_case, call_url, self.w_chat_url)
 
 
     def make_dir(self):

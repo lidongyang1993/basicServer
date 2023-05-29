@@ -3,7 +3,7 @@ import os
 import shutil
 import time
 # Create your views here.
-
+from django.db import models
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from jobs.api_frame.done.runGlobal import *
@@ -14,6 +14,8 @@ from django.views.decorators.http import require_POST
 from jobs.api_frame.case.read_and_add import *
 from jobs.api_frame.case.check_plan import Check
 from tools.read_cnf import read_data
+from cyt.core import wChat
+
 
 SERVER_HOST = read_data("file_server", "host")
 
@@ -131,7 +133,8 @@ def run_case_by_module(request: WSGIRequest):
         {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str},
         {KEY.NAME: FILED.MODULE, KEY.MUST: True, KEY.TYPE: str},
         {KEY.NAME: FILED.REPORT_NAME, KEY.MUST: True, KEY.TYPE: str},
-        {KEY.NAME: FILED.REPORT_DESC, KEY.MUST: True, KEY.TYPE: str}
+        {KEY.NAME: FILED.REPORT_DESC, KEY.MUST: True, KEY.TYPE: str},
+        {KEY.NAME: FILED.W_BOT_ID, KEY.MUST: True, KEY.TYPE: str}
     ]
 
     def run_func(data):
@@ -139,7 +142,15 @@ def run_case_by_module(request: WSGIRequest):
         test_module = data.get(FILED.MODULE, None)
         report_name = data.get(FILED.REPORT_NAME, None)
         report_desc = data.get(FILED.REPORT_DESC, None)
-        command = "/bin/sh start_run.sh {} {} {} {}".format(user, test_module, report_name, report_desc)
+        w_bot_id = data.get(FILED.W_BOT_ID, None)
+        try:
+            w_bot_url = wChat().get_url_by_id(pk=w_bot_id)
+        except models.ObjectDoesNotExist:
+            w_bot_url = None
+
+        if not w_bot_url:
+            return {"report_url": None, "msg": "找不到机器人"}
+        command = "/bin/sh start_run.sh {} {} {} {} {}".format(user, test_module, report_name, report_desc, w_bot_url)
         os.system(command)
         return {"report_url": "http://" + SERVER_HOST + ":9000/user_report"}
 

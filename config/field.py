@@ -44,6 +44,7 @@ class FILED:
     PASSWORD = "password"
     REPORT_NAME = "report_name"
     REPORT_DESC = "report_desc"
+    W_BOT_ID = "W_BOT_ID"
 
     TYPE = "type"
     NAME = "name"
