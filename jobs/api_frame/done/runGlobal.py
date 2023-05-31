@@ -452,7 +452,7 @@ class RunGlobal:
                 d = difflib.SequenceMatcher(None, self.left, self.right)
                 res = d.get_grouped_opcodes(n=15)
                 for _ in res:
-                    self.logger([self.left[_[0][1]:_[2][-1]], self.right[_[0][1]:_[2][-1]]])
+                    self.logger(str([self.left[_[0][1]:_[2][-1]], self.right[_[0][1]:_[2][-1]]]))
                 self.result = self.isPass = False
             else:
                 self.result = self.isPass = True
