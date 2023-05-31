@@ -5,6 +5,7 @@
 # @Site    : 
 # @File    : timeFile.py
 # @Software: PyCharm
+import difflib
 import json
 import os
 import time
@@ -53,17 +54,17 @@ class RunGlobal:
             RunGlobal.global_value.update({filed: cookies})
 
         @staticmethod
-        def log_msg_info(msg, underline=False, enter=False, semicolon=True):
+        def log_msg_info(msg, underline=False, enter=False, semicolon=False):
             RunGlobal.PublicPlugIn.add_msg_list(msg, underline=underline, enter=enter, semicolon=semicolon)
             RunGlobal.Logger.info(msg)
 
         @staticmethod
-        def log_msg_debug(msg, underline=False, enter=False, semicolon=True):
+        def log_msg_debug(msg, underline=False, enter=False, semicolon=False):
             RunGlobal.PublicPlugIn.add_msg_list(msg, underline=underline, enter=enter, semicolon=semicolon)
             RunGlobal.Logger.debug(msg)
 
         @staticmethod
-        def add_msg_list(msg, underline=False, enter=False, semicolon=True):
+        def add_msg_list(msg, underline=False, enter=False, semicolon=False):
             res = SYMBOL.NONE
             if underline:
                 res += SYMBOL.UNDERLINE
@@ -434,8 +435,8 @@ class RunGlobal:
             self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE))
 
         def quote(self):
-            self.left = data_replace(self.left, RunGlobal.global_value)
-            self.right = data_replace(self.right, RunGlobal.global_value)
+            self.left = str(self.data_replace(self.left, RunGlobal.global_value))
+            self.right = str(self.data_replace(self.right, RunGlobal.global_value))
 
         def after(self):
             self.logger(MSG.RESULT_ASSERTS.format(self.code, str(self.result)))
@@ -443,18 +444,18 @@ class RunGlobal:
 
         def before(self):
             super().before()
-            self.left = self.data_replace(self.left, RunGlobal.global_value)
-            self.right = self.data_replace(self.right, RunGlobal.global_value)
-            print(self.left)
-            print(self.right)
+            self.quote()
             self.code = MSG.ASSERT_CODE.format(self.func_assert)
 
         def func(self):
-            self.result = eval(self.code)
-            if self.result is True:
-                self.isPass = True
+            if not eval(self.code):
+                d = difflib.SequenceMatcher(None, self.left, self.right)
+                res = d.get_grouped_opcodes(n=15)
+                for _ in res:
+                    self.logger([self.left[_[0][1]:_[2][-1]], self.right[_[0][1]:_[2][-1]]])
+                self.result = self.isPass = False
             else:
-                self.isPass = False
+                self.result = self.isPass = True
 
 
 if __name__ == '__main__':

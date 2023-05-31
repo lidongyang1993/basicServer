@@ -45,7 +45,7 @@ class MSG:
     REQUEST_DATA = "请求数据:【{}, {}, {}】"
     RESULT_EXTRACT = "提取结果:【{}】"
     QUOTE = "从全局变量中，引用参数:【{}】"
-    ASSERT_CODE = "str(self.left) {} str(self.right)"
+    ASSERT_CODE = "self.left {} self.right"
     CALC_CODE = "{}{}{}"
     STOP_RUN = "="*50 + ">出现异常，停止运行：【{}, {}】<" + "="*50
     END = "执行结束-{}"
