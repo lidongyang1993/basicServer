@@ -319,7 +319,7 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
-            self.logger(MSG.PARAMS.format(json.dumps(self.params)))
+            self.logger(MSG.PARAMS.format(json.dumps(self.params).encode("utf-8")))
 
         def end(self):
             self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
@@ -452,7 +452,11 @@ class RunGlobal:
                 d = difflib.SequenceMatcher(None, self.left, self.right)
                 res = d.get_grouped_opcodes(n=15)
                 for _ in res:
-                    self.logger(str([self.left[_[0][1]:_[2][-1]], self.right[_[0][1]:_[2][-1]]]))
+                    try:
+                        self.logger(str([self.left[_[0][1]:_[2][-1]], self.right[_[0][1]:_[2][-1]]]))
+                    except IndexError:
+                        self.logger(self.left)
+                        self.logger(self.right)
                 self.result = self.isPass = False
             else:
                 self.result = self.isPass = True
