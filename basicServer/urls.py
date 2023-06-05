@@ -17,10 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-import cyt.urls as cyt
+import app_cyt.urls as cyt
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('cyt/test/', include(cyt.ForTest)),
     path('cyt/case/', include(cyt.CaseEdit)),
+    path('user/', include('app_user.urls')),
 ]

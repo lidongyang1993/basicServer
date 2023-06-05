@@ -6,9 +6,8 @@
 # @File    : check_plan.py
 # @Software: PyCharm
 from jobs.api_frame.done import field as f
-from tools.basics import assertsFiledBasic
-from config.field import *
-
+from jobs.api_frame.basics.basics import assertsFiledBasic
+from config.field.start_field import KEY, RESULT
 
 class Check:
     @staticmethod

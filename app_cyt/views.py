@@ -1,21 +1,18 @@
-import copy
-import os
 import shutil
-import time
 # Create your views here.
 from django.db import models
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from jobs.api_frame.done.runGlobal import *
-from tools.basics import RequestBasics
+from config.basics_request import RequestBasics
 from django.core.handlers.wsgi import WSGIRequest
-from config.field import *
 from django.views.decorators.http import require_POST
 from jobs.api_frame.case.read_and_add import *
 from jobs.api_frame.case.check_plan import Check
 from tools.read_cnf import read_data
-from cyt.core import wChat
-
+from app_cyt.core import wChat
+from config.field.start_field import KEY, RESULT
+from config.field.job_field import FILED
 
 SERVER_HOST = read_data("file_server", "host")
 

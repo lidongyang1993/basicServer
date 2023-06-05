@@ -6,18 +6,15 @@
 # @File    : main.py
 # @Software: PyCharm
 import os.path
-import time
-import urllib3
 import unittest
 import warnings
+
+import urllib3
 from unittestreport import TestRunner, ddt, list_data
 
-
-
-from jobs.api_frame.done.runGlobal import *
 from jobs.api_frame.case import *
+from jobs.api_frame.done.runGlobal import *
 from jobs.api_frame.tools.send_wChat import send_test_report
-
 from tools.read_cnf import read_data
 
 RUNNING = "RUNNING"
@@ -143,6 +140,7 @@ class StartRun:
             os.mkdir(self.dir)
 
 
+
+
 if __name__ == '__main__':
-    StartRun("调试自动化", '调着玩', "wangyu.yang", "test_module_001").make_run()
-    # StartRun("调试自动化", '调着玩', "test_user_005").make_run()
+    pass

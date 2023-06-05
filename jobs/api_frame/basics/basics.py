@@ -7,7 +7,7 @@
 # @Software: PyCharm
 import json
 
-from config.field import METHOD, RESULT, KEY
+from config.field.job_field import METHOD, RESULT, KEY
 
 
 class assertsFiledBasic:

@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cyt.apps.CytConfig'
+    'app_cyt.apps.AppCytConfig',
+    'app_user.apps.AppUserConfig'
 ]
 
 MIDDLEWARE = [

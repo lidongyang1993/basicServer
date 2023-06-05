@@ -6,7 +6,7 @@
 # @File    : urls.py
 # @Software: PyCharm
 from django.urls import path
-from cyt import views
+from app_cyt import views
 
 
 

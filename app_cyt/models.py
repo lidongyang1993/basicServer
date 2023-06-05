@@ -1,5 +1,5 @@
 from django.db import models
-from cyt.manager import PropertyManager
+from app_cyt.manager import PropertyManager
 
 
 # Create your models here.

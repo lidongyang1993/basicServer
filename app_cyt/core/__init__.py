@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : __init__.py.py
 # @Software: PyCharm
-from cyt.models import WChatBotModel
+from app_cyt.models import WChatBotModel
 
 class publicDatabase:
     Model = None

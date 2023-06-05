@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cyt.models import *
+from app_cyt.models import *
 
 # Register your models here.
 
