@@ -319,7 +319,7 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
-            self.logger(MSG.PARAMS.format(self.params))
+            self.logger(MSG.PARAMS.format(self.params, ensure_ascii=False))
 
         def end(self):
             self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
@@ -338,7 +338,7 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.CAL_CUT_OF.format(self.RUN_TYPE, self.field))
-            self.logger(MSG.PARAMS.format(json.dumps(self.params)))
+            self.logger(MSG.PARAMS.format(json.dumps(self.params, ensure_ascii=False)))
 
         def end(self):
             self.logger(MSG.CAL_CUT_OF.format(self.RUN_TYPE, self.field))
@@ -381,7 +381,7 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.field))
-            self.logger(MSG.PARAMS.format(json.dumps(self.params)))
+            self.logger(MSG.PARAMS.format(json.dumps(self.params,ensure_ascii=False)))
 
         def end(self):
             self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.field))
@@ -429,7 +429,7 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE))
-            self.logger(MSG.PARAMS.format(json.dumps(self.params)))
+            self.logger(MSG.PARAMS.format(json.dumps(self.params, ensure_ascii=False)))
 
         def end(self):
             self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE))
