@@ -195,7 +195,7 @@ def run_case_by_module_test(request: WSGIRequest):
         shutil.rmtree(path)
         run.make_log(path)
         run_plan = run.RunPlan(plan)
-        threading.Thread(target=run_plan.main).run()
+        threading.Thread(target=run_plan.main).start()
         return {"log_url": "http://" + SERVER_HOST + ":9000/user_log/{}/".format(user)}
 
     req = RequestBasics(request, keys)
