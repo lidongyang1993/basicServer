@@ -13,6 +13,7 @@ from tools.read_cnf import read_data
 from app_cyt.core import wChat
 from config.field.start_field import KEY, RESULT
 from config.field.job_field import FILED
+import threading
 
 SERVER_HOST = read_data("file_server", "host")
 
@@ -194,7 +195,7 @@ def run_case_by_module_test(request: WSGIRequest):
         shutil.rmtree(path)
         run.make_log(path)
         run_plan = run.RunPlan(plan)
-        run_plan.main()
+        threading.Thread(target=run_plan.main).run()
         return {"log_url": "http://" + SERVER_HOST + ":9000/user_log/{}/".format(user)}
 
     req = RequestBasics(request, keys)

@@ -319,7 +319,7 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
-            self.logger(MSG.PARAMS.format(json.dumps(self.params).encode("utf-8")))
+            self.logger(MSG.PARAMS.format(self.params))
 
         def end(self):
             self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
