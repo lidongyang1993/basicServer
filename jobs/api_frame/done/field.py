@@ -25,6 +25,7 @@ class HANDLERS:
     ASSERTS = "asserts"
     EXTRACT = "extract"
     CALC = "calculate"
+    EXT_ASSERT = "ext_asserts"
 
 class Error:
     StepError = "StepError"
@@ -44,6 +45,7 @@ class MSG:
     RESULT_REQUEST = "请求结果:【{}】"
     REQUEST_DATA = "请求数据:【{}, {}, {}】"
     RESULT_EXTRACT = "提取结果:【{}】"
+    RESULT_EXT_ASSERT = "提取验证结果:【{}, {}】"
     QUOTE = "从全局变量中，引用参数:【{}】"
     ASSERT_CODE = "self.left {} self.right"
     CALC_CODE = "{}{}{}"
@@ -131,6 +133,7 @@ class OTHER:
     BASICS = "basics"
     YANG_ZHENG_QI = "验证器"
     TI_QU_QI = "提取器"
+    TI_QU__YAN_ZHENG_QI = "提取验证器"
     JI_SUN_QI = "计算器"
     CE_SI_JI_HUA = "测试计划"
     CE_SI_YONG_LI = "测试用例"

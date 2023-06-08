@@ -144,7 +144,8 @@ class RunGlobal:
             self.logger(MSG.PLAN_CUT_OFF.format(self.RUN_TYPE, self.name))
 
         def end(self):
-            self.logger(MSG.PLAN_CUT_OFF.format(self.RUN_TYPE, self.name))
+            # self.logger(MSG.PLAN_CUT_OFF.format(self.RUN_TYPE, self.name))
+            pass
 
     class RunCase(RunBasics):
         RUN_TYPE = OTHER.CE_SI_YONG_LI
@@ -157,7 +158,9 @@ class RunGlobal:
 
         def before(self):
             super().before()
-            self.logger(MSG.GLOBAL_VALUE.format(RunGlobal.global_value))
+            for key in RunGlobal.global_value.keys():
+                self.logger(MSG.GLOBAL_VALUE.format({key: RunGlobal.global_value[key]}))
+            # self.logger(MSG.GLOBAL_VALUE.format(RunGlobal.global_value))
             self.update_global(self.variable)
 
         def main(self):
@@ -177,7 +180,8 @@ class RunGlobal:
             self.logger(MSG.CASE_CUT_OFF.format(self.RUN_TYPE, self.name))
 
         def end(self):
-            self.logger(MSG.CASE_CUT_OFF.format(self.RUN_TYPE, self.name))
+            pass
+            # self.logger(MSG.CASE_CUT_OFF.format(self.RUN_TYPE, self.name))
 
     class RunStep(RunBasics):
         RUN_TYPE = OTHER.YONG_LI_BU_ZHOU
@@ -199,7 +203,8 @@ class RunGlobal:
             self.logger(MSG.STEP_CUT_OFF.format(self.RUN_TYPE, self.name))
 
         def end(self):
-            self.logger(MSG.STEP_CUT_OFF.format(self.RUN_TYPE, self.name))
+            pass
+
 
         def func(self):
             if self.type != STEP.REQUEST:
@@ -231,6 +236,8 @@ class RunGlobal:
                     self.extract(params)
                 if _.get(HANDLERS.TYPE) == HANDLERS.CALC:
                     self.calculate(params)
+                if _.get(HANDLERS.TYPE) == HANDLERS.EXT_ASSERT:
+                    self.ext_assert(params)
 
         def before(self):
             super().before()
@@ -265,6 +272,14 @@ class RunGlobal:
             cal.main()
             self.handlers_list.append(cal)
 
+        def ext_assert(self, params):
+            cal = RunGlobal.RunExtAssert(
+                params.get(HANDLERS.PARAMS),
+                response=self.request_run.result
+            )
+            cal.main()
+            self.handlers_list.append(cal)
+
         def requests(self, params):
             self.request_run = RunGlobal.RunRequest(params)
 
@@ -286,7 +301,7 @@ class RunGlobal:
             self.response_type = self.params.get(REQUEST.RES_TYPE)
 
         def quote(self):
-            self.logger(MSG.QUOTE.format(RunGlobal.global_value))
+            # self.logger(MSG.QUOTE.format(RunGlobal.global_value))
             self.headers = self.data_replace(self.headers, RunGlobal.global_value)
             self.data = self.data_replace(self.data, RunGlobal.global_value)
             self.cookies = self.data_replace(self.cookies, RunGlobal.global_value)
@@ -319,14 +334,15 @@ class RunGlobal:
 
         def init_msg(self):
             self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
-            self.logger(MSG.PARAMS.format(self.params, ensure_ascii=False))
+            for key in self.params.keys():
+                self.logger(MSG.PARAMS.format({key: self.params[key]}))
+            # self.logger(MSG.PARAMS.format(self.params, ensure_ascii=False))
 
         def end(self):
-            self.logger(MSG.REQUEST_CUT_OFF.format(self.RUN_TYPE, self.name))
+            pass
 
     class RunCalculate(RunBasics):
         RUN_TYPE = OTHER.JI_SUN_QI
-
 
         def __init__(self, params):
             super().__init__(params)
@@ -365,6 +381,77 @@ class RunGlobal:
                 }
             )
 
+    class RunExtAssert(RunBasics):
+        RUN_TYPE = OTHER.TI_QU__YAN_ZHENG_QI
+
+        def __init__(self, params, response=None):
+            super().__init__(params)
+            self.path = self.params.get(EXTRACT.PATH)
+            self.condition = self.params.get(EXTRACT.CONDITION)
+            self.type = self.params.get(EXTRACT.TYPE)
+            self.func_assert = self.params.get(ASSERTS.FUNC)
+            self.right = self.params.get(ASSERTS.VALUE_RIGHT)
+            self.left = None
+            self.response = response
+            self.code = None
+
+        def init_msg(self):
+            self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.path))
+            self.logger(MSG.PARAMS.format(json.dumps(self.params, ensure_ascii=False)))
+
+        def end(self):
+            self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.path))
+
+        def quote(self):
+            self.path = self.data_replace(self.path, RunGlobal.global_value)
+            self.condition = self.data_replace(self.condition, RunGlobal.global_value)
+            self.left = str(self.data_replace(self.left, RunGlobal.global_value))
+            self.right = str(self.data_replace(self.right, RunGlobal.global_value))
+
+        def before(self):
+            super().before()
+            self.quote()
+
+        def func(self):
+            if not self.response:
+                self.result = None
+                return
+            try:
+                if self.params.get(EXTRACT.TYPE) == REQUEST.HTML:
+                    self.condition = EXTRACT.VALUE
+                    self.left = lxml_html(self.path, self.response, self.condition)
+
+                if self.params.get(EXTRACT.TYPE) == REQUEST.JSON:
+                    self.left = get_path_dict_condition(self.path, self.response, self.condition)
+
+                self.code = MSG.ASSERT_CODE.format(self.func_assert)
+                self.result = eval(self.code)
+                if not self.result:
+                    d = difflib.SequenceMatcher(None, self.left, self.right)
+                    res = d.get_grouped_opcodes(n=15)
+                    for _ in res:
+                        try:
+                            self.logger(str([self.left[_[0][1]:_[2][-1]], self.right[_[0][1]:_[2][-1]]]))
+                        except IndexError:
+                            self.logger(self.left)
+                            self.logger(self.right)
+
+                    self.result = self.isPass = False
+                else:
+                    self.result = self.isPass = True
+            except KeyError:
+                self.result = None
+            except TypeError:
+                self.result = None
+            except AttributeError:
+                self.result = None
+
+        def after(self):
+            self.logger(MSG.RESULT_EXT_ASSERT.format(self.code, self.result))
+            super().after()
+
+
+
     class RunExtract(RunBasics):
         RUN_TYPE = OTHER.TI_QU_QI
 
@@ -377,11 +464,9 @@ class RunGlobal:
             self.response = response
             self.code = None
 
-
-
         def init_msg(self):
             self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.field))
-            self.logger(MSG.PARAMS.format(json.dumps(self.params,ensure_ascii=False)))
+            self.logger(MSG.PARAMS.format(json.dumps(self.params, ensure_ascii=False)))
 
         def end(self):
             self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.field))

@@ -129,6 +129,10 @@ class Check:
             calc_check = self.check_calc(data.get(f.HANDLERS.PARAMS))
             if not (calc_check.get(RESULT.CODE) == 0):
                 return calc_check
+        if data.get(f.HANDLERS.TYPE) == f.HANDLERS.EXT_ASSERT:
+            calc_check = self.check_ext_assert(data.get(f.HANDLERS.PARAMS))
+            if not (calc_check.get(RESULT.CODE) == 0):
+                return calc_check
         return check
 
     def check_extract(self, data):
@@ -152,6 +156,19 @@ class Check:
         ]
         check = self.public_check(data, keys)
         return check
+
+    def check_ext_assert(self, data):
+        keys = [
+            {KEY.NAME: f.EXTRACT.PATH, KEY.MUST: True, KEY.TYPE: str},
+            {KEY.NAME: f.EXTRACT.CONDITION, KEY.MUST: None, KEY.TYPE: list},
+            {KEY.NAME: f.EXTRACT.TYPE, KEY.MUST: True, KEY.TYPE: str},
+            {KEY.NAME: f.ASSERTS.FUNC, KEY.MUST: True, KEY.TYPE: str},
+            {KEY.NAME: f.ASSERTS.VALUE_RIGHT, KEY.MUST: True, KEY.TYPE: [int, str]}
+
+        ]
+        check = self.public_check(data, keys)
+        return check
+
 
 
     def check_request(self, data):
