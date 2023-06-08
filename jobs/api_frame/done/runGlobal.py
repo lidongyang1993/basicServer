@@ -332,7 +332,7 @@ class RunGlobal:
             super().__init__(params)
             self.field = self.params.get(CALC.FIELD)
             self.left = self.params[CALC.VALUE_LEFT]
-            self.func_assert = self.params[CALC.FUNC]
+            self.func_calculate = self.params[CALC.FUNC]
             self.right = self.params[CALC.VALUE_RIGHT]
             self.code = None
 
@@ -355,7 +355,7 @@ class RunGlobal:
             super().before()
             self.left = self.data_replace(self.left, RunGlobal.global_value)
             self.right = self.data_replace(self.right, RunGlobal.global_value)
-            self.code = MSG.CALC_CODE.format(str(self.left), self.func_assert, str(self.right))
+            self.code = MSG.CALC_CODE.format(str(self.left), self.func_calculate, str(self.right))
 
         def func(self):
             self.result = eval(self.code)

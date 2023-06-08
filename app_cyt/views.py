@@ -148,7 +148,7 @@ def run_case_by_module(request: WSGIRequest):
 
         if not w_bot_url:
             return {"report_url": None, "msg": "找不到机器人"}
-        command = "/bin/sh start_run.sh {} {} {} {} {}".format(user, test_module, report_name, report_desc, w_bot_url)
+        command = '/bin/sh start_run.sh "{}" "{}" "{}" "{}" "{}"'.format(user, test_module, report_name, report_desc, w_bot_url)
         os.system(command)
         return {"report_url": "http://" + SERVER_HOST + ":9000/user_report"}
 
@@ -222,3 +222,5 @@ def login_res(request: WSGIRequest):
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
+

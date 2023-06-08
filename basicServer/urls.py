@@ -23,5 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('cyt/test/', include(cyt.ForTest)),
     path('cyt/case/', include(cyt.CaseEdit)),
-    path('user/', include('app_user.urls')),
+    path('cyt/user/', include('app_user.urls')),
 ]
