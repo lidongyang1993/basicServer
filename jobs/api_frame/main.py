@@ -105,6 +105,10 @@ class TestPublic(unittest.TestCase):
     def test_风险模块_个性化(self, data):
         self.public(data)
 
+    @list_data(get_case_from_plan_list(module_010))
+    def test_风险模块_看板_PG(self, data):
+        self.public(data)
+
 
 
 class StartRun:

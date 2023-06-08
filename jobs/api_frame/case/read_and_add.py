@@ -19,6 +19,7 @@ module_006 = read_plan("风险模块_扫描")
 module_007 = read_plan("风险模块_看板")
 module_008 = read_plan("风险模块_应对")
 module_009 = read_plan("风险模块_个性化")
+module_010 = read_plan("风险模块_看板_PG")
 
 
 
