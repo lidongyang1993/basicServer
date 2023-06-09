@@ -190,7 +190,7 @@ class Check:
         keys = [
             {KEY.NAME: f.ASSERTS.FUNC, KEY.MUST: True, KEY.TYPE: str},
             {KEY.NAME: f.ASSERTS.VALUE_LEFT, KEY.MUST: True, KEY.TYPE: [int, str]},
-            {KEY.NAME: f.ASSERTS.VALUE_RIGHT, KEY.MUST: True, KEY.TYPE: [int, str]}
+            {KEY.NAME: f.ASSERTS.VALUE_RIGHT, KEY.MUST: True, KEY.TYPE: [int, str, float]}
 
         ]
         check = self.public_check(data, keys)

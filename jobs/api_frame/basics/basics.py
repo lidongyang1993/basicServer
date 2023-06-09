@@ -74,6 +74,10 @@ class assertsFiledBasic:
             if not isinstance(data, list):
                 return False
             return True
+        if typed == float:
+            if not isinstance(data, float):
+                return False
+            return True
         if typed == KEY.DICT_STR:
             return self.is_dict(data)
 
