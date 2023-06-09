@@ -405,8 +405,8 @@ class RunGlobal:
         def quote(self):
             self.path = self.data_replace(self.path, RunGlobal.global_value)
             self.condition = self.data_replace(self.condition, RunGlobal.global_value)
-            self.left = str(self.data_replace(self.left, RunGlobal.global_value))
-            self.right = str(self.data_replace(self.right, RunGlobal.global_value))
+            self.left = self.data_replace(self.left, RunGlobal.global_value)
+            self.right = self.data_replace(self.right, RunGlobal.global_value)
 
         def before(self):
             super().before()
@@ -416,35 +416,22 @@ class RunGlobal:
             if not self.response:
                 self.result = None
                 return
-            try:
-                if self.params.get(EXTRACT.TYPE) == REQUEST.HTML:
-                    self.condition = EXTRACT.VALUE
-                    self.left = lxml_html(self.path, self.response, self.condition)
 
-                if self.params.get(EXTRACT.TYPE) == REQUEST.JSON:
-                    self.left = get_path_dict_condition(self.path, self.response, self.condition)
+            if self.params.get(EXTRACT.TYPE) == REQUEST.HTML:
+                self.condition = EXTRACT.VALUE
+                self.left = lxml_html(self.path, self.response, self.condition)
 
-                self.code = MSG.ASSERT_CODE.format(self.func_assert)
-                self.result = eval(self.code)
-                if not self.result:
-                    d = difflib.SequenceMatcher(None, self.left, self.right)
-                    res = d.get_grouped_opcodes(n=15)
-                    for _ in res:
-                        try:
-                            self.logger(str([self.left[_[0][1]:_[2][-1]], self.right[_[0][1]:_[2][-1]]]))
-                        except IndexError:
-                            self.logger(self.left)
-                            self.logger(self.right)
+            if self.params.get(EXTRACT.TYPE) == REQUEST.JSON:
+                self.left = get_path_dict_condition(self.path, self.response, self.condition)
 
-                    self.result = self.isPass = False
-                else:
-                    self.result = self.isPass = True
-            except KeyError:
-                self.result = None
-            except TypeError:
-                self.result = None
-            except AttributeError:
-                self.result = None
+            self.code = MSG.ASSERT_CODE.format(self.func_assert)
+            self.result = eval(self.code)
+            if not self.result:
+                self.left = get_path_dict_condition(self.path, self.response, self.condition)
+                self.logger(str([self.left, self.right]))
+                self.result = self.isPass = False
+            else:
+                self.result = self.isPass = True
 
         def after(self):
             self.logger(MSG.RESULT_EXT_ASSERT.format(self.code, self.result))

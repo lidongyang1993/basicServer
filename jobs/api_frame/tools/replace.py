@@ -18,6 +18,9 @@ def data_replace(data, replace: dict):
         return list_replace(data, replace)
     if isinstance(data, int):
         return data
+    if isinstance(data, float):
+        return data
+
 
 
 # 尝试从字符串中找寻替换变量，并完成替换
