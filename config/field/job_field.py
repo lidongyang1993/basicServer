@@ -49,3 +49,6 @@ class FILED:
     TYPE = "type"
     NAME = "name"
     DESC = "desc"
+
+    FIELDS = "fields"
+    E_FIELDS = "e_fields"

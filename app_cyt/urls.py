@@ -14,6 +14,7 @@ class ForTest:
     urlpatterns = [
         path('callBackFile', views.call_back_file),
         path('loginCookies', views.login_res),
+        path('extAsserts', views.make_ext_asserts_handlers),
     ]
 
 class CaseEdit:

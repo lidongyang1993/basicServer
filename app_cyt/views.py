@@ -15,6 +15,8 @@ from config.field.start_field import KEY, RESULT
 from config.field.job_field import FILED
 import threading
 
+from tools.read_json_to_ext_asserts import ReadHar
+
 SERVER_HOST = read_data("file_server", "host")
 
 KEY_FILE = 'key'
@@ -224,3 +226,31 @@ def login_res(request: WSGIRequest):
     return JsonResponse(res)
 
 
+@csrf_exempt
+@require_POST
+def make_ext_asserts_handlers(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
+        {KEY.NAME: FILED.FIELDS, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: FILED.E_FIELDS, KEY.MUST: False, KEY.TYPE: str}
+    ]
+
+    def run_func(data: dict):
+        get_data = data.get(FILED.DATA, None)
+        fields = data.get(FILED.FIELDS, None)
+        e_fields = data.get(FILED.E_FIELDS, None)
+        if fields:
+            fields_list = fields.split(',')
+        else:
+            fields_list = []
+        if e_fields:
+            e_fields_list = e_fields.split(',')
+        else:
+            e_fields_list = []
+        har = ReadHar()
+        har.key_dict(get_data, fields=fields_list, e_fields=e_fields_list)
+        return {"res_list": har.ext_ass_list}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
