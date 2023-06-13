@@ -54,7 +54,8 @@ def update_plan_into_module(plan_name, name, data: json):
     file = open(file_path, "w")
     for _ in read_data:
         if _["name"] == plan_name:
-            _ = data
+            index = read_data.index(_)
+            read_data[index] = data
             break
 
     file.write(json.dumps(read_data, ensure_ascii=False))
