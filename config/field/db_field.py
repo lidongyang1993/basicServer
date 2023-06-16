@@ -10,8 +10,15 @@ class BASIC:
     UPDATED_TIME = "updated_time"
     CREATED_TIME = "created_time"
     UPDATE_USER = "update_user"
-    CREATE_USER = "update_user"
+    CREATE_USER = "create_user"
     IS_USER = "is_user"
+    DESC = "desc"
+
+    created_time = "created_time"
+    updated_time = "updated_time"
+    create_user = "create_user"
+    update_user = "update_user"
+
 
 
 class STEP:
