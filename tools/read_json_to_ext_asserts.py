@@ -32,13 +32,12 @@ class ReadHar:
     def key_dict(self, data, _path='', e_fields=None, fields=None):
         if e_fields is None:
             e_fields = []
-        if fields:
-            e_fields = []
+        if fields is None:
+            fields = []
         for key in data.keys():
             if key in e_fields:
                 continue
-            if fields and key not in fields:
-                continue
+
 
             __path = _path + key
             if isinstance(data[key], dict):
@@ -52,6 +51,8 @@ class ReadHar:
                 continue
             else:
                 path = __path
+            if fields and key not in fields:
+                continue
             ext = DEFAULT().EXT_ASSERT
             ext[DEFAULT.PARAMS].update(
                 dict(path=path, value_right=data[key])
