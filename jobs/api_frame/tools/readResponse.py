@@ -47,23 +47,26 @@ def lxml_html(attribute, data, val):
 
 # response数据读取， 当访问返回值是json时，通过这个方法提取想要的数据
 def get_path_dict_condition(_str: str, _dict: dict, condition: [dict] = None):
-    str_list = _str.split('.', 1)
-    for rel in str_list:
-        if rel == str_list[-1]:
-            if isinstance(_dict[rel], dict) or isinstance(_dict[rel], list):
-                return json.dumps(_dict[rel], ensure_ascii=False, separators=(',', ':'))
-            return _dict[rel]
-        if rel.isdigit():
-            if not condition:
-                return get_path_dict_condition(str_list[1], _dict[int(rel)], condition)
-            keys = list(condition[0].keys())
-            for dic in _dict:
-                if condition[0][keys[0]] == dic[keys[0]]:
-                    del condition[0]
-                    return get_path_dict_condition(str_list[1], dic, condition)
+    try:
+        str_list = _str.split('.', 1)
+        for rel in str_list:
+            if rel == str_list[-1]:
+                if isinstance(_dict[rel], dict) or isinstance(_dict[rel], list):
+                    return json.dumps(_dict[rel], ensure_ascii=False, separators=(',', ':'))
+                return _dict[rel]
+            if rel.isdigit():
+                if not condition:
+                    return get_path_dict_condition(str_list[1], _dict[int(rel)], condition)
+                keys = list(condition[0].keys())
+                for dic in _dict:
+                    if condition[0][keys[0]] == dic[keys[0]]:
+                        del condition[0]
+                        return get_path_dict_condition(str_list[1], dic, condition)
+                return None
+            if rel in _dict.keys():
+                return get_path_dict_condition(str_list[1], _dict[rel], condition)
             return None
-        if rel in _dict.keys():
-            return get_path_dict_condition(str_list[1], _dict[rel], condition)
+    except KeyError:
         return None
 
 
