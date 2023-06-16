@@ -8,6 +8,7 @@
 import difflib
 import json
 import os
+import random
 import time
 from json import JSONDecodeError
 from jobs.api_frame.basics import *
@@ -47,11 +48,36 @@ class RunGlobal:
             RunGlobal.global_value.update(value)
 
         @staticmethod
+        def random(r_type, filed, length=None):
+            if not length:
+                length = 6
+            res = None
+            if r_type == "STR":
+                res = ""
+                for _ in range(length):
+                    res += random.choice(RANDOM.RANDOM_STR)
+            if r_type == "str":
+                res = ""
+                for _ in range(length):
+                    res += random.choice(RANDOM.RANDOM_str)
+            if r_type == "int":
+                res = ""
+                for _ in range(length):
+                    res += random.choice(RANDOM.RANDOM_int)
+            if r_type == "Str":
+                res = ""
+                for _ in range(length):
+                    res += random.choice(RANDOM.RANDOM_str+RANDOM.RANDOM_STR)
+            RunGlobal.global_value.update({filed: res})
+            RunGlobal.PublicPlugIn.log_msg_info(str({filed: res}))
+
+        @staticmethod
         def test_login(user, pwd, filed, host=None):
             if not host:
                 host = HOST.TEST
             cookies = get_login_session(host, user, pwd)
             RunGlobal.global_value.update({filed: cookies})
+            RunGlobal.PublicPlugIn.log_msg_info(str({filed: cookies}))
 
         @staticmethod
         def log_msg_info(msg, underline=False, enter=False, semicolon=False):
@@ -214,8 +240,12 @@ class RunGlobal:
 
         def plug_in(self, params):
             if params.get(PLUGIN.TYPE) == PLUGIN.LOGIN:
-                login_params = params.get(PLUGIN.PARAMS)
-                self.login(login_params)
+                params = params.get(PLUGIN.PARAMS)
+                self.login(params)
+            if params.get(PLUGIN.TYPE) == PLUGIN.RANDOM:
+                params = params.get(PLUGIN.PARAMS)
+                self.random(params)
+
 
         def login(self, params):
             user = params.get(LOGIN.USER_NAME)
@@ -224,6 +254,12 @@ class RunGlobal:
             user = self.data_replace(user, RunGlobal.global_value)
             pwd = self.data_replace(pwd, RunGlobal.global_value)
             self.plugIn.test_login(user, pwd, cookies_field, )
+
+        def random(self, params):
+            random_type = params.get(RANDOM.RANDOM_TYPE)
+            random_length = params.get(RANDOM.LENGTH)
+            get_field = params.get(RANDOM.GET_FIELD)
+            self.plugIn.random(random_type, get_field, random_length)
 
         def handlers_run(self):
             if not self.handlers:
@@ -262,7 +298,7 @@ class RunGlobal:
         def extract(self, params):
             extract = RunGlobal.RunExtract(
                 params.get(HANDLERS.PARAMS),
-                response=self.request_run.result
+                response=self.request_run.response
             )
             extract.main()
             self.handlers_list.append(extract)
@@ -275,7 +311,7 @@ class RunGlobal:
         def ext_assert(self, params):
             cal = RunGlobal.RunExtAssert(
                 params.get(HANDLERS.PARAMS),
-                response=self.request_run.result
+                response=self.request_run.response
             )
             cal.main()
             self.handlers_list.append(cal)
@@ -419,15 +455,17 @@ class RunGlobal:
 
             if self.params.get(EXTRACT.TYPE) == REQUEST.HTML:
                 self.condition = EXTRACT.VALUE
-                self.left = lxml_html(self.path, self.response, self.condition)
+                self.left = lxml_html(self.path, self.response.content, self.condition)
 
             if self.params.get(EXTRACT.TYPE) == REQUEST.JSON:
-                self.left = get_path_dict_condition(self.path, self.response, self.condition)
+                self.left = get_path_dict_condition(self.path, self.response.json(), self.condition)
+
+            if self.params.get(EXTRACT.TYPE) == REQUEST.TEXT:
+                self.left = self.response.text
 
             self.code = MSG.ASSERT_CODE.format(self.func_assert)
             self.result = eval(self.code)
             if not self.result:
-                self.left = get_path_dict_condition(self.path, self.response, self.condition)
                 self.logger(str([self.left, self.right]))
                 self.result = self.isPass = False
             else:
@@ -471,12 +509,16 @@ class RunGlobal:
                 self.result = None
                 return
             try:
+
+                if self.params.get(EXTRACT.TYPE) == REQUEST.TEXT:
+                    self.result = {self.field: self.response.text}
+
                 if self.params.get(EXTRACT.TYPE) == REQUEST.HTML:
                     self.condition = EXTRACT.VALUE
-                    self.result = {self.field: lxml_html(self.path, self.response, self.condition)}
+                    self.result = {self.field: lxml_html(self.path, self.response.content, self.condition)}
 
                 if self.params.get(EXTRACT.TYPE) == REQUEST.JSON:
-                    self.result = {self.field: get_path_dict_condition(self.path, self.response, self.condition)}
+                    self.result = {self.field: get_path_dict_condition(self.path, self.response.json(), self.condition)}
             except KeyError:
                 self.result = None
             except TypeError:

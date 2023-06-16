@@ -83,12 +83,22 @@ class STEP:
 class PLUGIN:
     TYPE = "type"
     LOGIN = "login"
+    RANDOM = "random"
     PARAMS = "params"
 
 class LOGIN:
     USER_NAME = "user_name"
     PASS_WORD = "pass_word"
     COOKIES_FIELD = "cookies_field"
+
+class RANDOM:
+    RANDOM_TYPE = "random_type"  # 类型
+    LENGTH = "length"  # 长度
+    GET_FIELD = "get_field"  # 保留字段
+
+    RANDOM_STR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    RANDOM_str = "abcdefghijklmnopqrstuvwxyz"
+    RANDOM_int = "1234567890"
 
 class CALC:
     FIELD = "field"
@@ -122,6 +132,7 @@ class REQUEST:
 
     HTML = "html"
     JSON = "json"
+    TEXT = "text"
     FORM = "form"
 
 class METHOD:
