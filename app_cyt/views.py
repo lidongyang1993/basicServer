@@ -191,6 +191,9 @@ def run_case_by_module_test(request: WSGIRequest):
         plan = data.get(FILED.DATA, None)
         user = data.get(FILED.USER, None)
         run = RunGlobal("{}".format(user))
+        data_check = Check().check_plan(plan)
+        if data_check.get(RESULT.CODE) != 0:
+            return {"result": False, "info": data_check}
         path = BASE_DIR / "reports/user_log/{}/".format(user)
         if not os.path.exists(path):
             os.mkdir(path)
