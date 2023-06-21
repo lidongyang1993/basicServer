@@ -38,10 +38,9 @@ class ReadHar:
             if key in e_fields:
                 continue
 
-
             __path = _path + key
             if isinstance(data[key], dict):
-                path = __path + '.'
+                path = __path + DEFAULT.DOT
                 self.key_dict(data[key], path, e_fields, fields)
                 continue
             elif isinstance(data[key], list):

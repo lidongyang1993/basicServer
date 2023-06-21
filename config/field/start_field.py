@@ -7,16 +7,21 @@
 # @Software: PyCharm
 
 class USER:
-    ROLE = {
-        "role": 'admin',
-        "roleId": '1',
-        "permissions": ['*.*.*']
+    USER_DATA = {
+        "username": "",
+        "roles": [
+            "admin"
+        ]
     }
 
+    RES_FIELDS = ["id", "username", "first_name", "last_name", "email", "groups"]
 
 class LOGIN:
     USER_NAME = "username"
     PASS_WORD = "password"
+
+    OLD_PASSWORD = "old_password"
+    NEW_PASSWORD = "new_password"
 
 
 class KEY:
@@ -25,6 +30,8 @@ class KEY:
     MUST = "must"
     DICT_STR = "dict_str"
 
+class FIELDS:
+    ID = "id"
 
 class RESULT:
     CODE = "code"
@@ -50,6 +57,11 @@ class RESPONSE:
 class LOGIN_RESULT(RESULT):
     LOGIN_ERROR = {RESULT.CODE: 200, RESULT.MESSAGE: "账号密码错误，请检查！", RESULT.DATA: {}}
 
+class CHANGE_PWD(RESULT):
+    PWD_NO_ERROR = {RESULT.CODE: 301, RESULT.MESSAGE: "密码错误！", RESULT.DATA: {}}
+
+class USER_ERROR(RESULT):
+    USER_NO_ERROR = {RESULT.CODE: 201, RESULT.MESSAGE: "用户不存在！", RESULT.DATA: {}}
 
 class DoError(Exception):
     def __init__(self, err_json=None):

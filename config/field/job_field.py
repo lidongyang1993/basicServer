@@ -9,7 +9,7 @@
 
 class RESULT:
     CODE = "code"
-    MSG = "msg"
+    MSG = "message"
     DATA = 'data'
     ERROR = "error"
     FILTER = "filter"

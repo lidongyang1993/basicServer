@@ -7,9 +7,11 @@
 # @Software: PyCharm
 
 from django.urls import path
-from app_user.views import login
+from app_user.views import *
 
 urlpatterns = [
     path("login", login),
+    path("info", get_user_info),
+    path("pwd", change_password),
 ]
 
