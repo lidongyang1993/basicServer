@@ -26,6 +26,14 @@ class HANDLERS:
     EXTRACT = "extract"
     CALC = "calculate"
     EXT_ASSERT = "ext_asserts"
+class PG_DB:
+    HOST = "host"
+    USER = "user"
+    PASSWORD = "password"
+    DB_NAME = "db_name"
+    SQL = "SQL"
+    PORT = "port"
+    FILED_LIST = "filed_list"
 
 class Error:
     StepError = "StepError"
@@ -85,6 +93,7 @@ class PLUGIN:
     LOGIN = "login"
     RANDOM = "random"
     PARAMS = "params"
+    PG_DB = "pg_db"
 
 class LOGIN:
     USER_NAME = "user_name"

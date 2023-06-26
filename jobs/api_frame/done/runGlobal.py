@@ -18,7 +18,27 @@ from jobs.api_frame.tools.readResponse import *
 from jobs.api_frame.tools.replace import data_replace
 from jobs.api_frame.done.field import *
 from jobs.api_frame.tools.timeFile import time_strf_time_for_file_name
+from tools.PG_DB import PG
 
+
+class Response:
+    def __init__(self, data):
+        self.data = data
+
+    def json(self):
+        if isinstance(self.data, dict):
+            return self.data
+        return None
+
+    @property
+    def content(self):
+        return bytes(self.text)
+
+    @property
+    def text(self):
+        if isinstance(self.data, dict):
+            return json.dumps(self.data).encode()
+        return str(self.data)
 
 # 一次执行的完成模型
 class RunGlobal:
@@ -67,7 +87,7 @@ class RunGlobal:
             if r_type == "Str":
                 res = ""
                 for _ in range(length):
-                    res += random.choice(RANDOM.RANDOM_str+RANDOM.RANDOM_STR)
+                    res += random.choice(RANDOM.RANDOM_str + RANDOM.RANDOM_STR)
             RunGlobal.global_value.update({filed: res})
             RunGlobal.PublicPlugIn.log_msg_info(str({filed: res}))
 
@@ -78,6 +98,24 @@ class RunGlobal:
             cookies = get_login_session(host, user, pwd)
             RunGlobal.global_value.update({filed: cookies})
             RunGlobal.PublicPlugIn.log_msg_info(str({filed: cookies}))
+
+        @staticmethod
+        def pg_db(database, user, password, host, SQL, field_list, port=None):
+            pg = PG(database, user, password, host, port)
+            pg.connect()
+            pg.done(SQL)
+            result = None
+            for filed in field_list:
+                res = pg.result_extract(filed["row"], filed["col"])
+                RunGlobal.global_value.update({filed["field"]: res})
+                RunGlobal.PublicPlugIn.log_msg_info(str({filed["field"]: res}))
+                if filed["field"] == "response":
+                    try:
+                        js = json.loads(res)
+                        result = Response(js)
+                    except JSONDecodeError:
+                        result = Response(res)
+            return result
 
         @staticmethod
         def log_msg_info(msg, underline=False, enter=False, semicolon=False):
@@ -214,6 +252,7 @@ class RunGlobal:
 
         def __init__(self, params):
             super().__init__(params)
+            self.response = None
             self.case = self.params.get(STEP.CASE)
             self.handlers = self.params.get(STEP.HANDLERS)
             self.reData = self.params.get(STEP.REDATA)
@@ -231,12 +270,12 @@ class RunGlobal:
         def end(self):
             pass
 
-
         def func(self):
             if self.type != STEP.REQUEST:
                 return self.plug_in(self.params.get(STEP.PARAMS))
             self.requests(self.params.get(STEP.PARAMS))
             self.request_run.main()
+            self.response = self.request_run.response
 
         def plug_in(self, params):
             if params.get(PLUGIN.TYPE) == PLUGIN.LOGIN:
@@ -245,7 +284,9 @@ class RunGlobal:
             if params.get(PLUGIN.TYPE) == PLUGIN.RANDOM:
                 params = params.get(PLUGIN.PARAMS)
                 self.random(params)
-
+            if params.get(PLUGIN.TYPE) == PLUGIN.PG_DB:
+                params = params.get(PLUGIN.PARAMS)
+                self.pg_db(params)
 
         def login(self, params):
             user = params.get(LOGIN.USER_NAME)
@@ -260,6 +301,18 @@ class RunGlobal:
             random_length = params.get(RANDOM.LENGTH)
             get_field = params.get(RANDOM.GET_FIELD)
             self.plugIn.random(random_type, get_field, random_length)
+
+        def pg_db(self, params):
+            params = self.plugIn.data_replace(params, RunGlobal.global_value)
+            database = params.get(PG_DB.DB_NAME)
+            user = params.get(PG_DB.USER)
+            password = params.get(PG_DB.PASSWORD)
+            host = params.get(PG_DB.HOST)
+            SQL = params.get(PG_DB.SQL)
+            field_list = params.get(PG_DB.FILED_LIST)
+            port = params.get(PG_DB.PORT)
+            res = self.plugIn.pg_db(database, user, password, host, SQL, field_list, port)
+            self.response = res
 
         def handlers_run(self):
             if not self.handlers:
@@ -277,6 +330,7 @@ class RunGlobal:
 
         def before(self):
             super().before()
+            self.quote()
 
         def after(self):
             self.handlers_run()
@@ -298,7 +352,7 @@ class RunGlobal:
         def extract(self, params):
             extract = RunGlobal.RunExtract(
                 params.get(HANDLERS.PARAMS),
-                response=self.request_run.response
+                response=self.response
             )
             extract.main()
             self.handlers_list.append(extract)
@@ -311,7 +365,7 @@ class RunGlobal:
         def ext_assert(self, params):
             cal = RunGlobal.RunExtAssert(
                 params.get(HANDLERS.PARAMS),
-                response=self.request_run.response
+                response=self.response
             )
             cal.main()
             self.handlers_list.append(cal)
@@ -320,6 +374,9 @@ class RunGlobal:
             self.request_run = RunGlobal.RunRequest(params)
 
         def re_data_update(self, params):
+            pass
+
+        def quote(self):
             pass
 
     class RunRequest(RunBasics):
@@ -340,6 +397,7 @@ class RunGlobal:
             # self.logger(MSG.QUOTE.format(RunGlobal.global_value))
             self.headers = self.data_replace(self.headers, RunGlobal.global_value)
             self.data = self.data_replace(self.data, RunGlobal.global_value)
+            self.logger(MSG.PARAMS.format(json.dumps(self.data, ensure_ascii=False)))
             self.cookies = self.data_replace(self.cookies, RunGlobal.global_value)
             self.url = self.data_replace(self.url, RunGlobal.global_value)
 
@@ -474,8 +532,6 @@ class RunGlobal:
         def after(self):
             self.logger(MSG.RESULT_EXT_ASSERT.format(self.code, self.result))
             super().after()
-
-
 
     class RunExtract(RunBasics):
         RUN_TYPE = OTHER.TI_QU_QI

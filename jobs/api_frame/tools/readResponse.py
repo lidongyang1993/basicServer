@@ -68,6 +68,8 @@ def get_path_dict_condition(_str: str, _dict: dict, condition: [dict] = None):
             return None
     except KeyError:
         return None
+    except IndexError:
+        return None
 
 
 if __name__ == '__main__':
