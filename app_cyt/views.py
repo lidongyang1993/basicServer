@@ -10,7 +10,7 @@ from django.views.decorators.http import require_POST
 from jobs.api_frame.case.read_and_add import *
 from jobs.api_frame.case.check_plan import Check
 from tools.read_cnf import read_data
-from app_cyt.core import wChat
+from app_cyt.core.data import *
 from config.field.start_field import KEY, RESULT
 from config.field.job_field import FILED
 import threading
@@ -144,7 +144,7 @@ def run_case_by_module(request: WSGIRequest):
         report_desc = data.get(FILED.REPORT_DESC, None)
         w_bot_id = data.get(FILED.W_BOT_ID, None)
         try:
-            w_bot_url = wChat().get_url_by_id(pk=w_bot_id)
+            w_bot_url = wChatData().get_url_by_id(pk=w_bot_id)
         except models.ObjectDoesNotExist:
             w_bot_url = None
 
@@ -252,7 +252,43 @@ def make_ext_asserts_handlers(request: WSGIRequest):
             e_fields_list = []
         har = ReadHar()
         har.key_dict(get_data, fields=fields_list, e_fields=e_fields_list)
-        return {"res_list": har.ext_ass_list}
+        return {FILED.RES_LIST: har.ext_ass_list}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+@csrf_exempt
+@require_POST
+def get_te_case(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.ID, KEY.MUST: True, KEY.TYPE: str}
+    ]
+
+    def run_func(data):
+        pk = data.get(FILED.ID, None)
+        try:
+            resData = TePlanData().get_plan_by_id(pk=pk)
+        except models.ObjectDoesNotExist:
+            resData = None
+        return resData
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+@csrf_exempt
+@require_POST
+def get_te_case_all(request: WSGIRequest):
+    keys = [
+    ]
+
+    def run_func(data):
+        try:
+            resData = TePlanData().select_all()
+        except models.ObjectDoesNotExist:
+            resData = None
+        return {FILED.RES_LIST: resData}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)

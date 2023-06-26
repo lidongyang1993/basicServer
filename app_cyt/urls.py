@@ -21,7 +21,8 @@ class CaseEdit:
     urlpatterns = [
         path('run', views.run_case_by_module),
         path('add', views.add_case_by_module),
-        path('get', views.get_case_by_module_plan_name),
+        path('get', views.get_te_case),
+        path('list', views.get_te_case_all),
         path('update', views.update_case_by_module),
         path('check', views.check_case),
         path('debug', views.run_case_by_module_test),
