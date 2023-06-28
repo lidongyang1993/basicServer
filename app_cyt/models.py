@@ -80,7 +80,8 @@ class WChatBotModel(PublicData):
 
 class Plan(BasicFields, PublicData):
     variable = models.JSONField(max_length=1024, default=dict, blank=True, null=True)
-    environment = models.ForeignKey("Environment", on_delete=models.PROTECT, null=True, max_length=5, default=1)
+    environment = models.ForeignKey("Environment", on_delete=models.PROTECT, blank=True, null=True, max_length=5, default=1)
+    module = models.ForeignKey(Module, on_delete=models.PROTECT, blank=True, null=True, max_length=5)
 
 
 
@@ -117,23 +118,16 @@ class Step(BasicFields, PublicData):
 
 
     class Meta:
-        abstract = True  # 基础步骤模型
         verbose_name = "步骤"
 
 
 
-class Handlers(BasicFields):
-    name = models.CharField(max_length=100, default=None, blank=True, null=True)  # 名称
-    desc = models.CharField(max_length=100, default=None, blank=True, null=True)  # 备注
+class Handlers(models.Model):
     handler_type = models.CharField(max_length=100, default=None, blank=False, null=True)  # 处理器类型【asserts， extract， ext_asserts, calculate】
     params = models.JSONField(max_length=1024, default=dict, blank=True)  # 对应类型的参数，应在这里做好校验
-
-
-    step = models.ForeignKey(Step, on_delete=models.CASCADE,
-                             default=None, blank=False, null=False, editable=True)
+    step = models.ForeignKey(Step, on_delete=models.CASCADE, default=None, blank=False, null=False, editable=True)
 
     class Meta:
-        abstract = True  # 基础步骤模型
         verbose_name = "处理器"
 
 

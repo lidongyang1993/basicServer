@@ -33,7 +33,7 @@ class PG_DB:
     DB_NAME = "db_name"
     SQL = "SQL"
     PORT = "port"
-    FILED_LIST = "filed_list"
+    FIELD_LIST = "field_list"
 
 class Error:
     StepError = "StepError"
@@ -99,6 +99,7 @@ class LOGIN:
     USER_NAME = "user_name"
     PASS_WORD = "pass_word"
     COOKIES_FIELD = "cookies_field"
+    CODE = "code"
 
 class RANDOM:
     RANDOM_TYPE = "random_type"  # 类型

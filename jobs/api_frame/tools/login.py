@@ -29,7 +29,7 @@ def file_download(filename, data):
     f.close()
 
 
-def get_login_session(host=None, account=None, password=None):
+def get_login_session(host=None, account=None, password=None, code=None):
     if host is None:
         host = "https://d-k8s-sso-fp.bigfintax.com"
     login_data = {
@@ -44,16 +44,18 @@ def get_login_session(host=None, account=None, password=None):
         "execution": "e4s1",
         "_eventId": "submit"
     }
-
-    login_data.update(dict(account=account, password=password))
-    session = requests.session()
-    res = session.get(url=host + SESSION_PATH)
-    file_download(FILE_NAME, res.content)
-    res_session = read_session(res.content)
     headers = {"Content-Type": "application/x-www-form-urlencoded",
                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.36"}
 
-    login_data.update(dict(captcha=res_session))
+    session = requests.session()
+    res = session.get(url=host + SESSION_PATH)
+    login_data.update(dict(account=account, password=password))
+    if code:
+        login_data.update(dict(captcha=code))
+    else:
+        file_download(FILE_NAME, res.content)
+        res_session = read_session(res.content)
+        login_data.update(dict(captcha=res_session))
     response = session.post(host + PATH_LOGIN, data=login_data, headers=headers, allow_redirects=False, verify=False)
     return response.cookies.get("test_cas_access_token", None)
 

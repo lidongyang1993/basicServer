@@ -92,10 +92,10 @@ class RunGlobal:
             RunGlobal.PublicPlugIn.log_msg_info(str({filed: res}))
 
         @staticmethod
-        def test_login(user, pwd, filed, host=None):
+        def test_login(user, pwd, filed, host=None, code=None):
             if not host:
                 host = HOST.TEST
-            cookies = get_login_session(host, user, pwd)
+            cookies = get_login_session(host, user, pwd, code)
             RunGlobal.global_value.update({filed: cookies})
             RunGlobal.PublicPlugIn.log_msg_info(str({filed: cookies}))
 
@@ -105,11 +105,11 @@ class RunGlobal:
             pg.connect()
             pg.done(SQL)
             result = None
-            for filed in field_list:
-                res = pg.result_extract(filed["row"], filed["col"])
-                RunGlobal.global_value.update({filed["field"]: res})
-                RunGlobal.PublicPlugIn.log_msg_info(str({filed["field"]: res}))
-                if filed["field"] == "response":
+            for field in field_list:
+                res = pg.result_extract(field["row"], field["col"])
+                RunGlobal.global_value.update({field["field"]: res})
+                RunGlobal.PublicPlugIn.log_msg_info(str({field["field"]: res}))
+                if field["field"] == "response":
                     try:
                         js = json.loads(res)
                         result = Response(js)
@@ -292,9 +292,11 @@ class RunGlobal:
             user = params.get(LOGIN.USER_NAME)
             pwd = params.get(LOGIN.PASS_WORD)
             cookies_field = params.get(LOGIN.COOKIES_FIELD)
+            code = params.get(LOGIN.CODE, None)
             user = self.data_replace(user, RunGlobal.global_value)
             pwd = self.data_replace(pwd, RunGlobal.global_value)
-            self.plugIn.test_login(user, pwd, cookies_field, )
+            code = self.data_replace(code, RunGlobal.global_value)
+            self.plugIn.test_login(user, pwd, cookies_field, code)
 
         def random(self, params):
             random_type = params.get(RANDOM.RANDOM_TYPE)
@@ -309,7 +311,7 @@ class RunGlobal:
             password = params.get(PG_DB.PASSWORD)
             host = params.get(PG_DB.HOST)
             SQL = params.get(PG_DB.SQL)
-            field_list = params.get(PG_DB.FILED_LIST)
+            field_list = params.get(PG_DB.FIELD_LIST)
             port = params.get(PG_DB.PORT)
             res = self.plugIn.pg_db(database, user, password, host, SQL, field_list, port)
             self.response = res

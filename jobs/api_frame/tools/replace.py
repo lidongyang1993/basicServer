@@ -29,6 +29,16 @@ def str_replace(data, replace):
     return replace_math(data, replace)
 
 def replace_math(text: str, replace: dict):
+    if len(text) > 4:
+        if text[-1] == text[-2] == ">" and text[0] == text[1] == "<":
+            key = text[2:-2]
+            value = replace[key]
+            if isinstance(value, int):
+                return value
+            if isinstance(value, str):
+                if value.isdigit():
+                    return int(value)
+            return value
     pattern = re.compile('({{\w+}})')
     res = pattern.findall(text)
     for _ in res:

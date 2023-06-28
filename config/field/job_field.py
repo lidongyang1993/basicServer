@@ -45,7 +45,8 @@ class FILED:
     REPORT_NAME = "report_name"
     REPORT_DESC = "report_desc"
     W_BOT_ID = "w_bot_id"
-    RES_LIST = "res_list"
+    DATALIST = "dataList"
+    TOTAL = "total"
     ID = "id"
 
     TYPE = "type"

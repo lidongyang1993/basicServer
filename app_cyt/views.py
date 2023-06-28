@@ -252,7 +252,7 @@ def make_ext_asserts_handlers(request: WSGIRequest):
             e_fields_list = []
         har = ReadHar()
         har.key_dict(get_data, fields=fields_list, e_fields=e_fields_list)
-        return {FILED.RES_LIST: har.ext_ass_list}
+        return {FILED.DATALIST: har.ext_ass_list}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -288,7 +288,10 @@ def get_te_case_all(request: WSGIRequest):
             resData = TePlanData().select_all()
         except models.ObjectDoesNotExist:
             resData = None
-        return {FILED.RES_LIST: resData}
+        return {
+            FILED.DATALIST: resData,
+            FILED.TOTAL: len(resData)
+        }
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
