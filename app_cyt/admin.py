@@ -40,10 +40,26 @@ class wChatBotAdmin(publicAdmin):
     ]
 
     list_display = (
-        "id", 'name',"created_time", "updated_time", "create_user", "update_user")
+        "id", 'name', "created_time", "updated_time", "create_user", "update_user")
 
 
 
 @admin.register(Module)
+class wChatBotAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Case)
+class wChatBotAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Plan)
+class wChatBotAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Step)
+class wChatBotAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Handlers)
 class wChatBotAdmin(admin.ModelAdmin):
     pass
