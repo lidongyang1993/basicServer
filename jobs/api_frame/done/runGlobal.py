@@ -26,16 +26,22 @@ class Response:
         self.data = data
 
     def json(self):
+        if not self.data:
+            return None
         if isinstance(self.data, dict):
             return self.data
         return None
 
     @property
     def content(self):
+        if not self.data:
+            return None
         return bytes(self.text)
 
     @property
     def text(self):
+        if not self.data:
+            return None
         if isinstance(self.data, dict):
             return json.dumps(self.data).encode()
         return str(self.data)
@@ -114,6 +120,8 @@ class RunGlobal:
                         js = json.loads(res)
                         result = Response(js)
                     except JSONDecodeError:
+                        result = Response(res)
+                    except TypeError:
                         result = Response(res)
             return result
 
@@ -510,17 +518,17 @@ class RunGlobal:
 
         def func(self):
             if not self.response:
-                self.result = None
+                self.result = self.isPass = False
                 return
 
-            if self.params.get(EXTRACT.TYPE) == REQUEST.HTML:
+            if self.params.get(EXTRACT.TYPE) == REQUEST.HTML and self.response.content:
                 self.condition = EXTRACT.VALUE
                 self.left = lxml_html(self.path, self.response.content, self.condition)
 
-            if self.params.get(EXTRACT.TYPE) == REQUEST.JSON:
+            if self.params.get(EXTRACT.TYPE) == REQUEST.JSON and self.response.json():
                 self.left = get_path_dict_condition(self.path, self.response.json(), self.condition)
 
-            if self.params.get(EXTRACT.TYPE) == REQUEST.TEXT:
+            if self.params.get(EXTRACT.TYPE) == REQUEST.TEXT and self.response.text:
                 self.left = self.response.text
 
             self.code = MSG.ASSERT_CODE.format(self.func_assert)

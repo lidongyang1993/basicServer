@@ -28,7 +28,6 @@ class ReadHar:
     def __init__(self):
         self.ext_ass_list = []
 
-
     def key_dict(self, data, _path='', e_fields=None, fields=None):
         if e_fields is None:
             e_fields = []
@@ -53,6 +52,8 @@ class ReadHar:
             if fields and key not in fields:
                 continue
             ext = DEFAULT().EXT_ASSERT
+            if data[key] is None:
+                continue
             ext[DEFAULT.PARAMS].update(
                 dict(path=path, value_right=data[key])
             )
