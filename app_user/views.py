@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from config.basics_request import RequestBasics
-from config.field.start_field import *
+from config.field.res_field import *
 # Create your views here.
 
 

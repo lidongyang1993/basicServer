@@ -7,7 +7,7 @@
 # @Software: PyCharm
 import json
 
-from config.field.job_field import METHOD, RESULT, KEY
+from config.field.res_field import METHOD, RESULT, KEY, RESPONSE
 
 
 class assertsFiledBasic:
@@ -15,7 +15,7 @@ class assertsFiledBasic:
     def __init__(self, data, keys):
         self.data = data
         self.keys = keys
-        self.result = RESULT()
+        self.result = RESPONSE()
         self.error = None
 
     # 验证字段
@@ -113,7 +113,7 @@ class RequestBasics(assertsFiledBasic):
         super().__init__({}, keys)
         self.reqeust = reqeust
         self.keys = keys
-        self.result = RESULT()
+        self.result = RESPONSE()
         self.error = None
 
     # 读取数据
@@ -133,7 +133,7 @@ class RequestBasics(assertsFiledBasic):
     # 执行操作方法
     def do(self, func):
         self.result.NORMAL.update({
-            self.result.DATA: func(self.data)
+            RESULT.DATA: func(self.data)
         })
 
     # 全局执行器

@@ -8,7 +8,7 @@
 import json
 
 from config.field.db_field import METHOD
-from config.field.start_field import RESPONSE, KEY, RESULT, DoError
+from config.field.res_field import RESPONSE, KEY, RESULT, DoError
 
 class RequestBasics:
 

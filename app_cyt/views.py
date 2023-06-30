@@ -11,8 +11,7 @@ from jobs.api_frame.case.read_and_add import *
 from jobs.api_frame.case.check_plan import Check
 from tools.read_cnf import read_data
 from app_cyt.core.data import *
-from config.field.start_field import KEY, RESULT
-from config.field.job_field import FILED
+from config.field.res_field import KEY, RESULT, FILED
 import threading
 
 from tools.read_json_to_ext_asserts import ReadHar

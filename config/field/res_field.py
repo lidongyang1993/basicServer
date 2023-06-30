@@ -3,7 +3,7 @@
 # @Time    : 2023/5/31 15:24
 # @Author  : lidongyang
 # @Site    : 
-# @File    : start_field.py
+# @File    : res_field.py
 # @Software: PyCharm
 
 class USER:
@@ -30,8 +30,33 @@ class KEY:
     MUST = "must"
     DICT_STR = "dict_str"
 
-class FIELDS:
+class METHOD:
+    POST = "POST"
+    GET = "GET"
+
+
+class FILED:
+    DATA = "data"
+    MODULE = "module"
+
+    USER = "user"
+    PASSWORD = "password"
+
+    REPORT_NAME = "report_name"
+    REPORT_DESC = "report_desc"
+
+    W_BOT_ID = "w_bot_id"
+
+    DATALIST = "dataList"
+    TOTAL = "total"
+
     ID = "id"
+    TYPE = "type"
+    NAME = "name"
+    DESC = "desc"
+
+    FIELDS = "fields"
+    E_FIELDS = "e_fields"
 
 class RESULT:
     CODE = "code"
@@ -42,7 +67,6 @@ class RESULT:
     RESULT = "result"
     DATA_LIST = "dataList"
 
-
 class RESPONSE:
     NORMAL = {RESULT.CODE: 0, RESULT.MESSAGE: "访问成功！", RESULT.DATA: {}}
     PARAMS_NO_ERROR = {RESULT.CODE: 100, RESULT.MESSAGE: "参数缺失，请检查！", RESULT.DATA: {}}
@@ -52,6 +76,7 @@ class RESPONSE:
 
     DATA_NO_ERROR = {RESULT.CODE: 103, RESULT.MESSAGE: "未能查询到数据，请检查！", RESULT.DATA: {}}
     DATA_MODULE_ERROR = {RESULT.CODE: 103, RESULT.MESSAGE: "模型不存在，请检查！", RESULT.DATA: {}}
+
 
 
 class LOGIN_RESULT(RESULT):
