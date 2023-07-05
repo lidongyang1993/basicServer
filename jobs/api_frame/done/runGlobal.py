@@ -54,6 +54,7 @@ class RunGlobal:
     msg_list = []
 
     def __init__(self, name):
+        self.global_value = {}
         self.file_name = time_strf_time_for_file_name(name, ".log")
 
     def make_log(self, path=None):
