@@ -9,7 +9,6 @@ from django.urls import path
 from app_cyt import views
 
 
-
 class ForTest:
     urlpatterns = [
         path('callBackFile', views.call_back_file),
@@ -17,13 +16,30 @@ class ForTest:
         path('extAsserts', views.make_ext_asserts_handlers),
     ]
 
+
 class CaseEdit:
     urlpatterns = [
         path('run', views.run_case_by_module),
         path('add', views.add_case_by_module),
         path('get', views.get_case_by_module_plan_name),
-        path('list', views.get_te_case_all),
         path('update', views.update_case_by_module),
         path('check', views.check_case),
         path('debug', views.run_case_by_module_test),
+    ]
+
+class CaseManageEdit:
+    urlpatterns = [
+        path('list', views.get_case_list),
+        path('get', views.get_case_data),
+    ]
+class PlanManageEdit:
+    urlpatterns = [
+        path('list', views.get_plan_list),
+        path('get', views.get_plan_data),
+        path('getModuleList', views.get_module_list),
+        path('getLabelList', views.get_label_list),
+    ]
+class StepManageEdit:
+    urlpatterns = [
+        path('list', views.get_step_list)
     ]

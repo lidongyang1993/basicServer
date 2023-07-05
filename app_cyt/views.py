@@ -1,13 +1,15 @@
+import json
+import os
 import shutil
-# Create your views here.
-from django.db import models
+import time
+from pathlib import Path
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from jobs.api_frame.done.runGlobal import *
+from jobs.api_frame.done.runGlobal import RunGlobal
 from config.basics_request import RequestBasics
 from django.core.handlers.wsgi import WSGIRequest
 from django.views.decorators.http import require_POST
-from jobs.api_frame.case.read_and_add import *
+from jobs.api_frame.case.read_and_add import module_list, add_plan_into_module, update_plan_into_module, read_plan
 from jobs.api_frame.case.check_plan import Check
 from tools.read_cnf import read_data
 from app_cyt.core.data import *
@@ -40,7 +42,6 @@ def call_back_file(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
-
 @csrf_exempt
 @require_POST
 def check_case(request: WSGIRequest):
@@ -71,7 +72,6 @@ def check_case(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
-
 @csrf_exempt
 @require_POST
 def add_case_by_module(request: WSGIRequest):
@@ -96,7 +96,6 @@ def add_case_by_module(request: WSGIRequest):
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
-
 
 @csrf_exempt
 @require_POST
@@ -123,7 +122,6 @@ def update_case_by_module(request: WSGIRequest):
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
-
 
 @csrf_exempt
 @require_POST
@@ -157,7 +155,6 @@ def run_case_by_module(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
-
 @csrf_exempt
 @require_POST
 def get_case_by_module_plan_name(request: WSGIRequest):
@@ -177,7 +174,6 @@ def get_case_by_module_plan_name(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
-
 @csrf_exempt
 @require_POST
 def run_case_by_module_test(request: WSGIRequest):
@@ -190,6 +186,7 @@ def run_case_by_module_test(request: WSGIRequest):
         plan = data.get(FILED.DATA, None)
         user = data.get(FILED.USER, None)
         run = RunGlobal("{}".format(user))
+        # run.global_value = {}
         data_check = Check().check_plan(plan)
         if data_check.get(RESULT.CODE) != 0:
             return {"result": False, "info": data_check}
@@ -198,15 +195,13 @@ def run_case_by_module_test(request: WSGIRequest):
             os.mkdir(path)
         shutil.rmtree(path)
         run.make_log(path)
-        run_plan = run.RunPlan(plan)
+        run_plan = run.RunPlan(run, plan)
         threading.Thread(target=run_plan.main).start()
         return {"log_url": "http://" + SERVER_HOST + ":9000/user_log/{}/".format(user)}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
-
-
 
 @csrf_exempt
 @require_POST
@@ -257,34 +252,52 @@ def make_ext_asserts_handlers(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
+
 @csrf_exempt
 @require_POST
-def get_te_case(request: WSGIRequest):
+def get_case_list(request: WSGIRequest):
     keys = [
-        {KEY.NAME: FILED.ID, KEY.MUST: True, KEY.TYPE: str}
+        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int},
+        {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: CASE.PLAN_ID, KEY.MUST: False, KEY.TYPE: int},
+
+        {KEY.NAME: FILED.SIZE, KEY.MUST: False, KEY.TYPE: int},
+        {KEY.NAME: FILED.CURRENT_PAGE, KEY.MUST: False, KEY.TYPE: int},
     ]
 
     def run_func(data):
         pk = data.get(FILED.ID, None)
+        name = data.get(FILED.NAME, None)
+        plan_id = data.get(CASE.PLAN_ID, None)
+        desc = data.get(FILED.DESC, None)
+
+        size = data.get(FILED.SIZE, 10)
+        current_page = data.get(FILED.CURRENT_PAGE, 1)
         try:
-            resData = TePlanData().get_plan_by_id(pk=pk)
+            objs = CaseData().select(plan_id=plan_id, pk=pk, name=name, desc=desc)
         except models.ObjectDoesNotExist:
-            resData = None
-        return resData
+            objs = []
+        return make_data_list(current_page, size, objs)
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
-
 @csrf_exempt
 @require_POST
-def get_te_case_all(request: WSGIRequest):
+def get_plan_list(request: WSGIRequest):
     keys = [
+        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int},
+        {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str},
     ]
 
     def run_func(data):
+        pk = data.get(FILED.DATA, None)
+        name = data.get(FILED.FIELDS, None)
+        desc = data.get(FILED.E_FIELDS, None)
         try:
-            resData = TePlanData().select_all()
+            resData = PlanData().select(pk=pk, name=name, desc=desc)
         except models.ObjectDoesNotExist:
             resData = None
         return {
@@ -295,3 +308,133 @@ def get_te_case_all(request: WSGIRequest):
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
+
+@csrf_exempt
+@require_POST
+def get_step_list(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int},
+        {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: STEP.CASE_ID, KEY.MUST: False, KEY.TYPE: str},
+    ]
+
+    def run_func(data):
+        pk = data.get(FILED.DATA, None)
+        name = data.get(FILED.FIELDS, None)
+        desc = data.get(FILED.E_FIELDS, None)
+        try:
+            resData = PlanData().select(pk=pk, name=name, desc=desc)
+        except models.ObjectDoesNotExist:
+            resData = None
+        return {
+            FILED.DATALIST: resData,
+            FILED.TOTAL: len(resData)
+        }
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+@csrf_exempt
+@require_POST
+def get_label_list(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int},
+        {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str}
+    ]
+
+    def run_func(data):
+        pk = data.get(FILED.ID, None)
+        name = data.get(FILED.NAME, None)
+        desc = data.get(FILED.DESC, None)
+
+        try:
+            objs = LabelData().select(pk=pk, name=name, desc=desc)
+        except models.ObjectDoesNotExist:
+            objs = []
+        return make_data_list(1, 10, objs)
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+@csrf_exempt
+@require_POST
+def get_module_list(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int},
+        {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str}
+    ]
+
+    def run_func(data):
+        pk = data.get(FILED.ID, None)
+        name = data.get(FILED.NAME, None)
+        desc = data.get(FILED.DESC, None)
+
+        try:
+            objs = ModuleData().select(pk=pk, name=name, desc=desc)
+        except models.ObjectDoesNotExist:
+            objs = []
+        return make_data_list(1, 10, objs)
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+def make_data_list(current_page, size,  objs):
+    index_start = (current_page - 1) * size
+    index_end = current_page * size
+    resList = []
+    if objs:
+        if len(objs) < index_end:
+            l_obs = objs
+        else:
+            l_obs = objs[index_start:index_end]
+        for obj in l_obs:
+            resList.append(obj.dict_for_list())
+    return {
+        FILED.TOTAL: len(objs),
+        FILED.CURRENT_PAGE: current_page,
+        FILED.SIZE: size,
+        FILED.DATALIST: resList,
+    }
+
+
+@csrf_exempt
+@require_POST
+def get_plan_data(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int}
+    ]
+
+    def run_func(data):
+        pk = data.get(FILED.ID, None)
+        resData = PlanData().get_by_id(pk=pk)
+        return resData
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+@csrf_exempt
+@require_POST
+def get_case_data(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int}
+    ]
+
+    def run_func(data):
+        pk = data.get(FILED.ID, None)
+        resData = CaseData().get_by_id(pk=pk)
+        return resData
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+

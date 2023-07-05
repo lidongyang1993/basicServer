@@ -58,6 +58,9 @@ class FILED:
     FIELDS = "fields"
     E_FIELDS = "e_fields"
 
+    SIZE = "size"
+    CURRENT_PAGE = "currentPage"
+
 class RESULT:
     CODE = "code"
     MESSAGE = "message"

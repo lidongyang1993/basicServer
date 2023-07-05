@@ -48,34 +48,39 @@ class Response:
 
 # 一次执行的完成模型
 class RunGlobal:
-    global_value = {}
+    # global_value = {}
     file_name = ''
     Logger = None
     msg_list = []
 
     def __init__(self, name):
         self.global_value = {}
+        self.msg_list = []
+        self.file_name = ''
+        self.Logger = None
         self.file_name = time_strf_time_for_file_name(name, ".log")
 
     def make_log(self, path=None):
         if not path:
-            RunGlobal.Logger = init_log(self.file_name)
+            self.Logger = init_log(self.file_name)
             return
-        RunGlobal.Logger = init_log(self.file_name, path)
+        self.Logger = init_log(self.file_name, path)
 
     class PublicPlugIn:
+
+        def __init__(self, run):
+            self.Run: RunGlobal = run
         @staticmethod
         def data_replace(params, variable):
             return data_replace(params, variable)
 
-        @staticmethod
-        def update_global(value):
+
+        def update_global(self, value):
             if not value:
                 return
-            RunGlobal.global_value.update(value)
+            self.Run.global_value.update(value)
 
-        @staticmethod
-        def random(r_type, filed, length=None):
+        def random(self, r_type, filed, length=None):
             if not length:
                 length = 6
             res = None
@@ -95,27 +100,27 @@ class RunGlobal:
                 res = ""
                 for _ in range(length):
                     res += random.choice(RANDOM.RANDOM_str + RANDOM.RANDOM_STR)
-            RunGlobal.global_value.update({filed: res})
-            RunGlobal.PublicPlugIn.log_msg_info(str({filed: res}))
+            self.Run.global_value.update({filed: res})
+            self.log_msg_info(str({filed: res}))
 
-        @staticmethod
-        def test_login(user, pwd, filed, host=None, code=None):
+
+        def test_login(self, user, pwd, filed, host=None, code=None):
             if not host:
                 host = HOST.TEST
             cookies = get_login_session(host, user, pwd, code)
-            RunGlobal.global_value.update({filed: cookies})
-            RunGlobal.PublicPlugIn.log_msg_info(str({filed: cookies}))
+            self.Run.global_value.update({filed: cookies})
+            self.log_msg_info(str({filed: cookies}))
 
-        @staticmethod
-        def pg_db(database, user, password, host, SQL, field_list, port=None):
+
+        def pg_db(self, database, user, password, host, SQL, field_list, port=None):
             pg = PG(database, user, password, host, port)
             pg.connect()
             pg.done(SQL)
             result = None
             for field in field_list:
                 res = pg.result_extract(field["row"], field["col"])
-                RunGlobal.global_value.update({field["field"]: res})
-                RunGlobal.PublicPlugIn.log_msg_info(str({field["field"]: res}))
+                self.Run.global_value.update({field["field"]: res})
+                self.log_msg_info(str({field["field"]: res}))
                 if field["field"] == "response":
                     try:
                         js = json.loads(res)
@@ -126,18 +131,15 @@ class RunGlobal:
                         result = Response(res)
             return result
 
-        @staticmethod
-        def log_msg_info(msg, underline=False, enter=False, semicolon=False):
-            RunGlobal.PublicPlugIn.add_msg_list(msg, underline=underline, enter=enter, semicolon=semicolon)
-            RunGlobal.Logger.info(msg)
+        def log_msg_info(self, msg, underline=False, enter=False, semicolon=False):
+            self.add_msg_list(msg, underline=underline, enter=enter, semicolon=semicolon)
+            self.Run.Logger.info(msg)
 
-        @staticmethod
-        def log_msg_debug(msg, underline=False, enter=False, semicolon=False):
-            RunGlobal.PublicPlugIn.add_msg_list(msg, underline=underline, enter=enter, semicolon=semicolon)
-            RunGlobal.Logger.debug(msg)
+        def log_msg_debug(self, msg, underline=False, enter=False, semicolon=False):
+            self.add_msg_list(msg, underline=underline, enter=enter, semicolon=semicolon)
+            self.Run.Logger.debug(msg)
 
-        @staticmethod
-        def add_msg_list(msg, underline=False, enter=False, semicolon=False):
+        def add_msg_list(self, msg, underline=False, enter=False, semicolon=False):
             res = SYMBOL.NONE
             if underline:
                 res += SYMBOL.UNDERLINE
@@ -147,12 +149,13 @@ class RunGlobal:
             if enter:
                 res += SYMBOL.ENTER
             print(res)
-            RunGlobal.msg_list.append(res)
+            self.Run.msg_list.append(res)
 
     class RunBasics:
         RUN_TYPE = OTHER.BASICS
 
-        def __init__(self, params=None):
+        def __init__(self, run, params):
+            self.Run: RunGlobal = run
             self.params = params
 
             self.name = params.get(BASICS.NAME)
@@ -160,8 +163,7 @@ class RunGlobal:
 
             self.result = None
             self.isPass = True
-
-            self.plugIn = RunGlobal.PublicPlugIn
+            self.plugIn = RunGlobal.PublicPlugIn(self.Run)
             self.logger = self.plugIn.log_msg_info
             self.data_replace = self.plugIn.data_replace
             self.update_global = self.plugIn.update_global
@@ -197,8 +199,8 @@ class RunGlobal:
     class RunPlan(RunBasics):
         RUN_TYPE = OTHER.CE_SI_JI_HUA
 
-        def __init__(self, params):
-            super().__init__(params)
+        def __init__(self, run, params):
+            super().__init__(run, params)
             self.case = self.params.get(PLAN.CASE)
             self.variable = self.params.get(PLAN.VARIABLE)
             self.case_list = []
@@ -209,7 +211,7 @@ class RunGlobal:
 
         def func(self):
             for _ in self.case:
-                case = RunGlobal.RunCase(_)
+                case = RunGlobal.RunCase(self.Run, _)
                 case.main()
                 self.case_list.append(case)
 
@@ -223,16 +225,16 @@ class RunGlobal:
     class RunCase(RunBasics):
         RUN_TYPE = OTHER.CE_SI_YONG_LI
 
-        def __init__(self, params):
-            super().__init__(params)
+        def __init__(self, run, params):
+            super().__init__(run, params)
             self.step = self.params.get(CASE.STEP)
             self.variable = self.params.get(CASE.VARIABLE)
             self.step_list = []
 
         def before(self):
             super().before()
-            for key in RunGlobal.global_value.keys():
-                self.logger(MSG.GLOBAL_VALUE.format({key: RunGlobal.global_value[key]}))
+            for key in self.Run.global_value.keys():
+                self.logger(MSG.GLOBAL_VALUE.format({key:  self.Run.global_value[key]}))
             # self.logger(MSG.GLOBAL_VALUE.format(RunGlobal.global_value))
             self.update_global(self.variable)
 
@@ -245,7 +247,7 @@ class RunGlobal:
 
         def func(self):
             for _ in self.step:
-                step = RunGlobal.RunStep(_)
+                step = RunGlobal.RunStep(self.Run, _)
                 step.main()
                 self.step_list.append(step)
 
@@ -259,8 +261,8 @@ class RunGlobal:
     class RunStep(RunBasics):
         RUN_TYPE = OTHER.YONG_LI_BU_ZHOU
 
-        def __init__(self, params):
-            super().__init__(params)
+        def __init__(self, run, params):
+            super().__init__(run, params)
             self.response = None
             self.case = self.params.get(STEP.CASE)
             self.handlers = self.params.get(STEP.HANDLERS)
@@ -302,9 +304,9 @@ class RunGlobal:
             pwd = params.get(LOGIN.PASS_WORD)
             cookies_field = params.get(LOGIN.COOKIES_FIELD)
             code = params.get(LOGIN.CODE, None)
-            user = self.data_replace(user, RunGlobal.global_value)
-            pwd = self.data_replace(pwd, RunGlobal.global_value)
-            code = self.data_replace(code, RunGlobal.global_value)
+            user = self.data_replace(user, self.Run.global_value)
+            pwd = self.data_replace(pwd, self.Run.global_value)
+            code = self.data_replace(code, self.Run.global_value)
             self.plugIn.test_login(user, pwd, cookies_field, code)
 
         def random(self, params):
@@ -314,7 +316,7 @@ class RunGlobal:
             self.plugIn.random(random_type, get_field, random_length)
 
         def pg_db(self, params):
-            params = self.plugIn.data_replace(params, RunGlobal.global_value)
+            params = self.plugIn.data_replace(params, self.Run.global_value)
             database = params.get(PG_DB.DB_NAME)
             user = params.get(PG_DB.USER)
             password = params.get(PG_DB.PASSWORD)
@@ -355,6 +357,7 @@ class RunGlobal:
 
         def asserts(self, params):
             asserts = RunGlobal.RunAsserts(
+                self.Run,
                 params.get(HANDLERS.PARAMS)
             )
             asserts.main()
@@ -362,6 +365,7 @@ class RunGlobal:
 
         def extract(self, params):
             extract = RunGlobal.RunExtract(
+                self.Run,
                 params.get(HANDLERS.PARAMS),
                 response=self.response
             )
@@ -369,12 +373,13 @@ class RunGlobal:
             self.handlers_list.append(extract)
 
         def calculate(self, params):
-            cal = RunGlobal.RunCalculate(params.get(HANDLERS.PARAMS))
+            cal = self.Run.RunCalculate(self.Run, params.get(HANDLERS.PARAMS))
             cal.main()
             self.handlers_list.append(cal)
 
         def ext_assert(self, params):
             cal = RunGlobal.RunExtAssert(
+                self.Run,
                 params.get(HANDLERS.PARAMS),
                 response=self.response
             )
@@ -382,7 +387,7 @@ class RunGlobal:
             self.handlers_list.append(cal)
 
         def requests(self, params):
-            self.request_run = RunGlobal.RunRequest(params)
+            self.request_run = self.Run.RunRequest(self.Run, params)
 
         def re_data_update(self, params):
             pass
@@ -393,8 +398,8 @@ class RunGlobal:
     class RunRequest(RunBasics):
         RUN_TYPE = OTHER.JIE_KOU_QING_QIU
 
-        def __init__(self, params):
-            super().__init__(params)
+        def __init__(self, run, params):
+            super().__init__(run, params)
             self.url = self.params.get(REQUEST.HOST) + self.params.get(REQUEST.PATH)
             self.headers = self.params.get(REQUEST.HEADERS)
             self.method = self.params.get(REQUEST.METHOD)
@@ -406,11 +411,11 @@ class RunGlobal:
 
         def quote(self):
             # self.logger(MSG.QUOTE.format(RunGlobal.global_value))
-            self.headers = self.data_replace(self.headers, RunGlobal.global_value)
-            self.data = self.data_replace(self.data, RunGlobal.global_value)
+            self.headers = self.data_replace(self.headers, self.Run.global_value)
+            self.data = self.data_replace(self.data, self.Run.global_value)
             self.logger(MSG.PARAMS.format(json.dumps(self.data, ensure_ascii=False)))
-            self.cookies = self.data_replace(self.cookies, RunGlobal.global_value)
-            self.url = self.data_replace(self.url, RunGlobal.global_value)
+            self.cookies = self.data_replace(self.cookies, self.Run.global_value)
+            self.url = self.data_replace(self.url, self.Run.global_value)
 
         def before(self):
             super().before()
@@ -449,8 +454,8 @@ class RunGlobal:
     class RunCalculate(RunBasics):
         RUN_TYPE = OTHER.JI_SUN_QI
 
-        def __init__(self, params):
-            super().__init__(params)
+        def __init__(self, run, params):
+            super().__init__(run, params)
             self.field = self.params.get(CALC.FIELD)
             self.left = self.params[CALC.VALUE_LEFT]
             self.func_calculate = self.params[CALC.FUNC]
@@ -465,8 +470,8 @@ class RunGlobal:
             self.logger(MSG.CAL_CUT_OF.format(self.RUN_TYPE, self.field))
 
         def quote(self):
-            self.left = data_replace(self.left, RunGlobal.global_value)
-            self.right = data_replace(self.right, RunGlobal.global_value)
+            self.left = data_replace(self.left, self.Run.global_value)
+            self.right = data_replace(self.right, self.Run.global_value)
 
         def after(self):
             self.logger(MSG.RESULT_ASSERTS.format(self.code, str(self.result)))
@@ -474,8 +479,8 @@ class RunGlobal:
 
         def before(self):
             super().before()
-            self.left = self.data_replace(self.left, RunGlobal.global_value)
-            self.right = self.data_replace(self.right, RunGlobal.global_value)
+            self.left = self.data_replace(self.left, self.Run.global_value)
+            self.right = self.data_replace(self.right, self.Run.global_value)
             self.code = MSG.CALC_CODE.format(str(self.left), self.func_calculate, str(self.right))
 
         def func(self):
@@ -489,8 +494,9 @@ class RunGlobal:
     class RunExtAssert(RunBasics):
         RUN_TYPE = OTHER.TI_QU__YAN_ZHENG_QI
 
-        def __init__(self, params, response=None):
-            super().__init__(params)
+
+        def __init__(self, run, params, response=None):
+            super().__init__(run, params)
             self.path = self.params.get(EXTRACT.PATH)
             self.condition = self.params.get(EXTRACT.CONDITION)
             self.type = self.params.get(EXTRACT.TYPE)
@@ -508,10 +514,10 @@ class RunGlobal:
             self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.path))
 
         def quote(self):
-            self.path = self.data_replace(self.path, RunGlobal.global_value)
-            self.condition = self.data_replace(self.condition, RunGlobal.global_value)
-            self.left = self.data_replace(self.left, RunGlobal.global_value)
-            self.right = self.data_replace(self.right, RunGlobal.global_value)
+            self.path = self.data_replace(self.path, self.Run.global_value)
+            self.condition = self.data_replace(self.condition, self.Run.global_value)
+            self.left = self.data_replace(self.left, self.Run.global_value)
+            self.right = self.data_replace(self.right, self.Run.global_value)
 
         def before(self):
             super().before()
@@ -547,8 +553,8 @@ class RunGlobal:
     class RunExtract(RunBasics):
         RUN_TYPE = OTHER.TI_QU_QI
 
-        def __init__(self, params, response=None):
-            super().__init__(params)
+        def __init__(self, run, params, response=None):
+            super().__init__(run, params)
             self.field = self.params.get(EXTRACT.FIELD)
             self.path = self.params.get(EXTRACT.PATH)
             self.condition = self.params.get(EXTRACT.CONDITION)
@@ -564,8 +570,8 @@ class RunGlobal:
             self.logger(MSG.EXTRACT_CUT_OFF.format(self.RUN_TYPE, self.field))
 
         def quote(self):
-            self.path = self.data_replace(self.path, RunGlobal.global_value)
-            self.condition = self.data_replace(self.condition, RunGlobal.global_value)
+            self.path = self.data_replace(self.path, self.Run.global_value)
+            self.condition = self.data_replace(self.condition, self.Run.global_value)
 
         def before(self):
             super().before()
@@ -601,8 +607,8 @@ class RunGlobal:
     class RunAsserts(RunBasics):
         RUN_TYPE = OTHER.YANG_ZHENG_QI
 
-        def __init__(self, params):
-            super().__init__(params)
+        def __init__(self, run, params):
+            super().__init__(run, params)
             self.left = self.params[ASSERTS.VALUE_LEFT]
             self.func_assert = self.params[ASSERTS.FUNC]
             self.right = self.params[ASSERTS.VALUE_RIGHT]
@@ -616,8 +622,8 @@ class RunGlobal:
             self.logger(MSG.ASSERT_CUT_OFF.format(self.RUN_TYPE))
 
         def quote(self):
-            self.left = str(self.data_replace(self.left, RunGlobal.global_value))
-            self.right = str(self.data_replace(self.right, RunGlobal.global_value))
+            self.left = str(self.data_replace(self.left, self.Run.global_value))
+            self.right = str(self.data_replace(self.right, self.Run.global_value))
 
         def after(self):
             self.logger(MSG.RESULT_ASSERTS.format(self.code, str(self.result)))

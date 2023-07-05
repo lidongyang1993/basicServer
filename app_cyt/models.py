@@ -1,20 +1,26 @@
 from django.db import models
 from django.forms import model_to_dict
-
+import uuid
 from app_cyt.manager import PropertyManager
 from config.field.db_field import *
 
 
+def uuid_8():
+    return uuid.uuid4().hex[:8].upper()
 # Create your models here.
+class publicID(models.Model):
+    pass
+    # id = models.CharField(primary_key=True, default=uuid_8, editable=False, max_length=8)
 
-
-class PublicData(models.Model):
+    class Meta:
+        abstract = True
+class PublicData(publicID):
     created_time = models.DateTimeField(verbose_name="创建时间", auto_now=True)  # 创建时间
     updated_time = models.DateTimeField(verbose_name="更新时间", auto_now_add=True)  # 更新时间
 
     create_user = models.CharField(verbose_name="创建者", max_length=100, blank=True, editable=False)
     update_user = models.CharField(verbose_name="更新者", max_length=100, blank=True, editable=False)
-    # is_deleted = models.BooleanField("0-软删除", default=False, editable=True, blank=False)
+    is_use = models.BooleanField("是否可用", default=True, editable=True, blank=False)
 
     # objects = PropertyManager()
 
@@ -23,7 +29,7 @@ class PublicData(models.Model):
         ordering = ['created_time', "updated_time"]
 
 
-class BasicFields(models.Model):
+class BasicFields(publicID):
     name = models.CharField(max_length=100, default=None, blank=False, null=False)  # 名称
     desc = models.CharField(max_length=100, default=None, blank=False, null=False)  # 备注
 
@@ -36,6 +42,12 @@ class BasicFields(models.Model):
     def self_dict(self):
         return model_to_dict(self)
 
+
+    def dict_for_get(self):
+        return self.self_dict()
+
+    def dict_for_list(self):
+        return self.self_dict()
 
 # 公共标签
 class Labels(BasicFields):
@@ -55,7 +67,7 @@ class Module(BasicFields):
         verbose_name_plural = "模块"
 
 
-class BasicType(models.Model):
+class BasicType(publicID):
     label = models.ManyToManyField(Labels, default=None, blank=True)
     module = models.ForeignKey(Module, on_delete=models.PROTECT,
                                default=None, blank=True, null=True, editable=True)
@@ -71,7 +83,7 @@ class FieldsPublicBasicType(BasicFields, PublicData, BasicType):
             BASIC.ID: self.pk,
             BASIC.NAME: self.name,
             BASIC.DESC: self.desc,
-            BASIC.MODULE: self.module.self_dict(),
+            BASIC.MODULE: self.module.self_dict() if self.module else None,
             BASIC.LABEL: [_.self_dict() for _ in self.label.all()],
             BASIC.CREATE_USER: self.create_user,
             BASIC.UPDATE_USER: self.update_user,
@@ -94,7 +106,15 @@ class WChatBotModel(PublicData):
 
 
 
+    def self_dict(self):
+        return model_to_dict(self)
 
+
+    def dict_for_get(self):
+        return self.self_dict()
+
+    def dict_for_list(self):
+        return self.self_dict()
 
 class Plan(FieldsPublicBasicType):
     variable = models.JSONField(max_length=1024, default=dict, blank=True, null=True)
@@ -106,7 +126,7 @@ class Plan(FieldsPublicBasicType):
         res = self.dict_for_list()
         res.update({
             PLAN.VARIABLE: self.variable,
-            PLAN.ENVIRONMENT: self.environment.self_dict(),
+            PLAN.ENVIRONMENT: self.environment.self_dict() if self.environment else {},
 
             PLAN.CASE: [_.dict_for_get() for _ in self.case_set.all()]
         })
@@ -137,7 +157,7 @@ class Case(FieldsPublicBasicType):
         res.update({
             CASE.VARIABLE: self.variable,
             CASE.TERMINATION: self.termination,
-            PLAN.ENVIRONMENT: self.plan.environment.self_dict(),
+            PLAN.ENVIRONMENT: self.plan.environment.self_dict() if self.plan.environment else {},
             CASE.STEP: [_.dict_for_get() for _ in self.step_set.all()]
         })
         return res
@@ -145,8 +165,8 @@ class Case(FieldsPublicBasicType):
 
 
 class Step(BasicFields):
-    sleep = models.IntegerField(default=None, blank=False)  # 等待时间
-    number = models.IntegerField(default=None, blank=False)  # 步骤排序
+    sleep = models.IntegerField(default=0, null=True, blank=False)  # 等待时间
+    number = models.IntegerField(default=0, blank=False)  # 步骤排序
     step_type = models.CharField(max_length=100, default=None, blank=False,
                                  null=True)  # 步骤类型，可选plusIn[插件]，request[接口请求], try_request[尝试请求]
     params = models.JSONField(max_length=1024, default=dict, blank=True)
@@ -177,7 +197,7 @@ class Step(BasicFields):
         })
         return res
 
-class Handlers(models.Model):
+class Handlers(publicID):
     handler_type = models.CharField(max_length=100, default=None, blank=False,
                                     null=True)  # 处理器类型【asserts， extract， ext_asserts, calculate】
     params = models.JSONField(max_length=1024, default=dict, blank=True)  # 对应类型的参数，应在这里做好校验

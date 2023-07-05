@@ -38,7 +38,7 @@ def get_case_list(plan):
         return res
     if plan.get(PLAN.CASE) is None:
         return res
-    p = r.RunPlan(plan)
+    p = r.RunPlan(r, plan)
     p.before()
     for _ in plan.get(PLAN.CASE):
         res.append({CASE: _, TITLE: _.get(BASICS.NAME), DESC: _.get(BASICS.DESC)})
@@ -63,7 +63,7 @@ class TestPublic(unittest.TestCase):
 
     def public(self, data):
         case = data.get(CASE)
-        run = r.RunCase(case)
+        run = r.RunCase(r, case)
         run.main()
         self.assertTrue(run.isPass, run.result)
 

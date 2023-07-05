@@ -27,7 +27,7 @@ class PLAN(BASIC):
 class CASE(BASIC):
     TERMINATION = "termination"
     VARIABLE = "variable"
-
+    PLAN_ID = "planId"
     STEP = "step"
 
 class STEP(BASIC):
@@ -35,7 +35,8 @@ class STEP(BASIC):
     STEP_TYPE = "step_type"
     TERMINATION = "termination"
     PARAMS = "params"
-    SLEEP = "SLEEP"
+    SLEEP = "sleep"
+    CASE_ID = "case_id"
 
 
     HANDLERS = "handlers"
