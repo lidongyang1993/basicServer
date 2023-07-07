@@ -132,6 +132,10 @@ class Plan(FieldsPublicBasicType):
         })
         return res
 
+    class Meta:
+        verbose_name = "测试计划"
+        verbose_name_plural = "测试计划"
+
 
 class Environment(BasicFields, PublicData):
     value = models.JSONField(max_length=500, default=dict, blank=True, null=True)
