@@ -151,6 +151,7 @@ class Case(FieldsPublicBasicType):
 
     class Meta:
         verbose_name = "用例"
+        verbose_name_plural = "用例"
 
     def dict_for_get(self):
         res = self.dict_for_list()
@@ -177,6 +178,7 @@ class Step(BasicFields):
 
     class Meta:
         verbose_name = "步骤"
+        verbose_name_plural = "步骤"
 
     def dict_for_list(self):
         return {
@@ -205,6 +207,7 @@ class Handlers(publicID):
 
     class Meta:
         verbose_name = "处理器"
+        verbose_name_plural = "处理器"
 
     def dict_for_list(self):
         return {
@@ -224,6 +227,7 @@ class TePlan(FieldsPublicBasicType):
 
     class Meta:
         verbose_name = "测试计划总集"
+        verbose_name_plural = "测试计划总集"
 
     def dict_for_list(self):
         return {
@@ -252,3 +256,4 @@ class FileSave(BasicFields):
 
     class Meta:
         verbose_name = "预存文件"
+        verbose_name_plural = "预存文件"

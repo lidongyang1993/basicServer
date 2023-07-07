@@ -77,10 +77,9 @@ class StartRun:
 
     def __init__(self, user_number, w_chat_url,
                  title=case_data["name"], desc=case_data["desc"]
-                 , module=case_data["module"]["name"], path="reports/user_report/{}"):
+                 , module=None, path="reports/user_report/{}"):
         self.user = user_number
-        self.module = "test_from_db"
-        self.report_module = module
+        self.module = module
         self.w_chat_url = w_chat_url
         self.file_name = "{}--<%Y-%m-%d><%H_%M_%S>".format(module)
         self.desc = desc
@@ -89,7 +88,7 @@ class StartRun:
 
 
     def make_run(self):
-        suite = unittest.makeSuite(TestPublic, self.module)
+        suite = unittest.makeSuite(TestPublic, "test_from_db")
         filename = time.strftime(self.file_name)
         if not os.path.exists(self.dir):
             os.makedirs(self.dir)
