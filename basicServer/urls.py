@@ -26,5 +26,6 @@ urlpatterns = [
     path('cyt/caseManage/', include(cyt.CaseManageEdit)),
     path('cyt/planManage/', include(cyt.PlanManageEdit)),
     path('cyt/stepManage/', include(cyt.StepManageEdit)),
+    path('cyt/fileManage/', include(cyt.FileManageEdit)),
     path('cyt/user/', include('app_user.urls')),
 ]

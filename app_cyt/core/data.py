@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : public.py
 # @Software: PyCharm
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import models
 from app_cyt.models import WChatBotModel
 from app_cyt.models import *
@@ -38,6 +38,8 @@ class publicDatabase:
                 return self.Model.objects.get(name=name)
             except ObjectDoesNotExist:
                 return None
+            except MultipleObjectsReturned:
+                return self.Model.objects.filter(name=name)[0]
         return None
 
 
@@ -91,14 +93,11 @@ class PlanData(publicDatabase):
             objs = self.Model.objects.filter(pk=pk)
         else:
             objs = self.Model.objects.filter()
-            if name:
-                objs = objs.filter(name__contains=name)
-            if desc:
-                objs = objs.filter(desc__contains=desc)
-        resList = []
-        for obj in objs:
-            resList.append(obj.dict_for_list())
-        return resList
+        if name:
+            objs = objs.filter(name__contains=name)
+        if desc:
+            objs = objs.filter(desc__contains=desc)
+        return objs
 
 
 class CaseData(publicDatabase):
@@ -121,10 +120,10 @@ class CaseData(publicDatabase):
                 objs = self.Model.objects.filter(plan=plan_id)
             else:
                 objs = self.Model.objects.filter()
-            if name:
-                objs = objs.filter(name__contains=name)
-            if desc:
-                objs = objs.filter(desc__contains=desc)
+        if name:
+            objs = objs.filter(name__contains=name)
+        if desc:
+            objs = objs.filter(desc__contains=desc)
         return objs
 
 class ModuleData(publicDatabase):
@@ -141,10 +140,10 @@ class ModuleData(publicDatabase):
             objs = self.Model.objects.filter(pk=pk)
         else:
             objs = self.Model.objects.filter()
-            if name:
-                objs = objs.filter(name__contains=name)
-            if desc:
-                objs = objs.filter(desc__contains=desc)
+        if name:
+            objs = objs.filter(name__contains=name)
+        if desc:
+            objs = objs.filter(desc__contains=desc)
         return objs
 class LabelData(publicDatabase):
     Model = Labels
@@ -160,10 +159,10 @@ class LabelData(publicDatabase):
             objs = self.Model.objects.filter(pk=pk)
         else:
             objs = self.Model.objects.filter()
-            if name:
-                objs = objs.filter(name__contains=name)
-            if desc:
-                objs = objs.filter(desc__contains=desc)
+        if name:
+            objs = objs.filter(name__contains=name)
+        if desc:
+            objs = objs.filter(desc__contains=desc)
         return objs
 
 
@@ -187,17 +186,37 @@ class StepData(publicDatabase):
             objs = self.Model.objects.filter(pk=pk)
         else:
             if case_id:
-                objs = self.Model.objects.filter(plan=case_id)
+                objs = self.Model.objects.filter(case_id=case_id)
             else:
                 objs = self.Model.objects.filter()
-            if name:
-                objs = objs.filter(name__contains=name)
-            if desc:
-                objs = objs.filter(desc__contains=desc)
-        resList = []
-        for obj in objs:
-            resList.append(obj.dict_for_list())
-        return resList
+        if name:
+            objs = objs.filter(name__contains=name)
+        if desc:
+            objs = objs.filter(desc__contains=desc)
+        return objs
+
+
+class FileData(publicDatabase):
+    Model = FileSave
+
+    def add(self, name: str, desc: str, path: str):
+        return self.Model.objects.create(
+            name=name,
+            desc=desc,
+            path=path
+        )
+
+    def select(self,  pk=None, name=None):
+
+        if pk:
+            objs = self.Model.objects.filter(pk=pk)
+        else:
+            objs = self.Model.objects.filter()
+        if name:
+            objs = objs.filter(name__contains=name)
+        return objs
+
+
 
 class HandlersData(publicDatabase):
     Model = Handlers
@@ -217,10 +236,10 @@ class HandlersData(publicDatabase):
                 objs = self.Model.objects.filter(plan=step_id)
             else:
                 objs = self.Model.objects.filter()
-            if name:
-                objs = objs.filter(name__contains=name)
-            if desc:
-                objs = objs.filter(desc__contains=desc)
+        if name:
+            objs = objs.filter(name__contains=name)
+        if desc:
+            objs = objs.filter(desc__contains=desc)
         resList = []
         for obj in objs:
             resList.append(obj.dict_for_list())

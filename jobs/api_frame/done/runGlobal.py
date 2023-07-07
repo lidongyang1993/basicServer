@@ -11,14 +11,22 @@ import os
 import random
 import time
 from json import JSONDecodeError
+
+from urllib3 import encode_multipart_formdata
+from urllib3.filepost import choose_boundary
+
 from jobs.api_frame.basics import *
 from jobs.api_frame.tools.logger import init_log
 from jobs.api_frame.tools.login import get_login_session
 from jobs.api_frame.tools.readResponse import *
 from jobs.api_frame.tools.replace import data_replace
 from jobs.api_frame.done.field import *
+from jobs.api_frame.tools.get_file_info import get_file_info
 from jobs.api_frame.tools.timeFile import time_strf_time_for_file_name
 from tools.PG_DB import PG
+
+
+
 
 
 class Response:
@@ -55,9 +63,6 @@ class RunGlobal:
 
     def __init__(self, name):
         self.global_value = {}
-        self.msg_list = []
-        self.file_name = ''
-        self.Logger = None
         self.file_name = time_strf_time_for_file_name(name, ".log")
 
     def make_log(self, path=None):
@@ -100,6 +105,10 @@ class RunGlobal:
                 res = ""
                 for _ in range(length):
                     res += random.choice(RANDOM.RANDOM_str + RANDOM.RANDOM_STR)
+            if r_type == "STR_int":
+                res = ""
+                for _ in range(length):
+                    res += random.choice(RANDOM.RANDOM_STR + RANDOM.RANDOM_int)
             self.Run.global_value.update({filed: res})
             self.log_msg_info(str({filed: res}))
 
@@ -235,7 +244,6 @@ class RunGlobal:
             super().before()
             for key in self.Run.global_value.keys():
                 self.logger(MSG.GLOBAL_VALUE.format({key:  self.Run.global_value[key]}))
-            # self.logger(MSG.GLOBAL_VALUE.format(RunGlobal.global_value))
             self.update_global(self.variable)
 
         def main(self):
@@ -271,7 +279,7 @@ class RunGlobal:
             self.type = self.params.get(STEP.TYPE, None)
             self.stepNumber = self.params.get(STEP.STEP_NUMBER)
             self.sleep = self.params.get(STEP.SLEEP, None)
-
+            self.retry = self.params.get(STEP.RETRY, None)
             self.request_run = None
             self.handlers_list = []
 
@@ -343,6 +351,7 @@ class RunGlobal:
 
         def before(self):
             super().before()
+            print(self.Run.global_value)
             self.quote()
 
         def after(self):
@@ -352,8 +361,9 @@ class RunGlobal:
 
         def sleep_time(self):
             if self.sleep:
-                time.sleep(self.sleep)
                 self.logger(MSG.SLEEP.format(self.sleep))
+                time.sleep(self.sleep)
+
 
         def asserts(self, params):
             asserts = RunGlobal.RunAsserts(
@@ -401,10 +411,10 @@ class RunGlobal:
         def __init__(self, run, params):
             super().__init__(run, params)
             self.url = self.params.get(REQUEST.HOST) + self.params.get(REQUEST.PATH)
-            self.headers = self.params.get(REQUEST.HEADERS)
+            self.headers = self.params.get(REQUEST.HEADERS, {})
             self.method = self.params.get(REQUEST.METHOD)
             self.data = self.params.get(REQUEST.DATA)
-            self.cookies = self.params.get(REQUEST.COOKIES)
+            self.cookies = self.params.get(REQUEST.COOKIES, {})
             self.post_type = self.params.get(REQUEST.POST_TYPE)
             self.response = None
             self.response_type = self.params.get(REQUEST.RES_TYPE)
@@ -421,11 +431,42 @@ class RunGlobal:
             super().before()
             self.quote()
 
-        def func(self):
-            # self.logger(MSG.REQUEST_DATA.format(self.name, self.url, json.dumps(self.data)))
+        def upload_make_data(self):
+            header = {}
+            file_fields = self.data["file_fields"]
+            file_id = self.data["file_id"]
+            file_type = self.data["file_type"]
             try:
-                self.response = http_client_util(self.url, self.method,
-                                                 self.post_type, self.data,
+                file_Name, file_path = get_file_info(file_id)
+            except AttributeError:
+                return None, None
+            data = []
+            for _ in self.data["params"]:
+                data.append((_[0], (None, _[1], "form-data")))
+            data.append((file_fields, (file_Name, open(file_path, "rb").read(), file_type)))
+            bo = "----{}".format(choose_boundary())
+            encode_data = encode_multipart_formdata(data, bo)
+            data_res = encode_data[0]
+            encode_data_1 = encode_data[1]
+            header['Content-Type'] = encode_data_1
+            return header, data_res
+
+        def func(self):
+            if not self.headers:
+                self.headers = {}
+            if self.post_type == REQUEST.UPLOAD:
+                header, data = self.upload_make_data()
+                if not header or data:
+                    self.result = "找不到文件数据"
+                    self.isPass = False
+                method = METHOD.POST
+                self.headers.update(header)
+            else:
+                data = self.data
+                method = self.method
+            try:
+                self.response = http_client_util(self.url, method,
+                                                 self.post_type, data,
                                                  headers=self.headers, cookies=self.cookies, verify=False)
                 if self.response_type == REQUEST.HTML:
                     self.result = self.response.content

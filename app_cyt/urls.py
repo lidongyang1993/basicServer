@@ -20,6 +20,7 @@ class ForTest:
 class CaseEdit:
     urlpatterns = [
         path('run', views.run_case_by_module),
+        path('run_db', views.run_case_by_db),
         path('add', views.add_case_by_module),
         path('get', views.get_case_by_module_plan_name),
         path('update', views.update_case_by_module),
@@ -42,4 +43,10 @@ class PlanManageEdit:
 class StepManageEdit:
     urlpatterns = [
         path('list', views.get_step_list)
+    ]
+class FileManageEdit:
+    urlpatterns = [
+        path('list', views.get_file_list),
+        path('get', views.get_file_data),
+        path('upload', views.save_file)
     ]

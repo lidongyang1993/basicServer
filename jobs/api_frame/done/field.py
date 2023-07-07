@@ -19,6 +19,7 @@ class PLAN:
 
 class HANDLERS:
     TYPE = "type"
+    HANDLERS_TYPE = "handlers_type"
     NUMBER = "number"
 
     PARAMS = "params"
@@ -79,12 +80,16 @@ class CASE:
 class STEP:
     CASE = "case"
     TYPE = "type"  # 步骤类型，用于区分插件和请求
+    STEP_TYPE = "step_type"  # 步骤类型，用于区分插件和请求
     HANDLERS = "handlers"
     PARAMS = "params"
     REDATA = "reData"
     REQUEST = "request"
     PLUGIN = "plugIn"
     STEP_NUMBER = "stepNumber"
+
+
+    RETRY = "retry"
 
     SLEEP = "sleep"
 
@@ -102,7 +107,7 @@ class LOGIN:
     CODE = "code"
 
 class RANDOM:
-    RANDOM_TYPE = "random_type"  # 类型
+    RANDOM_TYPE = "random_type"  # 类型 STR：随机的大写字符串，str随机的小写字符串，Str随机的大小写字符串，int随机的数字字符串【可能出现："0001558"】
     LENGTH = "length"  # 长度
     GET_FIELD = "get_field"  # 保留字段
 
@@ -142,6 +147,9 @@ class REQUEST:
 
     HTML = "html"
     JSON = "json"
+    UPLOAD = "upload"
+
+
     TEXT = "text"
     FORM = "form"
 

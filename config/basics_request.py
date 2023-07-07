@@ -7,6 +7,9 @@
 # @Software: PyCharm
 import json
 
+import django
+from django.http import RawPostDataException
+
 from config.field.db_field import METHOD
 from config.field.res_field import RESPONSE, KEY, RESULT, DoError
 
@@ -30,6 +33,8 @@ class RequestBasics:
                 try:
                     self.data = json.loads(request.body)
                 except TypeError:
+                    self.data = {}
+                except RawPostDataException:
                     self.data = {}
         else:
             self.data = request.GET.dict()

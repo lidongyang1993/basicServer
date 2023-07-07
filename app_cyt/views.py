@@ -13,7 +13,7 @@ from jobs.api_frame.case.read_and_add import module_list, add_plan_into_module, 
 from jobs.api_frame.case.check_plan import Check
 from tools.read_cnf import read_data
 from app_cyt.core.data import *
-from config.field.res_field import KEY, RESULT, FILED
+from config.field.res_field import KEY, RESULT, FILED, RESPONSE, DoError
 import threading
 
 from tools.read_json_to_ext_asserts import ReadHar
@@ -22,7 +22,7 @@ SERVER_HOST = read_data("file_server", "host")
 
 KEY_FILE = 'key'
 
-BASE_DIR = Path(__file__).resolve().parent.parent / "jobs/api_frame"
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 @csrf_exempt
@@ -155,6 +155,48 @@ def run_case_by_module(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
+
+@csrf_exempt
+@require_POST
+def run_case_by_db(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str},
+        {KEY.NAME: FILED.PLAN_ID, KEY.MUST: True, KEY.TYPE: str},
+        {KEY.NAME: FILED.W_BOT_ID, KEY.MUST: True, KEY.TYPE: str}
+    ]
+
+    def run_func(data):
+        user = data.get(FILED.USER, None)
+        plan_id = data.get(FILED.PLAN_ID, None)
+        w_bot_id = data.get(FILED.W_BOT_ID, None)
+        try:
+            w_bot_url = wChatData().get_url_by_id(pk=w_bot_id)
+        except models.ObjectDoesNotExist:
+            w_bot_url = None
+        try:
+            plan_data = PlanData().get_by_id(pk=plan_id)
+            data_path = BASE_DIR / "tools/jobs/caseData/data.json"
+            with open(data_path, "w", encoding="utf-8") as f:
+                f.write(json.dumps(plan_data, ensure_ascii=False))
+        except models.ObjectDoesNotExist:
+            plan_data = None
+
+        if not w_bot_url:
+            return {"report_url": None, "msg": "找不到机器人"}
+        if not plan_data:
+            return {"plan_data": None, "msg": "找不到用例数据"}
+
+        command = '/bin/sh start_run_from_db.sh "{}" "{}" '.format(user, w_bot_url)
+        os.system(command)
+        return {"report_url": "http://" + SERVER_HOST + ":9000/user_report"}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+
+
 @csrf_exempt
 @require_POST
 def get_case_by_module_plan_name(request: WSGIRequest):
@@ -190,7 +232,7 @@ def run_case_by_module_test(request: WSGIRequest):
         data_check = Check().check_plan(plan)
         if data_check.get(RESULT.CODE) != 0:
             return {"result": False, "info": data_check}
-        path = BASE_DIR / "reports/user_log/{}/".format(user)
+        path = BASE_DIR / "jobs/api_frame/reports/user_log/{}/".format(user)
         if not os.path.exists(path):
             os.mkdir(path)
         shutil.rmtree(path)
@@ -290,21 +332,22 @@ def get_plan_list(request: WSGIRequest):
         {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int},
         {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
         {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: FILED.SIZE, KEY.MUST: False, KEY.TYPE: int},
+        {KEY.NAME: FILED.CURRENT_PAGE, KEY.MUST: False, KEY.TYPE: int},
     ]
 
     def run_func(data):
-        pk = data.get(FILED.DATA, None)
+        pk = data.get(FILED.ID, None)
         name = data.get(FILED.FIELDS, None)
         desc = data.get(FILED.E_FIELDS, None)
-        try:
-            resData = PlanData().select(pk=pk, name=name, desc=desc)
-        except models.ObjectDoesNotExist:
-            resData = None
-        return {
-            FILED.DATALIST: resData,
-            FILED.TOTAL: len(resData)
-        }
 
+        size = data.get(FILED.SIZE, 10)
+        current_page = data.get(FILED.CURRENT_PAGE, 1)
+        try:
+            objs = PlanData().select(pk=pk, name=name, desc=desc)
+        except models.ObjectDoesNotExist:
+            objs = None
+        return make_data_list(current_page, size, objs)
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
@@ -317,25 +360,108 @@ def get_step_list(request: WSGIRequest):
         {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int},
         {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
         {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str},
-        {KEY.NAME: STEP.CASE_ID, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: STEP.CASE_ID, KEY.MUST: False, KEY.TYPE: int},
+        {KEY.NAME: FILED.SIZE, KEY.MUST: False, KEY.TYPE: int},
+        {KEY.NAME: FILED.CURRENT_PAGE, KEY.MUST: False, KEY.TYPE: int},
     ]
 
     def run_func(data):
-        pk = data.get(FILED.DATA, None)
-        name = data.get(FILED.FIELDS, None)
-        desc = data.get(FILED.E_FIELDS, None)
+        pk = data.get(FILED.ID, None)
+        name = data.get(FILED.NAME, None)
+        desc = data.get(FILED.DESC, None)
+        case_id = data.get(STEP.CASE_ID, None)
+        size = data.get(FILED.SIZE, 10)
+        current_page = data.get(FILED.CURRENT_PAGE, 1)
         try:
-            resData = PlanData().select(pk=pk, name=name, desc=desc)
+            objs = StepData().select(case_id=case_id, pk=pk, name=name, desc=desc)
         except models.ObjectDoesNotExist:
-            resData = None
-        return {
-            FILED.DATALIST: resData,
-            FILED.TOTAL: len(resData)
-        }
+            objs = None
+        return make_data_list(current_page, size, objs)
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+@csrf_exempt
+@require_POST
+def get_file_data(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int},
+    ]
+
+    def run_func(data):
+        pk = data.get(FILED.ID, None)
+        try:
+            res_data = FileData().get_by_id(pk=pk)
+        except models.ObjectDoesNotExist:
+            res_data = None
+        return res_data
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
+@csrf_exempt
+@require_POST
+def get_file_list(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int},
+        {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
+    ]
+
+    def run_func(data):
+        pk = data.get(FILED.ID, None)
+        name = data.get(FILED.NAME, None)
+        size = data.get(FILED.SIZE, 10)
+        current_page = data.get(FILED.CURRENT_PAGE, 1)
+        try:
+            objs = FileData().select(pk=pk, name=name)
+        except models.ObjectDoesNotExist:
+            objs = None
+        return make_data_list(current_page, size, objs)
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+@csrf_exempt
+@require_POST
+def save_file(request: WSGIRequest):
+
+
+    keys = [
+        {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: int},
+    ]
+
+    def run_func(data):
+        try:
+            file_obj = request.FILES.get('file')
+            desc = request.FILES.get(FILED.DESC)
+            if file_obj:
+
+                file_name = file_obj.name
+                if FileData().is_exit(name=file_name):
+                    raise DoError(RESPONSE.FILE_EXIT_ERROR)
+                file_path = BASE_DIR / "templates/fileSave/"
+
+                file_all_path = file_path / file_name
+                file_contents = file_obj.read()
+            else:
+                raise DoError(RESPONSE.FILE_NO_ERROR)
+            with open(file_all_path, "wb") as f:
+                f.write(file_contents)
+            f.close()
+            if not desc:
+                desc = file_name
+            FileData().add(file_name, desc, file_all_path)
+        except KeyError:
+            raise DoError(RESPONSE.FILE_ERROR)
+        finally:
+            pass
+
+        return {"file_name": file_name, "file_path": file_path.__str__()}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
 
 @csrf_exempt
 @require_POST
@@ -387,12 +513,14 @@ def get_module_list(request: WSGIRequest):
     return JsonResponse(res)
 
 
+
+
 def make_data_list(current_page, size,  objs):
     index_start = (current_page - 1) * size
     index_end = current_page * size
     resList = []
     if objs:
-        if len(objs) < index_end:
+        if len(objs) <= index_end:
             l_obs = objs
         else:
             l_obs = objs[index_start:index_end]

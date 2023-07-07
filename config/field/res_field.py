@@ -46,7 +46,7 @@ class FILED:
     REPORT_DESC = "report_desc"
 
     W_BOT_ID = "w_bot_id"
-
+    PLAN_ID = "planId"
     DATALIST = "dataList"
     TOTAL = "total"
 
@@ -78,7 +78,10 @@ class RESPONSE:
     PARAMS_DATA_ERROR = {RESULT.CODE: 102, RESULT.MESSAGE: "参数数据异常，请检查！", RESULT.DATA: {}}
 
     DATA_NO_ERROR = {RESULT.CODE: 103, RESULT.MESSAGE: "未能查询到数据，请检查！", RESULT.DATA: {}}
-    DATA_MODULE_ERROR = {RESULT.CODE: 103, RESULT.MESSAGE: "模型不存在，请检查！", RESULT.DATA: {}}
+    DATA_MODULE_ERROR = {RESULT.CODE: 104, RESULT.MESSAGE: "模型不存在，请检查！", RESULT.DATA: {}}
+    FILE_NO_ERROR = {RESULT.CODE: 105, RESULT.MESSAGE: "没有文件，请检查！", RESULT.DATA: {}}
+    FILE_EXIT_ERROR = {RESULT.CODE: 106, RESULT.MESSAGE: "文件名称已经存在，请检查！", RESULT.DATA: {}}
+    FILE_ERROR = {RESULT.CODE: 107, RESULT.MESSAGE: "未知错误，请联系管理员！", RESULT.DATA: {}}
 
 
 

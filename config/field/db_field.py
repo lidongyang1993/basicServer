@@ -33,10 +33,11 @@ class CASE(BASIC):
 class STEP(BASIC):
     NUMBER = "number"
     STEP_TYPE = "step_type"
+    TYPE = "type"
     TERMINATION = "termination"
     PARAMS = "params"
     SLEEP = "sleep"
-    CASE_ID = "case_id"
+    CASE_ID = "caseId"
 
 
     HANDLERS = "handlers"
@@ -61,7 +62,8 @@ class REQ_RES_TYPE:
 
 class HANDLERS(BASIC):
     HANDLERS_TYPE = "handlers_type"
-    PARAMS = "PARAMS"
+    TYPE = "type"
+    PARAMS = "params"
 
 class ENVIRONMENT(BASIC):
     VALUE = "value"

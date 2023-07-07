@@ -67,3 +67,7 @@ class wChatBotAdmin(admin.ModelAdmin):
 @admin.register(Labels)
 class wChatBotAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(FileSave)
+class wChatBotAdmin(admin.ModelAdmin):
+    pass

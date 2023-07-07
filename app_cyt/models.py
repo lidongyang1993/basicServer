@@ -87,8 +87,8 @@ class FieldsPublicBasicType(BasicFields, PublicData, BasicType):
             BASIC.LABEL: [_.self_dict() for _ in self.label.all()],
             BASIC.CREATE_USER: self.create_user,
             BASIC.UPDATE_USER: self.update_user,
-            BASIC.CREATED_TIME: self.created_time,
-            BASIC.UPDATED_TIME: self.updated_time,
+            BASIC.CREATED_TIME: self.created_time.strftime("%Y-%m-%d%H:%M"),
+            BASIC.UPDATED_TIME: self.updated_time.strftime("%Y-%m-%d%H:%M"),
         }
 
 
@@ -184,7 +184,7 @@ class Step(BasicFields):
             STEP.NUMBER: self.number,
             BASIC.NAME: self.name,
             BASIC.DESC: self.desc,
-            STEP.STEP_TYPE: self.step_type,
+            STEP.TYPE: self.step_type,
             STEP.SLEEP: self.sleep,
             STEP.PARAMS: self.params,
             STEP.TERMINATION: self.termination
@@ -209,7 +209,7 @@ class Handlers(publicID):
     def dict_for_list(self):
         return {
             BASIC.ID: self.pk,
-            HANDLERS.HANDLERS_TYPE: self.handler_type,
+            HANDLERS.TYPE: self.handler_type,
             HANDLERS.PARAMS: self.params,
         }
 
@@ -234,8 +234,8 @@ class TePlan(FieldsPublicBasicType):
             BASIC.LABEL: [_.self_dict() for _ in self.label.all()],
             BASIC.CREATE_USER: self.create_user,
             BASIC.UPDATE_USER: self.update_user,
-            BASIC.CREATED_TIME: self.created_time,
-            BASIC.UPDATED_TIME: self.updated_time,
+            BASIC.CREATED_TIME: self.created_time.strftime("%Y-%m-%d%H:%M"),
+            BASIC.UPDATED_TIME: self.updated_time.strftime("%Y-%m-%d%H:%M"),
         }
 
     def dict_for_get(self):
@@ -245,3 +245,10 @@ class TePlan(FieldsPublicBasicType):
             PLAN.CASE: self.case
         })
         return res
+
+
+class FileSave(BasicFields):
+    path = models.CharField(max_length=200, default=None, blank=False, null=False)
+
+    class Meta:
+        verbose_name = "预存文件"
