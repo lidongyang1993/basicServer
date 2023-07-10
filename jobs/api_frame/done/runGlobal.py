@@ -433,12 +433,15 @@ class RunGlobal:
 
         def upload_make_data(self):
             header = {}
-            file_fields = self.data["file_fields"]
-            file_id = self.data["file_id"]
-            file_type = self.data["file_type"]
             try:
+
+                file_fields = self.data["file_fields"]
+                file_id = self.data["file_id"]
+                file_type = self.data["file_type"]
                 file_Name, file_path = get_file_info(file_id)
             except AttributeError:
+                return None, None
+            except KeyError:
                 return None, None
             data = []
             for _ in self.data["params"]:
@@ -456,7 +459,7 @@ class RunGlobal:
                 self.headers = {}
             if self.post_type == REQUEST.UPLOAD:
                 header, data = self.upload_make_data()
-                if not header or data:
+                if not header or not data:
                     self.result = "找不到文件数据"
                     self.isPass = False
                 method = METHOD.POST
