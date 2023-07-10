@@ -41,3 +41,9 @@ class RequestError(publicError):
 
 class DoneError(publicError):
     """DoneError"""
+
+class JumpError(publicError):
+    """JumpError"""
+
+class AssertError(publicError):
+    """AssertError"""

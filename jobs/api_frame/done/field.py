@@ -105,6 +105,10 @@ class LOGIN:
     PASS_WORD = "pass_word"
     COOKIES_FIELD = "cookies_field"
     CODE = "code"
+class RETRY:
+    INTERVAL = "interval"
+    TIMES = "times"
+    JUMP = "jump"
 
 class RANDOM:
     RANDOM_TYPE = "random_type"  # 类型 STR：随机的大写字符串，str随机的小写字符串，Str随机的大小写字符串，int随机的数字字符串【可能出现："0001558"】

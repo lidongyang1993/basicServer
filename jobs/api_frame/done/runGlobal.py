@@ -189,6 +189,12 @@ class RunGlobal:
 
         def after(self):
             if not self.isPass:
+                if self.RUN_TYPE in [OTHER.YANG_ZHENG_QI, OTHER.TI_QU__YAN_ZHENG_QI]:
+                    raise AssertError(self.result)
+
+                if self.RUN_TYPE == OTHER.JIE_KOU_QING_QIU:
+                    raise RequestError(self.result)
+
                 self.logger(MSG.STOP_RUN.format(Error.DoneError, self.result))
                 raise DoneError(self.result)
 
@@ -239,6 +245,7 @@ class RunGlobal:
             self.step = self.params.get(CASE.STEP)
             self.variable = self.params.get(CASE.VARIABLE)
             self.step_list = []
+            self.result = "用例通过"
 
         def before(self):
             super().before()
@@ -249,9 +256,17 @@ class RunGlobal:
         def main(self):
             try:
                 super().main()
-            except DoneError as e:
+            except AssertError as e:
                 self.result = e.node
                 self.isPass = False
+            except JumpError as e:
+                self.result = e.node
+                self.isPass = False
+            except RequestError as e:
+                self.result = e.node
+                self.isPass = False
+            self.logger("用例执行结果:{}".format(self.result))
+
 
         def func(self):
             for _ in self.step:
@@ -281,6 +296,7 @@ class RunGlobal:
             self.sleep = self.params.get(STEP.SLEEP, None)
             self.retry = self.params.get(STEP.RETRY, None)
             self.request_run = None
+            self.times = 0
             self.handlers_list = []
 
         def init_msg(self):
@@ -317,6 +333,36 @@ class RunGlobal:
             code = self.data_replace(code, self.Run.global_value)
             self.plugIn.test_login(user, pwd, cookies_field, code)
 
+        def retry_run(self):
+            if not self.retry:
+                return
+            interval = self.retry.get(RETRY.INTERVAL, None)
+            times = self.retry.get(RETRY.INTERVAL, None)
+            jump = self.retry.get(RETRY.JUMP, None)
+            if not interval:
+                return
+            if not times:
+                return
+            if self.times >= times:
+                raise JumpError("循环完毕，不再循环")
+            try:
+                for _ in jump:
+                    if _.get(HANDLERS.TYPE) == HANDLERS.ASSERTS:
+                        if self.asserts(_).isPass:
+                            raise JumpError("结果异常，跳出循环")
+                    if _.get(HANDLERS.TYPE) == HANDLERS.EXT_ASSERT:
+                        if self.ext_assert(_).isPass:
+                            raise JumpError("结果异常，跳出循环")
+            except AssertError as e:
+                pass
+
+            self.logger("重新执行：第{}次--开始".format(self.times+1))
+            self.times += 1
+            time.sleep(interval)
+            self.main()
+
+
+
         def random(self, params):
             random_type = params.get(RANDOM.RANDOM_TYPE)
             random_length = params.get(RANDOM.LENGTH)
@@ -341,21 +387,27 @@ class RunGlobal:
             for _ in self.handlers:
                 params = _
                 if _.get(HANDLERS.TYPE) == HANDLERS.ASSERTS:
-                    self.asserts(params)
+                    self.handlers_list.append(self.asserts(params))
                 if _.get(HANDLERS.TYPE) == HANDLERS.EXTRACT:
-                    self.extract(params)
+                    self.handlers_list.append(self.extract(params))
                 if _.get(HANDLERS.TYPE) == HANDLERS.CALC:
-                    self.calculate(params)
+                    self.handlers_list.append(self.calculate(params))
                 if _.get(HANDLERS.TYPE) == HANDLERS.EXT_ASSERT:
-                    self.ext_assert(params)
+                    self.handlers_list.append(self.ext_assert(params))
 
         def before(self):
             super().before()
-            print(self.Run.global_value)
+            self.logger(json.dumps(self.Run.global_value))
             self.quote()
 
         def after(self):
-            self.handlers_run()
+            try:
+                self.handlers_run()
+            except AssertError as e:
+                if self.retry:
+                    self.retry_run()
+                else:
+                    raise AssertError(e.node)
             super().after()
             self.sleep_time()
 
@@ -371,7 +423,7 @@ class RunGlobal:
                 params.get(HANDLERS.PARAMS)
             )
             asserts.main()
-            self.handlers_list.append(asserts)
+            return asserts
 
         def extract(self, params):
             extract = RunGlobal.RunExtract(
@@ -380,21 +432,22 @@ class RunGlobal:
                 response=self.response
             )
             extract.main()
-            self.handlers_list.append(extract)
+            return extract
+
 
         def calculate(self, params):
             cal = self.Run.RunCalculate(self.Run, params.get(HANDLERS.PARAMS))
             cal.main()
-            self.handlers_list.append(cal)
+            return cal
 
         def ext_assert(self, params):
-            cal = RunGlobal.RunExtAssert(
+            ea = RunGlobal.RunExtAssert(
                 self.Run,
                 params.get(HANDLERS.PARAMS),
                 response=self.response
             )
-            cal.main()
-            self.handlers_list.append(cal)
+            ea.main()
+            return ea
 
         def requests(self, params):
             self.request_run = self.Run.RunRequest(self.Run, params)
