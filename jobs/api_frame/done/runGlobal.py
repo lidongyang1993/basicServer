@@ -420,7 +420,6 @@ class RunGlobal:
             self.response_type = self.params.get(REQUEST.RES_TYPE)
 
         def quote(self):
-            # self.logger(MSG.QUOTE.format(RunGlobal.global_value))
             self.headers = self.data_replace(self.headers, self.Run.global_value)
             self.data = self.data_replace(self.data, self.Run.global_value)
             self.logger(MSG.PARAMS.format(json.dumps(self.data, ensure_ascii=False)))
