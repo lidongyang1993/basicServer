@@ -431,19 +431,22 @@ class RunGlobal:
             self.quote()
 
         def upload_make_data(self):
+            msg = "成功获取数据"
             header = {}
             try:
-
                 file_fields = self.data["file_fields"]
                 file_id = self.data["file_id"]
                 file_type = self.data["file_type"]
+                params = self.data["params"]
                 file_Name, file_path = get_file_info(file_id)
-            except AttributeError:
-                return None, None
-            except KeyError:
-                return None, None
+            except AttributeError as e:
+                msg = "获取文件失败，AttributeError：{}".format(str(e))
+                return None, None, msg
+            except KeyError as e:
+                msg = "KeyError，参数缺失：{}".format(str(e))
+                return None, None, msg
             data = []
-            for _ in self.data["params"]:
+            for _ in params:
                 data.append((_[0], (None, _[1], "form-data")))
             data.append((file_fields, (file_Name, open(file_path, "rb").read(), file_type)))
             bo = "----{}".format(choose_boundary())
@@ -451,15 +454,15 @@ class RunGlobal:
             data_res = encode_data[0]
             encode_data_1 = encode_data[1]
             header['Content-Type'] = encode_data_1
-            return header, data_res
+            return header, data_res, msg
 
         def func(self):
             if not self.headers:
                 self.headers = {}
             if self.post_type == REQUEST.UPLOAD:
-                header, data = self.upload_make_data()
+                header, data, msg = self.upload_make_data()
                 if not header or not data:
-                    self.result = "找不到文件数据"
+                    self.result = msg
                     self.isPass = False
                     return
                 method = METHOD.POST
