@@ -462,6 +462,7 @@ class RunGlobal:
                 if not header or not data:
                     self.result = "找不到文件数据"
                     self.isPass = False
+                    return
                 method = METHOD.POST
                 self.headers.update(header)
             else:
