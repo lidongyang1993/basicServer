@@ -228,7 +228,6 @@ def run_case_by_module_test(request: WSGIRequest):
         plan = data.get(FILED.DATA, None)
         user = data.get(FILED.USER, None)
         run = RunGlobal("{}".format(user))
-        # run.global_value = {}
         data_check = Check().check_plan(plan)
         if data_check.get(RESULT.CODE) != 0:
             return {"result": False, "info": data_check}

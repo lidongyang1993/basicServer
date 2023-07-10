@@ -41,7 +41,7 @@ def init_log(service_name, path="reports/log"):
 
 
     # 创建logger
-    logger = logging.getLogger('main_logger')
+    logger = logging.getLogger(service_name)
     logger.setLevel(logging.DEBUG)
 
     # 创建handler 用于写入日志文件
@@ -68,3 +68,7 @@ def init_log(service_name, path="reports/log"):
     logger.addHandler(info_handler)
     # logger.addHandler(c_handler)
     return logger
+
+
+if __name__ == '__main__':
+    Logger = init_log("wangyu")

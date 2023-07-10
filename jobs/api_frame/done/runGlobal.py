@@ -6,8 +6,6 @@
 # @File    : timeFile.py
 # @Software: PyCharm
 import difflib
-import json
-import os
 import random
 import time
 from json import JSONDecodeError
@@ -24,8 +22,6 @@ from jobs.api_frame.done.field import *
 from jobs.api_frame.tools.get_file_info import get_file_info
 from jobs.api_frame.tools.timeFile import time_strf_time_for_file_name
 from tools.PG_DB import PG
-
-
 
 
 
@@ -353,7 +349,7 @@ class RunGlobal:
                     if _.get(HANDLERS.TYPE) == HANDLERS.EXT_ASSERT:
                         if self.ext_assert(_).isPass:
                             raise JumpError("结果异常，跳出循环")
-            except AssertError as e:
+            except AssertError:
                 pass
 
             self.logger("重新执行：第{}次--开始".format(self.times+1))
@@ -747,6 +743,7 @@ class RunGlobal:
                 self.result = self.isPass = False
             else:
                 self.result = self.isPass = True
+
 
 
 if __name__ == '__main__':
