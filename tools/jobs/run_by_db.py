@@ -14,16 +14,27 @@ from unittestreport import TestRunner, ddt, list_data
 from jobs.api_frame.case import *
 from jobs.api_frame.done.runGlobal import *
 from jobs.api_frame.tools.send_wChat import send_test_report
-from tools.read_cnf import read_data
 from jobs.api_frame.basics.read_plan import *
-
+from tools.read_cnf import read_data
 RUNNING = "RUNNING"
 CASE = "CASE"
 TITLE = "title"
 DESC = "desc"
-
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 r = RunGlobal("PUBLIC-LOG")
 r.make_log()
+
+
+def read_plan(name):
+    try:
+        file_path = BASE_DIR / "tools/jobs/caseData/{}.json".format(name)
+        read_file = open(file_path, "r")
+        return json.loads(read_file.read())
+    except FileNotFoundError:
+        return {}
+    except JSONDecodeError:
+        return {}
+
 
 case_data = read_plan("data")
 
