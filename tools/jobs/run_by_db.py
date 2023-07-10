@@ -10,8 +10,7 @@ import warnings
 
 import urllib3
 from unittestreport import TestRunner, ddt, list_data
-
-from jobs.api_frame.case import *
+import os
 from jobs.api_frame.done.runGlobal import *
 from jobs.api_frame.tools.send_wChat import send_test_report
 from jobs.api_frame.basics.read_plan import *
