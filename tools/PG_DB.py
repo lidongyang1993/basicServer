@@ -35,8 +35,14 @@ class PG:
         if not self.con:
             return
         cur = self.con.cursor()
-        cur.execute(SQL)
-        result = cur.fetchall()
+        try:
+            cur.execute(SQL)
+            if 'select' in SQL.lower():
+                result = cur.fetchall()
+            else:
+                result = None
+        except Exception as e:
+            result = e
         self.close_db_connection()
         self.result = result
 
