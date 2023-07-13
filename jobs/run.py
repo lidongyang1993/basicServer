@@ -5,6 +5,7 @@
 # @Site    : 
 # @File    : run.py
 # @Software: PyCharm
+import json
 import time
 from json import JSONDecodeError
 
@@ -814,6 +815,7 @@ class RunExtAssert(RunBasic):
 
         self.Global.log(self.left, left=MSG.CUT_FOUR + MSG.EXT_RESULT)
         self.code = MSG.ASSERT_CODE.format(self.func_assert)
+        self._to_str()
         self.result = eval(self.code)
         if not self.result:
             self.result = self.isPass = False
@@ -822,6 +824,16 @@ class RunExtAssert(RunBasic):
 
     def after(self):
         super().after()
+
+    def _to_str(self):
+        if isinstance(self.right, dict):
+            self.right = json.dumps(self.right)
+        if isinstance(self.left, dict):
+            self.left = json.dumps(self.left)
+        if not isinstance(self.left, str):
+            self.left = str(self.left)
+        if not isinstance(self.right, str):
+            self.right = str(self.right)
 
     def end(self):
         self.Global.log(self.result, left=MSG.CUT_FOUR + MSG.HANDLER_RESULT)
@@ -903,11 +915,22 @@ class RunAsserts(RunBasic):
         self.Global.log(self.Params, left=MSG.CUT_FOUR + MSG.HANDLERS_PARAMS)
 
     def func(self):
+        self._to_str()
         if not eval(self.code):
             self.result = str(self.left) + "\t??\t" + str(self.right)
             self.isPass = False
         else:
             self.result = self.isPass = True
+
+    def _to_str(self):
+        if isinstance(self.right, dict):
+            self.right = json.dumps(self.right)
+        if isinstance(self.left, dict):
+            self.left = json.dumps(self.left)
+        if not isinstance(self.left, str):
+            self.left = str(self.left)
+        if not isinstance(self.right, str):
+            self.right = str(self.right)
 
     def after(self):
         super().after()
