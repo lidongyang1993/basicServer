@@ -922,14 +922,35 @@ class RunAsserts(RunBasic):
             self.result = self.isPass = True
 
     def _to_str(self):
+        if isinstance(self.left, str) and isinstance(self.right, str):
+            return
         if isinstance(self.right, dict):
             self.right = json.dumps(self.right)
         if isinstance(self.left, dict):
             self.left = json.dumps(self.left)
-        if not isinstance(self.left, str):
-            self.left = str(self.left)
-        if not isinstance(self.right, str):
-            self.right = str(self.right)
+        if isinstance(self.left, str) and isinstance(self.right, int):
+            try:
+                self.left = int(self.left)
+            except Exception as e:
+                self.result = e
+
+        if isinstance(self.right, str) and isinstance(self.left, int):
+            try:
+                self.right = int(self.right)
+            except Exception as e:
+                self.result = e
+
+        if isinstance(self.left, str) and isinstance(self.right, float):
+            try:
+                self.left = float(self.left)
+            except Exception as e:
+                self.result = e
+        if isinstance(self.right, str) and isinstance(self.left, float):
+            try:
+                self.right = float(self.right)
+            except Exception as e:
+                self.result = e
+
 
     def after(self):
         super().after()
