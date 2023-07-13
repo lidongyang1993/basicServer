@@ -139,6 +139,8 @@ class RunBasic:
             self.Params = self.data_replace(self.Params, self.Global.global_value, [])
         elif self.RUN_TYPE == OTHER.CHU_LI_QI:
             pass
+        elif self.RUN_TYPE == OTHER.TI_QU__YAN_ZHENG_QI:
+            self.Params = self.data_replace(self.Params, self.Global.global_value, [])
         else:
             self.Params = self.data_replace(self.Params, self.Global.global_value, [])
         self.init()
@@ -779,19 +781,26 @@ class RunExtAssert(RunBasic):
 
     def __init__(self, g: RunGlobal, p: dict, result=None):
         super().__init__(g, p)
-        self.path = self.Params.get(EXTRACT.PATH)
-        self.condition = self.Params.get(EXTRACT.CONDITION)
-        self.type = self.Params.get(EXTRACT.TYPE)
-        self.func_assert = self.Params.get(ASSERTS.FUNC)
-        self.right = self.Params.get(ASSERTS.VALUE_RIGHT)
+        self.right = None
+        self.func_assert = None
+        self.type = None
+        self.condition = None
+        self.path = None
         self.left = None
         self.step_result = result
         self.code = None
 
     def init(self):
+        self.path = self.Params.get(EXTRACT.PATH)
+        self.condition = self.Params.get(EXTRACT.CONDITION)
+        self.type = self.Params.get(EXTRACT.TYPE)
+        self.func_assert = self.Params.get(ASSERTS.FUNC)
+        self.right = self.Params.get(ASSERTS.VALUE_RIGHT)
         super().init()
 
     def before(self):
+        if self.path == "data.0.billNo":
+            print(self.path)
         super().before()
         self.Global.log(MSG.HANDLERS_CUT.format(self.RUN_TYPE), left=MSG.CUT_FOUR)
         self.Global.log(self.Params, left=MSG.CUT_FOUR + MSG.HANDLERS_PARAMS)
@@ -926,8 +935,6 @@ class RunAsserts(RunBasic):
         self.right = self.Params.get(ASSERTS.VALUE_RIGHT)
 
     def before(self):
-        if self.right == "中建创业信息有限公司":
-            print("中建创业信息有限公司----")
         super().before()
         self.Global.log(MSG.HANDLERS_CUT.format(self.RUN_TYPE), left=MSG.CUT_FOUR)
         self.Global.log(self.Params, left=MSG.CUT_FOUR + MSG.HANDLERS_PARAMS)
@@ -970,7 +977,6 @@ class RunAsserts(RunBasic):
                 self.right = float(self.right)
             except Exception as e:
                 self.result = e
-
 
     def after(self):
         super().after()
