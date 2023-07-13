@@ -60,7 +60,6 @@ def get_case_list(plan):
     if plan.get(PLAN.CASE) is None:
         return res
     p = RunPlan(r, plan)
-    p.before()
     r.now_plan = plan
     for _ in plan.get(PLAN.CASE):
         res.append({CASE: _, TITLE: _.get(BASICS.NAME), DESC: _.get(BASICS.DESC), P_LAN: p})
@@ -84,8 +83,11 @@ class TestPublic(unittest.TestCase):
     def public(self, data):
         case = data.get(CASE)
         p: RunPlan = data.get(P_LAN)
-        p.init()
-        p.before()
+        if not p.done:
+            p.init()
+            p.start()
+            p.before()
+        p.done = True
         run = p.run_case_one(case)
         self.assertTrue(run.isPass, run.result)
 

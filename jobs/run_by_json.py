@@ -67,8 +67,11 @@ class TestPublic(unittest.TestCase):
     def public(self, data):
         case = data.get(CASE)
         p: RunPlan = data.get(P_LAN)
-        p.init()
-        p.before()
+        if not p.done:
+            p.init()
+            p.start()
+            p.before()
+        p.done = True
         run = p.run_case_one(case)
         self.assertTrue(run.isPass, run.result)
 

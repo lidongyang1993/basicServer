@@ -193,7 +193,7 @@ class RunPlan(RunBasic):
 
         self.environment = None
         self.case: list = []
-
+        self.done = False
         self.runCase: list = []
 
     def init(self):
