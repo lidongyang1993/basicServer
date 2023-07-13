@@ -16,8 +16,8 @@ import urllib3
 from unittestreport import TestRunner, ddt, list_data
 import os
 
-from config.file_path import USER_REPORTS_path
-from jobs.run import RunGlobal, RunPlan, RunCase
+from config.file_path import USER_REPORTS_path, CASE_DATA_file
+from jobs.run import RunGlobal, RunPlan
 from config.field.db_field import PLAN, BASIC as BASICS
 from tools.send_wChat import send_test_report
 from tools.read_cnf import read_data
@@ -32,9 +32,9 @@ file_path_log = read_data("file_server", "file_path")
 r = RunGlobal("PUBLIC-LOG", BASE_DIR / file_path_log / "public/")
 
 
-def read_plan(name):
+def read_plan():
     try:
-        file_path = BASE_DIR / "jobs/caseData/{}.json".format(name)
+        file_path = CASE_DATA_file
         read_file = open(file_path, "r")
         return json.loads(read_file.read())
     except FileNotFoundError:
@@ -43,7 +43,7 @@ def read_plan(name):
         return {}
 
 
-case_data = read_plan("data")
+case_data = read_plan()
 
 
 def get_case_from_plan_list(plan_list):
@@ -98,7 +98,7 @@ class StartRun:
 
     def __init__(self, user, w_chat_url,
                  title=case_data["name"], desc=case_data["desc"],
-                 module=None, ):
+                 module=None):
         self.user = user
         self.module = module
         self.w_chat_url = w_chat_url
