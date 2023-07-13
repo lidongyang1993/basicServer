@@ -7,7 +7,7 @@
 # @Software: PyCharm
 import argparse
 
-from jobs.api_frame.main import StartRun
+from jobs.run_by_json import StartRun
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", dest="report_name", type=str)
@@ -23,4 +23,4 @@ user = args.user
 test_module = args.test_module
 wBot = args.w_bot
 
-StartRun(report_name, report_desc, user, test_module, wBot, path="jobs/api_frame/reports/user_report/{}").make_run()
+StartRun(report_name, report_desc, user, test_module, wBot).make_run()

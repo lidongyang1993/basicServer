@@ -7,7 +7,6 @@
 # @Software: PyCharm
 
 
-from jobs.api_frame.done.field import *
 from jobs.api_frame.basics.read_plan import *
 
 module_001 = read_plan("module_001")

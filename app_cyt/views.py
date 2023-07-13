@@ -5,24 +5,28 @@ import time
 from pathlib import Path
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from jobs.api_frame.done.runGlobal import RunGlobal
+from jobs.run import RunGlobal, RunPlan
 from config.basics_request import RequestBasics
 from django.core.handlers.wsgi import WSGIRequest
 from django.views.decorators.http import require_POST
 from jobs.api_frame.case.read_and_add import module_list, add_plan_into_module, update_plan_into_module, read_plan
 from jobs.api_frame.case.check_plan import Check
+from tools.login import get_login_session
 from tools.read_cnf import read_data
 from app_cyt.core.data import *
 from config.field.res_field import KEY, RESULT, FILED, RESPONSE, DoError
 import threading
 
 from tools.read_json_to_ext_asserts import ReadHar
-
-SERVER_HOST = read_data("file_server", "host")
+from config.file_path import *
 
 KEY_FILE = 'key'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+HOST_FILE = read_data("file_server", "host")
+PORT_FILE = read_data("file_server", "port")
+PORT_REPORT_FILE = read_data("file_server", "port_report")
+file_path_log = read_data("file_server", "file_path")
 
 
 @csrf_exempt
@@ -147,9 +151,10 @@ def run_case_by_module(request: WSGIRequest):
 
         if not w_bot_url:
             return {"report_url": None, "msg": "找不到机器人"}
-        command = '/bin/sh start_run.sh "{}" "{}" "{}" "{}" "{}"'.format(user, test_module, report_name, report_desc, w_bot_url)
+        command = '/bin/sh start_run.sh "{}" "{}" "{}" "{}" "{}"'\
+            .format(user, test_module, report_name, report_desc, w_bot_url)
         os.system(command)
-        return {"report_url": "http://" + SERVER_HOST + ":9000/user_report"}
+        return {"report_url": "http://{}:{}/{}".format(HOST_FILE, PORT_REPORT_FILE, user)}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -175,7 +180,7 @@ def run_case_by_db(request: WSGIRequest):
             w_bot_url = None
         try:
             plan_data = PlanData().get_by_id(pk=plan_id)
-            data_path = BASE_DIR / "tools/jobs/caseData/data.json"
+            data_path = CASE_DATA_file
             with open(data_path, "w", encoding="utf-8") as f:
                 f.write(json.dumps(plan_data, ensure_ascii=False))
         except models.ObjectDoesNotExist:
@@ -188,7 +193,7 @@ def run_case_by_db(request: WSGIRequest):
 
         command = '/bin/sh start_run_from_db.sh "{}" "{}" '.format(user, w_bot_url)
         os.system(command)
-        return {"report_url": "http://" + SERVER_HOST + ":9000/user_report"}
+        return {"report_url": "http://{}:{}/{}".format(HOST_FILE, PORT_REPORT_FILE, file_path_log)}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -227,18 +232,17 @@ def run_case_by_module_test(request: WSGIRequest):
     def run_func(data):
         plan = data.get(FILED.DATA, None)
         user = data.get(FILED.USER, None)
-        run = RunGlobal("{}".format(user))
         data_check = Check().check_plan(plan)
         if data_check.get(RESULT.CODE) != 0:
             return {"result": False, "info": data_check}
-        path = BASE_DIR / "jobs/api_frame/reports/user_log/{}/".format(user)
+        path = USER_LOGS_path / "{}".format(user)
+        shutil.rmtree(path)
         if not os.path.exists(path):
             os.mkdir(path)
-        shutil.rmtree(path)
-        run.make_log(path)
-        run_plan = run.RunPlan(run, plan)
+        run = RunGlobal("{}".format(user), path=path)
+        run_plan = RunPlan(run, plan)
         threading.Thread(target=run_plan.main).start()
-        return {"log_url": "http://" + SERVER_HOST + ":9000/user_log/{}/".format(user)}
+        return {"log_url": "http://{}:{}/{}/".format(HOST_FILE, PORT_FILE, user)}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -255,7 +259,6 @@ def login_res(request: WSGIRequest):
     def run_func(data):
         password = data.get(FILED.PASSWORD, None)
         user = data.get(FILED.USER, None)
-        from jobs.api_frame.tools.login import get_login_session
 
         return {"test_cas_access_token":  get_login_session(None, user, password)}
 

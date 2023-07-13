@@ -1,14 +1,11 @@
 #!/usr/bin/env python 
 # -*- coding: utf-8 -*-
-# @Time    : 2023/4/19 11:15
+# @Time    : 2023/7/11 14:50
 # @Author  : lidongyang
 # @Site    : 
-# @File    : __init__.py.py
+# @File    : error.py
 # @Software: PyCharm
 from config.field.db_field import OTHER
-
-
-# 基础方法，供整个项目调用
 
 
 class publicError(Exception):
@@ -18,7 +15,7 @@ class publicError(Exception):
         self.node = node
 
     def __str__(self):
-        pass
+        return self.node
 
 
 class PlanError(publicError):
@@ -57,7 +54,7 @@ def raise_error(run_type, result):
         raise StepError(result)
 
     if run_type == OTHER.CE_SI_YONG_LI:
-        raise CaseError(result)
+        pass
 
     if run_type == OTHER.CE_SI_JI_HUA:
         raise PlanError(result)

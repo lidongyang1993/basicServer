@@ -11,17 +11,21 @@ import re
 from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 
+from tools.read_cnf import read_data
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+file_path = read_data("file_server", "file_path")
+file_path_public = file_path + "public/"
 
 
-
-
-def init_log(service_name, path="reports/log"):
+def init_log(service_name, path=None):
     """
     进行 logger 配置
     :return:
     """
     # 日志基础路径
+    if not path:
+        path = file_path
     log_path = BASE_DIR / path
     # 服务 日志路径
     service_log_path = os.path.join(log_path)
@@ -30,7 +34,8 @@ def init_log(service_name, path="reports/log"):
     # # error 日志路径
     # # service_error_log_path = os.path.join(service_log_path, 'error')
 
-    standard_format = "%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(levelname)s]- %(message)s"
+    # standard_format = "%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(levelname)s]- %(message)s"
+    standard_format = "%(message)s"
 
     # 创建路径
     if not os.path.exists(service_log_path):
@@ -45,7 +50,10 @@ def init_log(service_name, path="reports/log"):
     logger.setLevel(logging.DEBUG)
 
     # 创建handler 用于写入日志文件
-    info_handler = TimedRotatingFileHandler(log_path / (service_name + "info.json"), when='MIDNIGHT', interval=1, backupCount=60,
+    info_handler = TimedRotatingFileHandler(log_path / (service_name + "info.json"),
+                                            when='MIDNIGHT',
+                                            interval=1,
+                                            backupCount=60,
                                             encoding='utf-8')
     info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(logging.Formatter(standard_format))

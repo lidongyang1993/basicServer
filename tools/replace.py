@@ -11,6 +11,7 @@ from copy import deepcopy
 
 # 从data中，完成变量替换
 def data_replace(data, replace: dict):
+
     if isinstance(data, str):  # 字符串类型的替换
         return str_replace(data, replace)
     if isinstance(data, dict):  # 字典类型的替换

@@ -10,7 +10,7 @@
 import json
 from json import JSONDecodeError
 from pathlib import Path
-from jobs.api_frame.tools.timeFile import time_strf_time_for_file_name
+from tools.timeFile import time_strf_time_for_file_name
 
 BASE_DIR = Path(__file__).resolve().parent.parent / "case/data"
 

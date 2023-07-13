@@ -9,8 +9,7 @@ import argparse
 from pathlib import Path
 
 
-from tools.jobs.run_by_db import StartRun
-BASE_DIR = Path(__file__).resolve().parent
+from jobs.run_by_db import StartRun
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-u", dest="user", type=str)
@@ -22,4 +21,4 @@ user = args.user
 wBot = args.w_bot
 
 
-StartRun(user, wBot, path="jobs/api_frame/reports/user_report/{}").make_run()
+StartRun(user, wBot).make_run()

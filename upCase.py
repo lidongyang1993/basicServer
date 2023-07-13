@@ -18,7 +18,7 @@ from app_cyt.core.data import *
 
 def read_json():
     try:
-        file_path = "./tools/jobs/caseData/upData.json"
+        file_path = "jobs/caseData/upData.json"
         read_file = open(file_path, "r")
         return json.loads(read_file.read())
     except FileNotFoundError:
