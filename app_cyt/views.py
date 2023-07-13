@@ -193,7 +193,7 @@ def run_case_by_db(request: WSGIRequest):
 
         command = '/bin/sh start_run_from_db.sh "{}" "{}" '.format(user, w_bot_url)
         os.system(command)
-        return {"report_url": "http://{}:{}/{}".format(HOST_FILE, PORT_REPORT_FILE, file_path_log)}
+        return {"report_url": "http://{}:{}/{}".format(HOST_FILE, PORT_REPORT_FILE, user)}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
