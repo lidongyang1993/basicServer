@@ -812,8 +812,8 @@ class RunExtAssert(RunBasic):
             self.left = self.step_result.text
 
         self.Global.log(self.left, left=MSG.CUT_FOUR + MSG.EXT_RESULT)
-        self.code = MSG.ASSERT_CODE.format(self.func_assert)
         self._to_str()
+        self.code = MSG.ASSERT_CODE.format(self.func_assert)
         self.result = eval(self.code)
         if not self.result:
             self.result = self.isPass = False
@@ -924,7 +924,7 @@ class RunAsserts(RunBasic):
         self.left = self.Params.get(ASSERTS.VALUE_LEFT)
         self.func_assert = self.Params.get(ASSERTS.FUNC)
         self.right = self.Params.get(ASSERTS.VALUE_RIGHT)
-        self.code = MSG.ASSERT_CODE.format(self.func_assert)
+
     def before(self):
         if self.right == "中建创业信息有限公司":
             print("中建创业信息有限公司----")
@@ -934,6 +934,7 @@ class RunAsserts(RunBasic):
 
     def func(self):
         self._to_str()
+        self.code = MSG.ASSERT_CODE.format(self.func_assert)
         if not eval(self.code):
             self.result = str(self.left) + "\t??\t" + str(self.right)
             self.isPass = False
