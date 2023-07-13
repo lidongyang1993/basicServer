@@ -134,8 +134,6 @@ class RunBasic:
         elif self.RUN_TYPE == OTHER.CE_SI_YONG_LI:
             self.Params = self.data_replace(self.Params, self.Global.global_value, [PLAN.CASE, ])
         elif self.RUN_TYPE == OTHER.YONG_LI_BU_ZHOU:
-            self.Params = self.data_replace(self.Params, self.Global.global_value, [CASE.STEP, ])
-        elif self.RUN_TYPE == OTHER.YONG_LI_BU_ZHOU:
             self.Params = self.data_replace(self.Params, self.Global.global_value, [STEP.PARAMS, STEP.HANDLERS])
         elif self.RUN_TYPE == OTHER.JIE_KOU_QING_QIU:
             self.Params = self.data_replace(self.Params, self.Global.global_value, [])
@@ -668,7 +666,7 @@ class RunHandler(RunBasic):
         pass
 
     def before(self):
-        super().before()
+        pass
 
     def func(self):
         try:
@@ -908,8 +906,9 @@ class RunAsserts(RunBasic):
         self.func_assert = self.Params.get(ASSERTS.FUNC)
         self.right = self.Params.get(ASSERTS.VALUE_RIGHT)
         self.code = MSG.ASSERT_CODE.format(self.func_assert)
-
     def before(self):
+        if self.right == "中建创业信息有限公司":
+            print("中建创业信息有限公司----")
         super().before()
         self.Global.log(MSG.HANDLERS_CUT.format(self.RUN_TYPE), left=MSG.CUT_FOUR)
         self.Global.log(self.Params, left=MSG.CUT_FOUR + MSG.HANDLERS_PARAMS)
