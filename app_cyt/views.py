@@ -236,9 +236,9 @@ def run_case_by_module_test(request: WSGIRequest):
         if data_check.get(RESULT.CODE) != 0:
             return {"result": False, "info": data_check}
         path = USER_LOGS_path / "{}".format(user)
-        shutil.rmtree(path)
-        if not os.path.exists(path):
-            os.mkdir(path)
+        if os.path.exists(path):
+            shutil.rmtree(path)
+        os.mkdir(path)
         run = RunGlobal("{}".format(user), path=path)
         run_plan = RunPlan(run, plan)
         threading.Thread(target=run_plan.main).start()
