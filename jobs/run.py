@@ -24,6 +24,28 @@ from config.field.db_field import *
 from config.field.msg import MSG
 
 
+
+def get_res_from_html_json(run):
+    result = None
+    if run.type == RES_TYPE.TEXT:
+        result = run.step_result
+
+    if run.type == RES_TYPE.HTML:
+        if not run.condition:
+            run.condition = EXTRACT.VALUE
+        result = lxml_html(run.path, run.step_result.content, run.condition)
+        if result is None and run.iCondition:
+            result = lxml_html(run.path, run.step_result, run.iCondition)
+
+    if run.type == RES_TYPE.JSON and run.step_result:
+        if not isinstance(run.step_result, dict):
+            run.isPass = False
+            return None
+        result = get_path_dict_condition(run.path, run.step_result, run.condition)
+        if result is None and run.iCondition:
+            result = get_path_dict_condition(run.path, run.step_result, run.iCondition)
+    return result
+
 class RunGlobal:
     def __init__(self, name, plan=None, path=None):
         self.global_value = {}
@@ -781,6 +803,7 @@ class RunExtAssert(RunBasic):
 
     def __init__(self, g: RunGlobal, p: dict, result=None):
         super().__init__(g, p)
+        self.iCondition = None
         self.right = None
         self.func_assert = None
         self.type = None
@@ -793,14 +816,13 @@ class RunExtAssert(RunBasic):
     def init(self):
         self.path = self.Params.get(EXTRACT.PATH)
         self.condition = self.Params.get(EXTRACT.CONDITION)
+        self.iCondition = self.Params.get(EXTRACT.iCONDITION)
         self.type = self.Params.get(EXTRACT.TYPE)
         self.func_assert = self.Params.get(ASSERTS.FUNC)
         self.right = self.Params.get(ASSERTS.VALUE_RIGHT)
         super().init()
 
     def before(self):
-        if self.path == "data.0.billNo":
-            print(self.path)
         super().before()
         self.Global.log(MSG.HANDLERS_CUT.format(self.RUN_TYPE), left=MSG.CUT_FOUR)
         self.Global.log(self.Params, left=MSG.CUT_FOUR + MSG.HANDLERS_PARAMS)
@@ -810,15 +832,7 @@ class RunExtAssert(RunBasic):
             self.result = self.isPass = False
             return
 
-        if self.type == RES_TYPE.HTML:
-            self.condition = EXTRACT.VALUE
-            self.left = lxml_html(self.path, self.step_result.content, self.condition)
-
-        if self.type == RES_TYPE.JSON and self.step_result:
-            self.left = get_path_dict_condition(self.path, self.step_result, self.condition)
-
-        if self.type == RES_TYPE.TEXT and self.step_result:
-            self.left = self.step_result.text
+        self.left = get_res_from_html_json(self)
 
         self.Global.log(self.left, left=MSG.CUT_FOUR + MSG.EXT_RESULT)
         self._to_str()
@@ -833,34 +847,8 @@ class RunExtAssert(RunBasic):
         super().after()
 
     def _to_str(self):
-        if isinstance(self.left, str) and isinstance(self.right, str):
-            return
-        if isinstance(self.right, dict):
-            self.right = json.dumps(self.right)
-        if isinstance(self.left, dict):
-            self.left = json.dumps(self.left)
-        if isinstance(self.left, str) and isinstance(self.right, int):
-            try:
-                self.left = int(self.left)
-            except Exception as e:
-                self.result = e
+        asserts_to_str(self)
 
-        if isinstance(self.right, str) and isinstance(self.left, int):
-            try:
-                self.right = int(self.right)
-            except Exception as e:
-                self.result = e
-
-        if isinstance(self.left, str) and isinstance(self.right, float):
-            try:
-                self.left = float(self.left)
-            except Exception as e:
-                self.result = e
-        if isinstance(self.right, str) and isinstance(self.left, float):
-            try:
-                self.right = float(self.right)
-            except Exception as e:
-                self.result = e
     def end(self):
         self.Global.log(self.result, left=MSG.CUT_FOUR + MSG.HANDLER_RESULT)
         super().end()
@@ -872,13 +860,19 @@ class RunExtract(RunBasic):
 
     def __init__(self, g: RunGlobal, p: dict, result=None):
         super().__init__(g, p)
-        self.field = self.Params.get(EXTRACT.FIELD)
-        self.path = self.Params.get(EXTRACT.PATH)
-        self.condition = self.Params.get(EXTRACT.CONDITION)
-        self.type = self.Params.get(EXTRACT.TYPE)
+        self.type = None
+        self.iCondition = None
+        self.condition = None
+        self.path = None
+        self.field = None
         self.step_result = result
 
     def init(self):
+        self.field = self.Params.get(EXTRACT.FIELD)
+        self.path = self.Params.get(EXTRACT.PATH)
+        self.condition = self.Params.get(EXTRACT.CONDITION)
+        self.iCondition = self.Params.get(EXTRACT.iCONDITION)
+        self.type = self.Params.get(EXTRACT.TYPE)
         super().init()
 
     def before(self):
@@ -890,18 +884,8 @@ class RunExtract(RunBasic):
         if not self.step_result:
             self.result = None
             return
-        result = None
         try:
-            if self.type == RES_TYPE.TEXT:
-                result = self.step_result
-            if self.type == RES_TYPE.HTML:
-                self.condition = EXTRACT.VALUE
-                result = lxml_html(self.path, self.step_result, self.condition)
-            if self.type == RES_TYPE.JSON:
-                if not isinstance(self.step_result, dict):
-                    self.isPass = False
-                    raise AssertError(MSG.ASSERT_DATA_DICT_ERROR.format(self.step_result))
-                result = get_path_dict_condition(self.path, self.step_result, self.condition)
+            result = get_res_from_html_json(self)
         except Exception as e:
             self.Global.log(e.__str__(), left=MSG.CUT_FOUR + MSG.EXT_RESULT_ERROR)
             result = None
@@ -949,34 +933,7 @@ class RunAsserts(RunBasic):
             self.result = self.isPass = True
 
     def _to_str(self):
-        if isinstance(self.left, str) and isinstance(self.right, str):
-            return
-        if isinstance(self.right, dict):
-            self.right = json.dumps(self.right)
-        if isinstance(self.left, dict):
-            self.left = json.dumps(self.left)
-        if isinstance(self.left, str) and isinstance(self.right, int):
-            try:
-                self.left = int(self.left)
-            except Exception as e:
-                self.result = e
-
-        if isinstance(self.right, str) and isinstance(self.left, int):
-            try:
-                self.right = int(self.right)
-            except Exception as e:
-                self.result = e
-
-        if isinstance(self.left, str) and isinstance(self.right, float):
-            try:
-                self.left = float(self.left)
-            except Exception as e:
-                self.result = e
-        if isinstance(self.right, str) and isinstance(self.left, float):
-            try:
-                self.right = float(self.right)
-            except Exception as e:
-                self.result = e
+        asserts_to_str(self)
 
     def after(self):
         super().after()
@@ -987,6 +944,39 @@ class RunAsserts(RunBasic):
 
     def final(self):
         pass
+
+
+def asserts_to_str(run):
+    if run.left is None or run.right is None:
+        pass
+    if isinstance(run.left, str) and isinstance(run.right, str):
+        return
+    if isinstance(run.right, dict):
+        run.right = json.dumps(run.right)
+    if isinstance(run.left, dict):
+        run.left = json.dumps(run.left)
+    if isinstance(run.left, str) and isinstance(run.right, int):
+        try:
+            run.left = int(run.left)
+        except Exception as e:
+            run.result = e
+
+    if isinstance(run.right, str) and isinstance(run.left, int):
+        try:
+            run.right = int(run.right)
+        except Exception as e:
+            run.result = e
+
+    if isinstance(run.left, str) and isinstance(run.right, float):
+        try:
+            run.left = float(run.left)
+        except Exception as e:
+            run.result = e
+    if isinstance(run.right, str) and isinstance(run.left, float):
+        try:
+            run.right = float(run.right)
+        except Exception as e:
+            run.result = e
 
 
 if __name__ == '__main__':

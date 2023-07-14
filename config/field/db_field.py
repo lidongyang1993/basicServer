@@ -174,6 +174,7 @@ class EXTRACT:
     FIELD = "field"
     PATH = "path"
     CONDITION = "condition"
+    iCONDITION = "iCondition"
     TYPE = "type"
     VALUE = "value"
 

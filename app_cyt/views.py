@@ -439,7 +439,7 @@ def save_file(request: WSGIRequest):
             if file_obj:
 
                 file_name = file_obj.name
-                if FileData().is_exit(name=file_name):
+                if FileData().try_get(name=file_name):
                     raise DoError(RESPONSE.FILE_EXIT_ERROR)
                 file_path = BASE_DIR / "templates/fileSave/"
 

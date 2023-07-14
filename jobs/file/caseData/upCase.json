@@ -1,0 +1,1027 @@
+{
+  "name": "销项发票-开票流程测试计划",
+  "desc": "实现销项发票流程的数据库，验证从导入订单至开票，整个流程，受导入订单数据和预制调整数据的影响。",
+  "variable": {
+    "TEST_HOST": "https://d-k8s-fbr-fp.bigfintax.com",
+    "TEST_HOST_OTHER": "https://test-gateway.bigfintax.com",
+    "USER_NAME_RECEPTION": "ZQBHDLGFYXGS_admin",
+    "PWD_RECEPTION": "c4ca4238a0b923820dcc509a6f75849b"
+  },
+  "case": [
+    {
+      "name": "开具发票流程-特殊票种-成品油",
+      "desc": "导入一个带有折扣行的订单，生成预置发票，执行生成，需要审核。",
+      "variable": {
+      },
+      "step": [
+        {
+          "name": "随机生成一个订单号",
+          "desc": "使用随机数插件，随机生成一个订单号，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "type": "random",
+            "params": {
+              "random_type": "STR",
+              "length": 12,
+              "get_field": "BILL_ID_START"
+            }
+          },
+          "handlers": []
+        },
+        {
+          "name": "获取订单asserts key",
+          "desc": "访问asserts-key接口，并将key保留，用在之后的导入订单接口。",
+          "type": "request",
+          "params": {
+            "name": "asserts-key接口",
+            "desc": "",
+            "host": "https://ddapi.bigfintax.com",
+            "path": "/assembleSignatureController/get/cqbh/O7XmUkNX",
+            "method": "GET",
+            "post_type": "",
+            "cookies": {},
+            "response_type": "text",
+            "data": {}
+          },
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "field": "ASSERT_KEY",
+                "type": "text",
+                "path": "",
+                "condition": []
+              }
+            }
+          ]
+        },
+        {
+          "name": "导入一条订单",
+          "desc": "进行订单导入。",
+          "type": "request",
+          "sleep": 5,
+          "params": {
+            "name": "导入接口",
+            "desc": "",
+            "host": "https://d-k8s-xxp-ports-fp.bigfintax.com",
+            "path": "/inv-xx-ports/xxp/receiptDataIn?{{ASSERT_KEY}}",
+            "method": "POST",
+            "post_type": "json",
+            "cookies": {},
+            "response_type": "json",
+            "data": {
+              "Count": 1,
+              "RequestID": "3da5aff7c6914cf399923a72330af6191",
+              "Content": [
+                {
+                  "BillNo": "{{BILL_ID_START}}",
+                  "SellerTaxNum": "500102201007206608",
+                  "Seller": "500102201007206608",
+                  "SellerAddress": "武汉市东西湖区新沟镇油纱路73号1栋",
+                  "SellerPhone": "027-65022526",
+                  "SellerBankName": "中国光大银行武汉分行营业部",
+                  "SellerBankAccount": "38310188000444553",
+                  "Buyer": "成品油-特殊票种",
+                  "BuyerTaxNum": "91320114MA27H4CC5G",
+                  "BuyerAddress": "",
+                  "BuyerPhone": "",
+                  "BuyerBankName": "",
+                  "BuyerBankAccount": "",
+                  "Drawer": "1",
+                  "Payee": "",
+                  "Reviewer": "",
+                  "BillType": "1",
+                  "InvoiceType": "06",
+                  "TotalAmount": "1.00",
+                  "InvoiceAmount": "0.88",
+                  "TaxAmount": "0.12",
+                  "BillDate": "20230216000000",
+                  "MachineNo": "",
+                  "StoreCode": "2021",
+                  "SpecialInvoice": "1",
+                  "RedAdviceNum": "",
+                  "RedConfirmNum": "",
+                  "Items": [
+                    {
+                      "LineNo": "",
+                      "DetailName": "1626136590057271298",
+                      "Unit": "升",
+                      "Standard": "",
+                      "Num": "1",
+                      "TaxFlag": "0",
+                      "Price": "1",
+                      "InvoiceAmount": "0.88",
+                      "SumAmount": "1.00",
+                      "TaxRate": "0.13",
+                      "TaxAmount": "0.12",
+                      "DiscountType": "0",
+                      "ParentCode": "1070101070100000000",
+                      "FreeTax": "",
+                      "VatSpecialManagement": ""
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "Code",
+                "func": "==",
+                "condition": [],
+                "value_right": "200"
+              }
+            }
+          ]
+        },
+        {
+          "name": "前台-账号登录",
+          "desc": "使用登录插件，通过前台账号密码登录-并将test_cas_access_token，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "params": {
+              "user_name": "{{USER_NAME_RECEPTION}}",
+              "pass_word": "{{PWD_RECEPTION}}",
+              "cookies_field": "COOKIES_RECEPTION"
+            },
+            "type": "login"
+          },
+          "handlers": []
+        },
+        {
+          "name": "前台-尝试开启发票模板",
+          "desc": "",
+          "type": "request",
+          "params": {
+            "name": "发票模板开关接口",
+            "desc": "",
+            "host": "{{TEST_HOST_OTHER}}",
+            "path": "/xxApi/api/v1/invoicingTemplate/optDefaultFlag",
+            "method": "POST",
+            "post_type": "json",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES_RECEPTION}}",
+              "dev_cas_access_token": "{{COOKIES_RECEPTION}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "data": {
+            "defaultFlag": 1,
+            "id": "2204"
+            }
+          },
+          "handlers": [
+          ]
+        },
+        {
+          "name": "前台-查询导入的订单数据，并提取billId",
+          "desc": "",
+          "type": "request",
+          "params": {
+            "name": "查询预制订单列表接口",
+            "desc": "",
+            "host": "{{TEST_HOST_OTHER}}",
+            "path": "/xxApi/api/v1/bill/queryBillInfoListNew",
+            "method": "GET",
+            "post_type": "json",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES_RECEPTION}}",
+              "dev_cas_access_token": "{{COOKIES_RECEPTION}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"billNo\",\"v\":\"{{BILL_ID_START}}\",\"op\":\"eq\",\"t\":\"s\"},{\"f\":\"createDateStart\",\"v\":\"\",\"op\":\"ge\",\"t\":\"s\"},{\"f\":\"createDateEnd\",\"v\":\"\",\"op\":\"le\",\"t\":\"s\"}]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.billNo",
+                "condition": [],
+                "func": "==",
+                "value_right": "{{BILL_ID_START}}"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sellerTaxNo",
+                "condition": [],
+                "func": "==",
+                "value_right": "500102201007206608"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "path": "data.0.id",
+                "condition": [],
+                "field": "BILL_ID"
+              }
+            }
+          ]
+        },
+        {
+          "name": "前台-根据BILL_ID，生成预置发票",
+          "desc": "",
+          "type": "request",
+          "params": {
+            "name": "生成预制发票接口",
+            "desc": "",
+            "host": "{{TEST_HOST_OTHER}}",
+            "path": "/xxApi/api/v1/bill/generateTemplateInvoice",
+            "method": "POST",
+            "post_type": "json",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES_RECEPTION}}",
+              "dev_cas_access_token": "{{COOKIES_RECEPTION}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "data": [{"billId":"{{BILL_ID}}"}]
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "code",
+                "condition": [],
+                "func": "==",
+                "value_right": 200
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "前台-根据订单编号，查询待开发票管理页面，并提取INVOICE_ID；",
+          "desc": "",
+          "type": "request",
+          "params": {
+            "name": "查询待开发票接口",
+            "desc": "",
+            "host": "{{TEST_HOST_OTHER}}",
+            "path": "/xxApi/api/v1/InvoicequeryPage",
+            "method": "GET",
+            "post_type": "json",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES_RECEPTION}}",
+              "dev_cas_access_token": "{{COOKIES_RECEPTION}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "pageFlag": 3,
+              "condition": "[{\"f\":\"contraceNo\",\"v\":\"{{BILL_ID_START}}\",\"op\":\"eq\",\"t\":\"s\"}]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "code",
+                "condition": [],
+                "func": "==",
+                "value_right": 200
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "path": "data.0.strId",
+                "condition": [],
+                "field": "INVOICE_ID"
+              }
+            }
+          ]
+        },
+        {
+          "name": "前台-查看待开发票明细；",
+          "desc": "",
+          "type": "request",
+          "params": {
+            "name": "查询待开发票接口",
+            "desc": "",
+            "host": "{{TEST_HOST_OTHER}}",
+            "path": "/xxApi/api/v1/invoiceStay/queryInvoiceItem",
+            "method": "GET",
+            "post_type": "json",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES_RECEPTION}}",
+              "dev_cas_access_token": "{{COOKIES_RECEPTION}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "data": {
+              "invoiceId": "{{INVOICE_ID}}"
+            }
+          },
+          "handlers": [
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "result",
+        "condition": [],
+        "func": "==",
+        "value_right": "success"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "code",
+        "condition": [],
+        "func": "==",
+        "value_right": 200
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "infos",
+        "condition": [],
+        "func": "==",
+        "value_right": "成功"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.isRemoved",
+        "condition": [],
+        "func": "==",
+        "value_right": "0"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.version",
+        "condition": [],
+        "func": "==",
+        "value_right": 0
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.orderNum",
+        "condition": [],
+        "func": "==",
+        "value_right": 1
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.detailName",
+        "condition": [],
+        "func": "==",
+        "value_right": "*润滑油*1626136590057271298"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.standard",
+        "condition": [],
+        "func": "==",
+        "value_right": ""
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.price",
+        "condition": [],
+        "func": "==",
+        "value_right": 0.88
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.num",
+        "condition": [],
+        "func": "==",
+        "value_right": 1
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.unit",
+        "condition": [],
+        "func": "==",
+        "value_right": "升"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.invoiceAmount",
+        "condition": [],
+        "func": "==",
+        "value_right": 0.88
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.taxAmount",
+        "condition": [],
+        "func": "==",
+        "value_right": 0.12
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.sumAmount",
+        "condition": [],
+        "func": "==",
+        "value_right": 1
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.taxRate",
+        "condition": [],
+        "func": "==",
+        "value_right": "0.13"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.parentCode",
+        "condition": [],
+        "func": "==",
+        "value_right": "1070101070100000000"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.isVoided",
+        "condition": [],
+        "func": "==",
+        "value_right": "0"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.discountType",
+        "condition": [],
+        "func": "==",
+        "value_right": "0"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.preferentialFlag",
+        "condition": [],
+        "func": "==",
+        "value_right": "0"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.freeTax",
+        "condition": [],
+        "func": "==",
+        "value_right": ""
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.vatSpecialManagement",
+        "condition": [],
+        "func": "==",
+        "value_right": ""
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.taxFlag",
+        "condition": [],
+        "func": "==",
+        "value_right": "0"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.splitItem",
+        "condition": [],
+        "func": "==",
+        "value_right": false
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "data.0.priceExcludeTax",
+        "condition": [],
+        "func": "==",
+        "value_right": 0.88
+      }
+    }
+  ]
+        },
+        {
+          "name": "前台-根据查询的INVOICE_ID，进行发票开具接口；",
+          "desc": "",
+          "type": "request",
+          "params": {
+            "name": "前台-开具发票接口",
+            "desc": "",
+            "host": "{{TEST_HOST_OTHER}}",
+            "path": "/xxApi/api/v1/invoiceStay/stayInvoicePro",
+            "method": "GET",
+            "post_type": "json",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES_RECEPTION}}",
+              "dev_cas_access_token": "{{COOKIES_RECEPTION}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "data": {
+              "ids": "{{INVOICE_ID}}"
+            }
+          },
+          "handlers": []
+        },
+        {
+          "name": "数据库查询开具发票接口，确定字段信息，并验证有效字段；",
+          "desc": "",
+          "type": "plugIn",
+          "params": {
+            "params": {
+              "host": "192.168.2.65",
+              "user": "user1",
+              "password": "123456",
+              "db_name": "inv_xx",
+              "SQL": "select * from xx_sop_task_log where task_name = 1 and task_type = 1 and data_id = '{{INVOICE_ID}}'",
+              "port": 5432,
+              "field_list": [
+                {
+                  "field": "response",
+                  "row": 0,
+                  "col": 5
+                }
+              ]
+            },
+            "type": "pg_db"
+          },
+          "handlers":[
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "bz",
+        "condition": [],
+        "func": "==",
+        "value_right": "*润滑油*1626136590057271298:1.00"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fplx",
+        "condition": [],
+        "func": "==",
+        "value_right": "06"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "getResultMethod",
+        "condition": [],
+        "func": "==",
+        "value_right": "1"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "gmfmc",
+        "condition": [],
+        "func": "==",
+        "value_right": "成品油-特殊票种"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "gmfnsrsbh",
+        "condition": [],
+        "func": "==",
+        "value_right": "91320114MA27H4CC5G"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "hjje",
+        "condition": [],
+        "func": "==",
+        "value_right": "0.88"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "hjse",
+        "condition": [],
+        "func": "==",
+        "value_right": "0.12"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "jshj",
+        "condition": [],
+        "func": "==",
+        "value_right": "1.00"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "kpr",
+        "condition": [],
+        "func": "==",
+        "value_right": "1"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "lzfpbz",
+        "condition": [],
+        "func": "==",
+        "value_right": "0"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "naturalPersonFlag",
+        "condition": [],
+        "func": "==",
+        "value_right": "0"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "qyDm",
+        "condition": [],
+        "func": "==",
+        "value_right": "50"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "sgfplxDm",
+        "condition": [],
+        "func": "==",
+        "value_right": ""
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "tdys",
+        "condition": [],
+        "func": "==",
+        "value_right": ""
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "xsfdh",
+        "condition": [],
+        "func": "==",
+        "value_right": "027-65022526"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "xsfdz",
+        "condition": [],
+        "func": "==",
+        "value_right": "武汉市东西湖区新沟镇油纱路73号1栋"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "xsfkhh",
+        "condition": [],
+        "func": "==",
+        "value_right": "中国光大银行武汉分行营业部"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "xsfkhhyhzh",
+        "condition": [],
+        "func": "==",
+        "value_right": "38310188000444553"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "xsfmc",
+        "condition": [],
+        "func": "==",
+        "value_right": "500102201007206608"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "xsfnsrsbh",
+        "condition": [],
+        "func": "==",
+        "value_right": "500102201007206608"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "xsfzh",
+        "condition": [],
+        "func": "==",
+        "value_right": "38310188000444553"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.dj",
+        "condition": [],
+        "func": "==",
+        "value_right": "0.88000000"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.dw",
+        "condition": [],
+        "func": "==",
+        "value_right": "升"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.dylzfpmxxh",
+        "condition": [],
+        "func": "==",
+        "value_right": "1"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.fphxz",
+        "condition": [],
+        "func": "==",
+        "value_right": "00"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.ggxh",
+        "condition": [],
+        "func": "==",
+        "value_right": ""
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.hsje",
+        "condition": [],
+        "func": "==",
+        "value_right": "1.00"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.hwhyslwfwmc",
+        "condition": [],
+        "func": "==",
+        "value_right": "1626136590057271298"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.je",
+        "condition": [],
+        "func": "==",
+        "value_right": "0.88"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.kce",
+        "condition": [],
+        "func": "==",
+        "value_right": "0"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.mxxh",
+        "condition": [],
+        "func": "==",
+        "value_right": "1"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.se",
+        "condition": [],
+        "func": "==",
+        "value_right": "0.12"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.sl",
+        "condition": [],
+        "func": "==",
+        "value_right": "1.00000000"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.slv",
+        "condition": [],
+        "func": "==",
+        "value_right": "0.13"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.spfwjc",
+        "condition": [],
+        "func": "==",
+        "value_right": "润滑油"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.sphfwssflhbbm",
+        "condition": [],
+        "func": "==",
+        "value_right": "1070101070100000000"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.xmmc",
+        "condition": [],
+        "func": "==",
+        "value_right": "*润滑油*1626136590057271298"
+      }
+    },
+    {
+      "type": "ext_asserts",
+      "params": {
+        "type": "json",
+        "path": "fpmxList.0.zeroTaxFlag",
+        "condition": [],
+        "func": "==",
+        "value_right": ""
+      }
+    }
+  ]
+        }
+      ]
+    }
+  ]
+}

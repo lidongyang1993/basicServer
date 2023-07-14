@@ -1,0 +1,1254 @@
+{
+    "name": "应对立项流程自动化",
+    "desc": "扫描-立项-审核-反馈-反馈审核-总结",
+    "variable": {
+        "TEST_HOST": "https://d-k8s-fbr-fp.bigfintax.com",
+        "USER_NAME": "ZDHCSYXGS_admin",
+        "PWD": "202cb962ac59075b964b07152d234b70",
+        "TEST_HOST1": "https://test-gateway.bigfintax.com"
+    },
+    "case": [
+        {
+            "name": "应对立项",
+            "desc": "",
+            "variable": {
+                "COMPANY_NAME": "中建创业信息有限公司",
+                "monthVal": "2020-02",
+                "sh": "8C095I854H2L12Y",
+                "year": "2020",
+                "month": "2",
+                "zbname": "自动化指标组"
+            },
+            "step": [
+                {
+                    "name": "前台-账号登录",
+                    "desc": "使用登录插件，通过前台账号密码登录-并将test_cas_access_token，存储至全局变量；",
+                    "type": "plugIn",
+                    "params": {
+                        "params": {
+                            "pass_word": "{{PWD}}",
+                            "user_name": "{{USER_NAME}}",
+                            "cookies_field": "COOKIES"
+                        },
+                        "type": "login"
+                    },
+                    "handlers": [
+
+                    ]
+                },
+                {
+                    "name": "随机生成一个5位数",
+                    "desc": "使用随机数插件，随机生成一个订单号，存储至全局变量；",
+                    "type": "plugIn",
+                    "params": {
+                        "type": "random",
+                        "params": {
+                            "random_type": "int",
+                            "length": 5,
+                            "get_field": "STR_5"
+                        }
+                    },
+                    "handlers": [
+
+                    ]
+                },
+                {
+                    "name": "获取指标组编号",
+                    "desc": "获取指标组编号为发起扫描提供数据",
+                    "type": "request",
+                    "params": {
+                        "name": "获取指标组编号",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/indicator/period/group/pageList",
+                        "method": "post",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": 1,
+                            "per_page": 10,
+                            "condition": "[]",
+                            "periodGroupName": "{{zbname}}",
+                            "configCategory": "",
+                            "lableOpenIdList": [
+
+                            ],
+                            "orgTaxNumList": [
+                                "{{sh}}"
+                            ],
+                            "indicatorPeriodGroupOpenIdList": [
+
+                            ],
+                            "indicatorPeriodGroupOpenIdListFlag": "2"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "zbzbh",
+                                "path": "data.0.openId",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "风险扫描-自定义扫描",
+                    "desc": "选择公司：中建创业信息有限公司，日期2020-02，指标租：自动化指标组",
+                    "type": "request",
+                    "params": {
+                        "name": "自定义扫描",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/identification/riskIndicatorScan",
+                        "method": "post",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "scanPeriodCategory": "2",
+                            "dimension": "1",
+                            "scanType": "1",
+                            "scanAppointmentTime": "",
+                            "orgTaxNumList": [
+                                "{{sh}}"
+                            ],
+                            "scanAll": "0",
+                            "yearVal": "",
+                            "monthVal": "{{monthVal}}",
+                            "year": "{{year}}",
+                            "month": "{{month}}",
+                            "indicatorPeriodGroupOpenIdList": [
+                                "{{zbzbh}}"
+                            ]
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "RES_CODE",
+                                "path": "code",
+                                "condition": null
+                            }
+                        },
+                        {
+                            "type": "asserts",
+                            "params": {
+                                "value_left": "{{RES_CODE}}",
+                                "func": "==",
+                                "value_right": "200"
+                            }
+                        }
+                    ],
+                    "sleep": 30
+                },
+                {
+                    "name": "扫描记录-获取scanOpenId",
+                    "desc": "扫描记录-获取scanOpenId",
+                    "type": "request",
+                    "params": {
+                        "name": "扫描记录-获取scanOpenId",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/RiskScan/queryScanRecord",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": "1",
+                            "per_page": "10",
+                            "condition": "[]",
+                            "scanFlag": "2",
+                            "scanPeriodCategory": "0",
+                            "scanStatus": "0",
+                            "scanType": "0",
+                            "responseFlag": "",
+                            "startTimeStr": "",
+                            "finishedTimeStr": "",
+                            "scanBeginTime": "2020-01-01",
+                            "scanEndTime": "2020-02-29"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "scanOpenId",
+                                "path": "data.result.0.openId",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "发起立项-选择扫描记录",
+                    "desc": "选择扫描记录",
+                    "type": "request",
+                    "params": {
+                        "name": "扫描记录",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/respondInitiation/scanRecords",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": "1",
+                            "per_page": "10",
+                            "condition": [
+
+                            ],
+                            "beginTime": "2020-01",
+                            "endTime": "2020-01"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "operateTime",
+                                "path": "data.result.0.operateTime",
+                                "condition": null
+                            }
+                        },
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "scanPeriod",
+                                "path": "data.result.0.scanPeriod",
+                                "condition": null
+                            }
+                        },
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "scanType",
+                                "path": "data.result.0.scanType",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "获取项目编号",
+                    "desc": "获取项目编号为发起立项提供数据",
+                    "type": "request",
+                    "params": {
+                        "name": "获取项目编号",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/project/generate-code",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": [
+
+                        ]
+                    },
+                    "handlers": [
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "xmbh",
+                                "path": "data",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "获取scanOrgRelationOpenId",
+                    "desc": "获取scanOrgRelationOpenId",
+                    "type": "request",
+                    "params": {
+                        "name": "获取scanOrgRelationOpenId",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/respondInitiation/scanOrgList",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "scanOpenId": "{{scanOpenId}}"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "scanOrgRelationOpenId",
+                                "path": "data.0.scanOrgRelationOpenId",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "风险范围查询",
+                    "desc": "风险范围查询",
+                    "type": "request",
+                    "params": {
+                        "name": "风险范围查询",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/respondInitiation/riskPoints",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": "1",
+                            "per_page": "10",
+                            "condition": "[]",
+                            "projectCode": "{{xmbh}}",
+                            "scanOpenId": "{{scanOpenId}}",
+                            "orgTaxNum": "{{sh}}"
+                        }
+                    },
+                    "handlers": [
+
+                    ]
+                },
+                {
+                    "name": "发起立项",
+                    "desc": "选择中建创业信息有限公司发起立项",
+                    "type": "request",
+                    "params": {
+                        "name": "发起立项",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/project/create",
+                        "method": "post",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "projectName": "立项自动化测试{{STR_5}}",
+                            "projectCode": "{{xmbh}}",
+                            "projectDesc": "立项自动化测试{{STR_5}}",
+                            "orgTaxNum": "{{sh}}",
+                            "requirementDesc": "立项自动化测试{{STR_5}}",
+                            "importance": "4",
+                            "feedbackDeadlineType": "2",
+                            "riskOrgList": [
+                                {
+                                    "scanOrgRelationOpenId": "{{scanOrgRelationOpenId}}",
+                                    "scanOpenId": "{{scanOpenId}}",
+                                    "orgTaxNum": "{{sh}}",
+                                    "orgName": "{{COMPANY_NAME}}"
+                                }
+                            ],
+                            "scanRecordOpenId": "{{scanOpenId}}",
+                            "scanFlag": "{{scanType}}",
+                            "scanPeriod": "{{scanPeriod}}",
+                            "scanRange": "{{COMPANY_NAME}}",
+                            "riskNum": 1,
+                            "initiator": "租户管理员",
+                            "scanBeginTime": "{{operateTime}}",
+                            "feedbackDeadline": ""
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "code",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": 200
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "发起反馈-查询",
+                    "desc": "选择发起立项完成的记录-项目编号发起查询",
+                    "type": "request",
+                    "params": {
+                        "name": "发起反馈-查询",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/respondInitiation/feedback/list",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": 1,
+                            "per_page": 10,
+                            "condition": "[{\"f\":\"keywords\",\"v\":\"{{xmbh}}\",\"op\":\"eq\",\"t\":\"s\"}]"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "data.result.0.projectName",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "立项自动化测试{{STR_5}}"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "code",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": 200
+                            }
+                        },
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "taskOpenId",
+                                "path": "data.result.0.taskOpenId",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "通过taskOpenId获取feedbackOpenId，warningRulesOpenId，riskName",
+                    "desc": "通过taskOpenId获取feedbackOpenId，warningRulesOpenId，riskName",
+                    "type": "request",
+                    "params": {
+                        "name": "通过taskOpenId获取feedbackOpenId，warningRulesOpenId，riskName",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/respondInitiation/feedback/riskPoint",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "taskOpenId": "{{taskOpenId}}"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "feedbackOpenId",
+                                "path": "data.riskPointList.0.feedbackOpenId",
+                                "condition": null
+                            }
+                        },
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "warningRulesOpenId",
+                                "path": "data.riskPointList.0.warningRulesOpenId",
+                                "condition": null
+                            }
+                        },
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "riskName",
+                                "path": "data.riskPointList.0.riskName",
+                                "condition": null
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "result",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "success"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "code",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": 200
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "infos",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "成功"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "反馈-保存",
+                    "desc": "反馈-保存",
+                    "type": "request",
+                    "params": {
+                        "name": "反馈-保存",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/respondInitiation/saveFeedback",
+                        "method": "post",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+
+                        "data": {
+                            "taskId": "{{taskOpenId}}",
+                            "feedbackOpenId": "{{feedbackOpenId}}",
+                            "riskPointId": "{{warningRulesOpenId}}",
+                            "feedbacked": 0,
+                            "riskDesc": "{{riskName}}",
+                            "riskAdvice": "{{riskName}}",
+                            "riskFlag": 1,
+                            "handleType": 1,
+                            "handleMethod": "VATZB20230609141704509 自动化-个性化-属期\nVATZB20230609141704509 自动化-个性化-属期\nVATZB20230609141704509 自动化-个性化-属期",
+                            "analysisResult": "VATZB20230609141704509 自动化-个性化-属期\nVATZB20230609141704509 自动化-个性化-属期\nVATZB20230609141704509 自动化-个性化-属期",
+                            "fileList": [
+
+                            ]
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "result",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "success"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "code",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": 200
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "infos",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "成功"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "提交反馈",
+                    "desc": "提交反馈",
+                    "type": "request",
+                    "params": {
+                        "name": "提交反馈",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/respondInitiation/feedback?taskOpenId={{taskOpenId}}",
+                        "method": "post",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "data": {}
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "result",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "success"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "code",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": 200
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "infos",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "成功"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "应对审核-查询",
+                    "desc": "应对审核-查询",
+                    "type": "request",
+                    "params": {
+                        "name": "应对审核-查询",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/project/audit/list",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": 1,
+                            "per_page": 10,
+                            "auditStatus": "0",
+                            "importance": "",
+                            "projectNameAndCode": "{{xmbh}}",
+                            "condition": "[]"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "data.result.0.projectName",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "立项自动化测试{{STR_5}}"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "result",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "success"
+                            }
+                        },
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "shid",
+                                "path": "data.result.0.openId",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "应对审核里-查询",
+                    "desc": "应对审核里-查询",
+                    "type": "request",
+                    "params": {
+                        "name": "应对审核里-查询",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/project/audit/task/list",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": 1,
+                            "per_page": 10,
+                            "projectOpenId": "{{shid}}",
+                            "orgName": "",
+                            "auditStatus": "",
+                            "operator": "",
+                            "condition": "[]"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "shopenId",
+                                "path": "data.result.0.taskOpenId",
+                                "condition": null
+                            }
+                        },
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "taskProcessId",
+                                "path": "data.result.0.taskProcessId",
+                                "condition": null
+                            }
+                        },
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "taskId",
+                                "path": "data.result.0.taskId",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "应对审核-一审",
+                    "desc": "应对审核-一审",
+                    "type": "request",
+                    "params": {
+                        "name": "应对审核-一审",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/project/audit/task/reviews",
+                        "method": "post",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "taskInfos": [
+                                {
+                                    "taskId": "{{taskId}}",
+                                    "openId": "{{shopenId}}",
+                                    "instanceId": "{{taskProcessId}}"
+                                }
+                            ],
+                            "auditResult": "1",
+                            "auditDesc": "1231"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "result",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "success"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "code",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": 200
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "infos",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "成功"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "应对审核里2-查询",
+                    "desc": "应对审核里2-查询",
+                    "type": "request",
+                    "params": {
+                        "name": "应对审核里2-查询",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/project/audit/task/list",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": 1,
+                            "per_page": 10,
+                            "projectOpenId": "{{shid}}",
+                            "orgName": "",
+                            "auditStatus": "",
+                            "operator": "",
+                            "condition": "[]"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "taskId",
+                                "path": "data.result.0.taskId",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "应对审核-二审",
+                    "desc": "应对审核-二审",
+                    "type": "request",
+                    "params": {
+                        "name": "应对审核-一审",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/project/audit/task/reviews",
+                        "method": "post",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "taskInfos": [
+                                {
+                                    "taskId": "{{taskId}}",
+                                    "openId": "{{shopenId}}",
+                                    "instanceId": "{{taskProcessId}}"
+                                }
+                            ],
+                            "auditResult": "1",
+                            "auditDesc": "1231"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "result",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "success"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "code",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": 200
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "infos",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "成功"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "应对审核里3-查询",
+                    "desc": "应对审核里3-查询",
+                    "type": "request",
+                    "params": {
+                        "name": "应对审核里3-查询",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/project/audit/task/list",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": 1,
+                            "per_page": 10,
+                            "projectOpenId": "{{shid}}",
+                            "orgName": "",
+                            "auditStatus": "",
+                            "operator": "",
+                            "condition": "[]"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "taskId",
+                                "path": "data.result.0.taskId",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "应对审核-三审",
+                    "desc": "应对审核-三审",
+                    "type": "request",
+                    "params": {
+                        "name": "应对审核-三审",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/project/audit/task/reviews",
+                        "method": "post",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "taskInfos": [
+                                {
+                                    "taskId": "{{taskId}}",
+                                    "openId": "{{shopenId}}",
+                                    "instanceId": "{{taskProcessId}}"
+                                }
+                            ],
+                            "auditResult": "1",
+                            "auditDesc": "1231"
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "result",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "success"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "code",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": 200
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "infos",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "成功"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "应对总结-查询",
+                    "desc": "应对总结-查询",
+                    "type": "request",
+                    "params": {
+                        "name": "应对总结-查询",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/summary/list",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": 1,
+                            "per_page": 10,
+                            "summaryStatus": "0",
+                            "importance": "",
+                            "projectNameAndCode": "{{xmbh}}",
+                            "condition": "[]",
+                            "published": ""
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "data.result.0.projectName",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "立项自动化测试{{STR_5}}"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "result",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "success"
+                            }
+                        },
+                        {
+                            "type": "extract",
+                            "params": {
+                                "type": "json",
+                                "field": "zjid",
+                                "path": "data.result.0.openId",
+                                "condition": null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "应对总结-总结",
+                    "desc": "应对总结-总结",
+                    "type": "request",
+                    "params": {
+                        "name": "应对总结-总结",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/summary/addSummary",
+                        "method": "post",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "show": false,
+                            "summary": "123123",
+                            "published": "2",
+                            "remarks": "123123",
+                            "projectOpenId": "{{zjid}}",
+                            "fileList": [
+
+                            ]
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "result",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "success"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "code",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": 200
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "infos",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "成功"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "应对总结-查询",
+                    "desc": "应对总结-查询",
+                    "type": "request",
+                    "params": {
+                        "name": "应对总结-查询",
+                        "desc": "",
+                        "host": "{{TEST_HOST1}}",
+                        "path": "/declare-risk/api/v1/risk/summary/list",
+                        "method": "get",
+                        "cookies": {
+                            "test_cas_access_token": "{{COOKIES}}"
+                        },
+                        "response_type": "json",
+                        "post_type": "json",
+                        "handers": null,
+                        "data": {
+                            "page": 1,
+                            "per_page": 10,
+                            "summaryStatus": "1",
+                            "importance": "",
+                            "projectNameAndCode": "{{xmbh}}",
+                            "condition": "[]",
+                            "published": ""
+                        }
+                    },
+                    "handlers": [
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "data.result.0.projectName",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "立项自动化测试{{STR_5}}"
+                            }
+                        },
+                        {
+                            "type": "ext_asserts",
+                            "params": {
+                                "type": "json",
+                                "path": "result",
+                                "condition": [
+
+                                ],
+                                "func": "==",
+                                "value_right": "success"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

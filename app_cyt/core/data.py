@@ -15,7 +15,7 @@ class publicDatabase:
     Model: models.Model
 
     def get_by_id(self, pk):
-        e = self.is_exit(pk=pk)
+        e = self.try_get(pk=pk)
         if not e:
             return None
         return e.dict_for_get()
@@ -27,7 +27,7 @@ class publicDatabase:
             res.append(obj.dict_for_list())
         return res
 
-    def is_exit(self, name=None, pk=None):
+    def try_get(self, name=None, pk=None):
         if pk:
             try:
                 return self.Model.objects.get(pk=pk)
@@ -47,7 +47,7 @@ class TePlanData(publicDatabase):
     Model = TePlan
 
     def save_plan(self, name: str, desc: str, variable: dict, user: str):
-        this = self.is_exit(name=name)
+        this = self.try_get(name=name)
         if this:
             this.name = name
             this.desc = desc
@@ -67,7 +67,7 @@ class PlanData(publicDatabase):
 
     def save_plan(self, name: str, desc: str, variable: dict, user: str):
 
-        this: Plan = self.is_exit(name=name)
+        this: Plan = self.try_get(name=name)
         if this:
             this.name = name
             this.desc = desc
@@ -250,7 +250,7 @@ class wChatData(publicDatabase):
     Model = WChatBotModel
 
     def get_url_by_id(self, pk):
-        e = self.is_exit(pk=pk)
+        e = self.try_get(pk=pk)
         if not e:
             return None
         return e.bot_link
