@@ -183,6 +183,8 @@ class Step(BasicFields):
     class Meta:
         verbose_name = "步骤"
         verbose_name_plural = "步骤"
+        ordering = (STEP.NUMBER,)
+
 
     def dict_for_list(self):
         return {

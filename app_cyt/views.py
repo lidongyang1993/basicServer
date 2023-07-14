@@ -375,7 +375,7 @@ def get_step_list(request: WSGIRequest):
         size = data.get(FILED.SIZE, 10)
         current_page = data.get(FILED.CURRENT_PAGE, 1)
         try:
-            objs = StepData().select(case_id=case_id, pk=pk, name=name, desc=desc)
+            objs = StepData().select(case_id=case_id, pk=pk, name=name, desc=desc).order_by(STEP.NUMBER)
         except models.ObjectDoesNotExist:
             objs = None
         return make_data_list(current_page, size, objs)
