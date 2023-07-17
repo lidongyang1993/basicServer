@@ -107,6 +107,8 @@ class RunGlobal:
         """
         if isinstance(msg, str):
             return msg
+        if isinstance(msg, dict):
+            return json.dumps(msg, ensure_ascii=False)
         return str(msg)
 
     def log_list(self, msg_list: list, left=None, right=None):
@@ -361,10 +363,12 @@ class RunCase(RunBasic):
         for i in range(1, step.retry.get(RETRY.TIMES) + 1):
             step.time = i
             try:
+                step.result = None
+                step.isPass = True
                 step.main()
                 break
             except AssertError:
-                step.Global.log(MSG.RETRY.format(step.time + 1), left=MSG.CUT_TWO)
+                step.Global.log(MSG.RETRY_THIS_ERROR.format(step.time + 1), left=MSG.CUT_TWO)
                 time.sleep(step.retry.get(RETRY.INTERVAL))
                 continue
             except Exception as e:
@@ -372,6 +376,7 @@ class RunCase(RunBasic):
             finally:
                 pass
         if step.isPass is False:
+            step.Global.log(MSG.RETRY_ALL_ERROR, left=MSG.CUT_TWO)
             raise JumpError(MSG.JUMP_CUT_TIME_ERROR.format(step.result))
 
     def after(self):
@@ -664,6 +669,7 @@ class RunPlugIn(RunBasic):
             raise StepError(MSG.RANDOM_PARAMS_ERROR)
         res = random_field(random_type, random_length)
         self.result = {get_field: res}
+        self.Global.log(self.result,  left=MSG.CUT_THREE + MSG.RANDOM_RESULT)
         self.Global.update_global(self.result)
 
     def final(self):

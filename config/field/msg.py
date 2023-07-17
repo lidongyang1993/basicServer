@@ -36,6 +36,7 @@ class MSG:
     HANDLERS_CUT = "后置处理器：{}"
     ALL_CASE_END = "本计划所有用例执行完成!"
     PG_DB_RESULT = "PG数据库执行结果："
+    RANDOM_RESULT = "随机数处理结果："
 
 
     REQ_RESULT = "接口请求结果："
@@ -49,7 +50,8 @@ class MSG:
 
     JUMP_CUT_TIME_ERROR = "重试不通过，停止该用例!{}"
     JUMP_CUT_ASSERTS_ERROR = "判定不通过，不再重复，停止该用例!"
-    RETRY = "验证失败，等待进行第{}次重试!"
+    RETRY_THIS_ERROR = "验证失败，等待进行第{}次重试!"
+    RETRY_ALL_ERROR = "所有重试都已完成，重试结果失败!"
 
 
 
