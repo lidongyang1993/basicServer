@@ -14,7 +14,7 @@ from pathlib import Path
 from tools.read_cnf import read_data
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-file_path = read_data("file_server", "file_path")
+file_path = "jobs/file/logs/"
 file_path_public = file_path + "public/"
 
 
