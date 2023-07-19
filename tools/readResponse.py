@@ -55,6 +55,8 @@ def get_path_dict_condition(_str: str, _dict: dict, condition: [dict] = None):
                     return json.dumps(_dict[rel], ensure_ascii=False, separators=(',', ':'))
                 return _dict[rel]
             if rel.isdigit():
+                if not isinstance(_dict, list):
+                    return None
                 if not condition:
                     return get_path_dict_condition(str_list[1], _dict[int(rel)], condition)
                 keys = list(condition[0].keys())

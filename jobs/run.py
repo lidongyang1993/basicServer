@@ -552,6 +552,8 @@ class RunRequest(RunBasic):
     def upload_req(self):
         headers, data = self.upload_make_data()
         method = METHOD.POST
+        if not self.headers:
+            self.headers = {}
         self.headers.update(headers)
         self.response = http_client_util(
             self.url, method,
@@ -659,6 +661,7 @@ class RunPlugIn(RunBasic):
             raise StepError(MSG.LOGIN_PARAMS_ERROR)
         cookies = test_login(user, pwd, code)
         self.result = {cookies_field: cookies}
+        self.Global.log(self.result,  left=MSG.CUT_THREE + MSG.LOGIN_RESULT)
         self.Global.update_global(self.result)
 
     def random_run(self):
@@ -837,9 +840,11 @@ class RunExtAssert(RunBasic):
         if not self.step_result:
             self.result = self.isPass = False
             return
-
-        self.left = get_res_from_html_json(self)
-
+        try:
+            self.left = get_res_from_html_json(self)
+        except Exception as e:
+            self.Global.log(e.__str__(), left=MSG.CUT_FOUR + MSG.EXT_RESULT_ERROR)
+            self.left = None
         self.Global.log(self.left, left=MSG.CUT_FOUR + MSG.EXT_RESULT)
         self._to_str()
         self.code = MSG.ASSERT_CODE.format(self.func_assert)

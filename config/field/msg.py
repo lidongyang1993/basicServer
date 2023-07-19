@@ -37,6 +37,7 @@ class MSG:
     ALL_CASE_END = "本计划所有用例执行完成!"
     PG_DB_RESULT = "PG数据库执行结果："
     RANDOM_RESULT = "随机数处理结果："
+    LOGIN_RESULT = "随机数处理结果："
 
 
     REQ_RESULT = "接口请求结果："
