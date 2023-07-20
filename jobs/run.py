@@ -361,6 +361,7 @@ class RunCase(RunBasic):
     def retry_func(step):
         for i in range(1, step.retry.get(RETRY.TIMES) + 1):
             step.Global.log(MSG.RETRY_THIS_ERROR.format(step.time), left=MSG.CUT_TWO)
+            time.sleep(step.retry.get(RETRY.INTERVAL))
             step.time = i
             try:
                 step.result = None
@@ -368,7 +369,6 @@ class RunCase(RunBasic):
                 step.main()
                 break
             except AssertError:
-                time.sleep(step.retry.get(RETRY.INTERVAL))
                 RunCase.try_jump_step(step)
             except Exception as e:
                 step.result = e.__str__()
