@@ -360,6 +360,7 @@ class RunCase(RunBasic):
     @staticmethod
     def retry_func(step):
         for i in range(1, step.retry.get(RETRY.TIMES) + 1):
+            step.Global.log(MSG.RETRY_THIS_ERROR.format(step.time), left=MSG.CUT_TWO)
             step.time = i
             try:
                 step.result = None
@@ -367,15 +368,11 @@ class RunCase(RunBasic):
                 step.main()
                 break
             except AssertError:
-                step.Global.log(MSG.RETRY_THIS_ERROR.format(step.time), left=MSG.CUT_TWO)
                 time.sleep(step.retry.get(RETRY.INTERVAL))
-                continue
+                RunCase.try_jump_step(step)
             except Exception as e:
                 step.result = e.__str__()
                 step.isPass = False
-            finally:
-                if not step.isPass:
-                    RunCase.try_jump_step(step)
         if step.isPass is False:
             step.Global.log(MSG.RETRY_ALL_ERROR, left=MSG.CUT_TWO)
             raise JumpError(MSG.JUMP_CUT_TIME_ERROR.format(step.result))
@@ -394,6 +391,9 @@ class RunCase(RunBasic):
         except AssertError as e:
             isPass = False
             result = e.node
+        except Exception as e:
+            step.result = e.__str__()
+            step.isPass = False
         if isPass is True:
             raise JumpError(MSG.JUMP_CUT_ASSERTS_ERROR.format(result))
 
