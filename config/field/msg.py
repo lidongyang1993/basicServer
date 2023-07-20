@@ -50,7 +50,7 @@ class MSG:
 
 
     JUMP_CUT_TIME_ERROR = "重试不通过，停止该用例!{}"
-    JUMP_CUT_ASSERTS_ERROR = "判定不通过，不再重复，停止该用例!"
+    JUMP_CUT_ASSERTS_ERROR = "判定不通过，不再重复，停止该用例!:{}"
     RETRY_THIS_ERROR = "验证失败，等待进行第{}次重试!"
     RETRY_ALL_ERROR = "所有重试都已完成，重试结果失败!"
 

@@ -5,7 +5,6 @@
 # @Site    : 
 # @File    : run.py
 # @Software: PyCharm
-import json
 import time
 from json import JSONDecodeError
 
@@ -368,16 +367,35 @@ class RunCase(RunBasic):
                 step.main()
                 break
             except AssertError:
-                step.Global.log(MSG.RETRY_THIS_ERROR.format(step.time + 1), left=MSG.CUT_TWO)
+                step.Global.log(MSG.RETRY_THIS_ERROR.format(step.time), left=MSG.CUT_TWO)
                 time.sleep(step.retry.get(RETRY.INTERVAL))
                 continue
             except Exception as e:
-                print(e)
+                step.result = e.__str__()
+                step.isPass = False
             finally:
-                pass
+                if not step.isPass:
+                    RunCase.try_jump_step(step)
         if step.isPass is False:
             step.Global.log(MSG.RETRY_ALL_ERROR, left=MSG.CUT_TWO)
             raise JumpError(MSG.JUMP_CUT_TIME_ERROR.format(step.result))
+
+
+
+    @staticmethod
+    def try_jump_step(step):
+        jump_handlers = step.retry.get(RETRY.JUMP)
+        isPass = True
+        result = None
+        try:
+            for handler in jump_handlers:
+                handler_run = RunHandler(step.Global, handler, step.result)
+                handler_run.main()
+        except AssertError as e:
+            isPass = False
+            result = e.node
+        if isPass is True:
+            raise JumpError(MSG.JUMP_CUT_ASSERTS_ERROR.format(result))
 
     def after(self):
         super().after()
@@ -573,6 +591,8 @@ class RunRequest(RunBasic):
             params = self.data.get(UPLOAD.PARAMS)
             file_Name, file_path = get_file_info(file_id)
         except AttributeError as e:
+            self.result = e.__str__()
+            self.isPass = False
             raise RequestError(MSG.REQ_FILE_GET_ERROR.format(e.__str__()))
         except KeyError as e:
             raise RequestError(MSG.REQ_FILE_PARAMS_ERROR.format(e.__str__()))
