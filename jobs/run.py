@@ -387,6 +387,8 @@ class RunCase(RunBasic):
         isPass = True
         result = None
         try:
+
+            step.Global.log(MSG.RETRY_ASSERT, MSG.CUT_THREE)
             for handler in jump_handlers:
                 handler_run = RunHandler(step.Global, handler, step.result)
                 handler_run.main()
@@ -406,7 +408,6 @@ class RunCase(RunBasic):
         if self.isPass:
             self.result = MSG.CASE_PASS
         super().end()
-
 
 class RunStep(RunBasic):
     RUN_TYPE = OTHER.YONG_LI_BU_ZHOU
@@ -471,7 +472,6 @@ class RunStep(RunBasic):
                 handler_run.main()
         except AssertError as e:
             self.isPass = False
-            self.result = e.node
             raise AssertError(self.result)
         super().after()
 
@@ -491,7 +491,6 @@ class RunStep(RunBasic):
     def get_retry(self):
         self.retry = self.Params.get(STEP.RETRY)
         self.time = 0
-
 
 class RunRequest(RunBasic):
     RUN_TYPE = OTHER.JIE_KOU_QING_QIU
@@ -870,13 +869,10 @@ class RunExtAssert(RunBasic):
         self.Global.log(self.left, left=MSG.CUT_FOUR + MSG.EXT_RESULT)
         self._to_str()
         self.code = MSG.ASSERT_CODE.format(self.func_assert)
-        self.result = eval(self.code)
         if not eval(self.code):
-            self.result = str(self.left) + "\t??\t" + str(self.right)
             self.isPass = False
         else:
             self.result = self.isPass = True
-        self.Global.log(self.Params, left=MSG.CUT_FOUR + MSG.HANDLER_RESULT)
 
     def after(self):
         super().after()
@@ -885,7 +881,7 @@ class RunExtAssert(RunBasic):
         asserts_to_str(self)
 
     def end(self):
-        self.Global.log(self.result, left=MSG.CUT_FOUR + MSG.HANDLER_RESULT)
+        self.Global.log(self.isPass, left=MSG.CUT_FOUR + MSG.HANDLER_RESULT)
         super().end()
 
     def final(self):
@@ -962,11 +958,9 @@ class RunAsserts(RunBasic):
         self._to_str()
         self.code = MSG.ASSERT_CODE.format(self.func_assert)
         if not eval(self.code):
-            self.result = str(self.left) + "\t??\t" + str(self.right)
             self.isPass = False
         else:
             self.result = self.isPass = True
-        self.Global.log(self.Params, left=MSG.CUT_FOUR + MSG.HANDLER_RESULT)
 
     def _to_str(self):
         asserts_to_str(self)

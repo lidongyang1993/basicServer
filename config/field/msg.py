@@ -30,6 +30,7 @@ class MSG:
 
     CASE_CUT = "用例名称：{}"
     CASE_VAR_CUT = "变量列表："
+    RETRY_ASSERT = "本次循环失败，验证是否需要终止用例"
 
     STEP_CUT = "步骤列表："
     PLUG_CUT = "执行插件："
