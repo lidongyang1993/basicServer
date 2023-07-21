@@ -9,10 +9,9 @@
   },
   "case": [
     {
-      "name": "开具发票流程-特殊票种-成品油",
+      "name": "开具发票流程-合并单据",
       "desc": "导入一个带有折扣行的订单，生成预置发票，执行生成，需要审核。",
-      "variable": {
-      },
+      "variable": {},
       "step": [
         {
           "name": "随机生成一个订单号",
@@ -24,6 +23,20 @@
               "random_type": "STR",
               "length": 12,
               "get_field": "BILL_ID_START"
+            }
+          },
+          "handlers": []
+        },
+        {
+          "name": "再随机生成一个订单号",
+          "desc": "使用随机数插件，随机生成一个订单号，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "type": "random",
+            "params": {
+              "random_type": "STR",
+              "length": 12,
+              "get_field": "BILL_ID_START_2"
             }
           },
           "handlers": []
@@ -56,7 +69,7 @@
           ]
         },
         {
-          "name": "导入一条订单",
+          "name": "导入两条订单",
           "desc": "进行订单导入。",
           "type": "request",
           "sleep": 5,
@@ -70,7 +83,7 @@
             "cookies": {},
             "response_type": "json",
             "data": {
-              "Count": 1,
+              "Count": 2,
               "RequestID": "3da5aff7c6914cf399923a72330af6191",
               "Content": [
                 {
@@ -81,30 +94,31 @@
                   "SellerPhone": "027-65022526",
                   "SellerBankName": "中国光大银行武汉分行营业部",
                   "SellerBankAccount": "38310188000444553",
-                  "Buyer": "成品油-特殊票种",
-                  "BuyerTaxNum": "91320114MA27H4CC5G",
-                  "BuyerAddress": "",
-                  "BuyerPhone": "",
-                  "BuyerBankName": "",
-                  "BuyerBankAccount": "",
-                  "Drawer": "1",
-                  "Payee": "",
-                  "Reviewer": "",
+                  "Buyer": "税控普票-差额征税-不含税-合并单据",
+                  "BuyerTaxNum": "123456787654111",
+                  "BuyerAddress": "南京市雨花台区软件大道66号华通科技园406室",
+                  "BuyerPhone": "010-88233550",
+                  "BuyerBankName": "招商银行股份有限公司南京雨花支行",
+                  "BuyerBankAccount": "125914056010701",
+                  "Drawer": "admin",
+                  "Payee": "王晗",
+                  "Reviewer": "范荣峥",
                   "BillType": "1",
-                  "InvoiceType": "06",
+                  "InvoiceType": "04",
                   "TotalAmount": "1.00",
                   "InvoiceAmount": "0.88",
                   "TaxAmount": "0.12",
                   "BillDate": "20230216000000",
                   "MachineNo": "",
                   "StoreCode": "2021",
-                  "SpecialInvoice": "1",
+                  "SpecialInvoice": "",
                   "RedAdviceNum": "",
                   "RedConfirmNum": "",
+                  "TaxMethod": "2",
                   "Items": [
                     {
-                      "LineNo": "",
-                      "DetailName": "1626136590057271298",
+                      "LineNo": "1",
+                      "DetailName": "劳务派遣服务费",
                       "Unit": "升",
                       "Standard": "",
                       "Num": "1",
@@ -115,9 +129,60 @@
                       "TaxRate": "0.13",
                       "TaxAmount": "0.12",
                       "DiscountType": "0",
-                      "ParentCode": "1070101070100000000",
+                      "ParentCode": "3079900000000000000",
                       "FreeTax": "",
-                      "VatSpecialManagement": ""
+                      "VatSpecialManagement": "",
+                      "DeductionAmount": "0.5"
+                    }
+                  ]
+                },
+                {
+                  "BillNo": "{{BILL_ID_START_2}}",
+                  "SellerTaxNum": "500102201007206608",
+                  "Seller": "500102201007206608",
+                  "SellerAddress": "武汉市东西湖区新沟镇油纱路73号1栋",
+                  "SellerPhone": "027-65022526",
+                  "SellerBankName": "中国光大银行武汉分行营业部",
+                  "SellerBankAccount": "38310188000444553",
+                  "Buyer": "税控普票-差额征税-不含税-合并单据",
+                  "BuyerTaxNum": "123456787654111",
+                  "BuyerAddress": "南京市雨花台区软件大道66号华通科技园406室",
+                  "BuyerPhone": "010-88233550",
+                  "BuyerBankName": "招商银行股份有限公司南京雨花支行",
+                  "BuyerBankAccount": "125914056010701",
+                  "Drawer": "admin",
+                  "Payee": "王晗",
+                  "Reviewer": "范荣峥",
+                  "BillType": "1",
+                  "InvoiceType": "04",
+                  "TotalAmount": "1.00",
+                  "InvoiceAmount": "0.88",
+                  "TaxAmount": "0.12",
+                  "BillDate": "20230216000000",
+                  "MachineNo": "",
+                  "StoreCode": "2021",
+                  "SpecialInvoice": "",
+                  "RedAdviceNum": "",
+                  "RedConfirmNum": "",
+                  "TaxMethod": "2",
+                  "Items": [
+                    {
+                      "LineNo": "1",
+                      "DetailName": "劳务派遣服务费",
+                      "Unit": "升",
+                      "Standard": "",
+                      "Num": "1",
+                      "TaxFlag": "0",
+                      "Price": "1",
+                      "InvoiceAmount": "0.88",
+                      "SumAmount": "1.00",
+                      "TaxRate": "0.13",
+                      "TaxAmount": "0.12",
+                      "DiscountType": "0",
+                      "ParentCode": "3079900000000000000",
+                      "FreeTax": "",
+                      "VatSpecialManagement": "",
+                      "DeductionAmount": "0.5"
                     }
                   ]
                 }
@@ -169,12 +234,11 @@
             "response_type": "json",
             "headers": null,
             "data": {
-            "defaultFlag": 1,
-            "id": "2204"
+              "defaultFlag": 1,
+              "id": "2204"
             }
           },
-          "handlers": [
-          ]
+          "handlers": []
         },
         {
           "name": "前台-查询导入的订单数据，并提取billId",
@@ -196,30 +260,10 @@
             "data": {
               "page": 1,
               "per_page": 10,
-              "condition": "[{\"f\":\"billNo\",\"v\":\"{{BILL_ID_START}}\",\"op\":\"eq\",\"t\":\"s\"},{\"f\":\"createDateStart\",\"v\":\"\",\"op\":\"ge\",\"t\":\"s\"},{\"f\":\"createDateEnd\",\"v\":\"\",\"op\":\"le\",\"t\":\"s\"}]"
+              "condition": "[{\"f\":\"billNo\",\"v\":\"{{BILL_ID_START}},{{BILL_ID_START_2}}\",\"op\":\"eq\",\"t\":\"s\"},{\"f\":\"createDateStart\",\"v\":\"\",\"op\":\"ge\",\"t\":\"s\"},{\"f\":\"createDateEnd\",\"v\":\"\",\"op\":\"le\",\"t\":\"s\"}]"
             }
           },
           "handlers": [
-            {
-              "type": "ext_asserts",
-              "params": {
-                "type": "json",
-                "path": "data.0.billNo",
-                "condition": [],
-                "func": "==",
-                "value_right": "{{BILL_ID_START}}"
-              }
-            },
-            {
-              "type": "ext_asserts",
-              "params": {
-                "type": "json",
-                "path": "data.0.sellerTaxNo",
-                "condition": [],
-                "func": "==",
-                "value_right": "500102201007206608"
-              }
-            },
             {
               "type": "extract",
               "params": {
@@ -228,27 +272,39 @@
                 "condition": [],
                 "field": "BILL_ID"
               }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "path": "data.1.id",
+                "condition": [],
+                "field": "BILL_ID_2"
+              }
             }
           ]
         },
         {
-          "name": "前台-根据BILL_ID，生成预置发票",
+          "name": "前台-根据billId合并单据",
           "desc": "",
           "type": "request",
+          "sleep": 5,
           "params": {
-            "name": "生成预制发票接口",
+            "name": "查询预制订单列表接口",
             "desc": "",
             "host": "{{TEST_HOST_OTHER}}",
-            "path": "/xxApi/api/v1/bill/generateTemplateInvoice",
+            "path": "/xxApi/api/v1/bill/merge",
             "method": "POST",
-            "post_type": "json",
+            "post_type": "form",
             "cookies": {
               "test_cas_access_token": "{{COOKIES_RECEPTION}}",
               "dev_cas_access_token": "{{COOKIES_RECEPTION}}"
             },
             "response_type": "json",
             "headers": null,
-            "data": [{"billId":"{{BILL_ID}}"}]
+            "data": {
+              "billIds": "{{BILL_ID}},{{BILL_ID_2}}"
+            }
           },
           "handlers": [
             {
@@ -274,7 +330,177 @@
           ]
         },
         {
-          "name": "前台-根据订单编号，查询待开发票管理页面，并提取INVOICE_ID；",
+          "name": "前台-查询第一页数据，并获取合并单据的条目，提取billId",
+          "desc": "",
+          "type": "request",
+          "params": {
+            "name": "查询预制订单列表接口",
+            "desc": "",
+            "host": "{{TEST_HOST_OTHER}}",
+            "path": "/xxApi/api/v1/bill/queryBillInfoListNew",
+            "method": "GET",
+            "post_type": "json",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES_RECEPTION}}",
+              "dev_cas_access_token": "{{COOKIES_RECEPTION}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"createDateStart\",\"v\":\"\",\"op\":\"ge\",\"t\":\"s\"},{\"f\":\"createDateEnd\",\"v\":\"\",\"op\":\"le\",\"t\":\"s\"},{\"f\":\"billPageFlag\",\"v\":\"2\",\"op\":\"eq\",\"t\":\"i\"}]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "path": "data.0.billNo",
+                "condition": [
+                  {
+                    "originalBillNo": "{{BILL_ID_START}},{{BILL_ID_START_2}}"
+                  }
+                ],
+                "iCondition": [
+                  {
+                    "originalBillNo": "{{BILL_ID_START_2}},{{BILL_ID_START}}"
+                  }
+                ],
+                "field": "BILL_NO_MERGE"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "path": "data.1.id",
+                "condition": [
+                  {
+                    "originalBillNo": "{{BILL_ID_START}},{{BILL_ID_START_2}}"
+                  }
+                ],
+                "iCondition": [
+                  {
+                    "originalBillNo": "{{BILL_ID_START_2}},{{BILL_ID_START}}"
+                  }
+                ],
+                "field": "BILL_NO_SYS_MERGE"
+              }
+            },
+            {
+              "type": "asserts",
+              "params": {
+                "value_left": "{{BILL_NO_SYS_MERGE}}",
+                "func": "!=",
+                "value_right": null
+              }
+            },
+            {
+              "type": "asserts",
+              "params": {
+                "value_left": "{{BILL_NO_MERGE}}",
+                "func": "!=",
+                "value_right": null
+              }
+            }
+          ]
+        },
+        {
+          "name": "前台-根据ID，确认合并订单",
+          "desc": "",
+          "type": "request",
+          "params": {
+            "name": "合并订单确认接口",
+            "desc": "",
+            "host": "{{TEST_HOST_OTHER}}",
+            "path": "/xxApi/api/v1/bill/splitMerge/confirm",
+            "method": "POST",
+            "post_type": "json",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES_RECEPTION}}",
+              "dev_cas_access_token": "{{COOKIES_RECEPTION}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "data": {
+              "ids": [
+                "{{BILL_NO_SYS_MERGE}}"
+              ]
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "code",
+                "condition": [],
+                "func": "==",
+                "value_right": 200
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "前台-根据ID，生成预置发票",
+          "desc": "",
+          "type": "request",
+          "params": {
+            "name": "生成预制发票接口",
+            "desc": "",
+            "host": "{{TEST_HOST_OTHER}}",
+            "path": "/xxApi/api/v1/bill/generateTemplateInvoice",
+            "method": "POST",
+            "post_type": "json",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES_RECEPTION}}",
+              "dev_cas_access_token": "{{COOKIES_RECEPTION}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "data": [
+              {
+                "billId": "{{BILL_NO_SYS_MERGE}}"
+              }
+            ]
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "code",
+                "condition": [],
+                "func": "==",
+                "value_right": 200
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "前台-根据订单编号，查询待开发票管理页面；",
           "desc": "",
           "type": "request",
           "params": {
@@ -294,7 +520,7 @@
               "page": 1,
               "per_page": 10,
               "pageFlag": 3,
-              "condition": "[{\"f\":\"contraceNo\",\"v\":\"{{BILL_ID_START}}\",\"op\":\"eq\",\"t\":\"s\"}]"
+              "condition": "[{\"f\":\"contraceNo\",\"v\":\"{{BILL_NO_MERGE}}\",\"op\":\"eq\",\"t\":\"s\"}]"
             }
           },
           "handlers": [
@@ -351,250 +577,270 @@
             }
           },
           "handlers": [
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "result",
-        "condition": [],
-        "func": "==",
-        "value_right": "success"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "code",
-        "condition": [],
-        "func": "==",
-        "value_right": 200
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "infos",
-        "condition": [],
-        "func": "==",
-        "value_right": "成功"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.isRemoved",
-        "condition": [],
-        "func": "==",
-        "value_right": "0"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.version",
-        "condition": [],
-        "func": "==",
-        "value_right": 0
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.orderNum",
-        "condition": [],
-        "func": "==",
-        "value_right": 1
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.detailName",
-        "condition": [],
-        "func": "==",
-        "value_right": "*润滑油*1626136590057271298"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.standard",
-        "condition": [],
-        "func": "==",
-        "value_right": ""
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.price",
-        "condition": [],
-        "func": "==",
-        "value_right": 0.88
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.num",
-        "condition": [],
-        "func": "==",
-        "value_right": 1
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.unit",
-        "condition": [],
-        "func": "==",
-        "value_right": "升"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.invoiceAmount",
-        "condition": [],
-        "func": "==",
-        "value_right": 0.88
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.taxAmount",
-        "condition": [],
-        "func": "==",
-        "value_right": 0.12
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.sumAmount",
-        "condition": [],
-        "func": "==",
-        "value_right": 1
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.taxRate",
-        "condition": [],
-        "func": "==",
-        "value_right": "0.13"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.parentCode",
-        "condition": [],
-        "func": "==",
-        "value_right": "1070101070100000000"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.isVoided",
-        "condition": [],
-        "func": "==",
-        "value_right": "0"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.discountType",
-        "condition": [],
-        "func": "==",
-        "value_right": "0"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.preferentialFlag",
-        "condition": [],
-        "func": "==",
-        "value_right": "0"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.freeTax",
-        "condition": [],
-        "func": "==",
-        "value_right": ""
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.vatSpecialManagement",
-        "condition": [],
-        "func": "==",
-        "value_right": ""
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.taxFlag",
-        "condition": [],
-        "func": "==",
-        "value_right": "0"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.splitItem",
-        "condition": [],
-        "func": "==",
-        "value_right": false
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "data.0.priceExcludeTax",
-        "condition": [],
-        "func": "==",
-        "value_right": 0.88
-      }
-    }
-  ]
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "code",
+                "condition": [],
+                "func": "==",
+                "value_right": 200
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "infos",
+                "condition": [],
+                "func": "==",
+                "value_right": "成功"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.isRemoved",
+                "condition": [],
+                "func": "==",
+                "value_right": "0"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.version",
+                "condition": [],
+                "func": "==",
+                "value_right": 0
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.orderNum",
+                "condition": [],
+                "func": "==",
+                "value_right": 1
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.detailName",
+                "condition": [],
+                "func": "==",
+                "value_right": "*生活服务*劳务派遣服务费"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.standard",
+                "condition": [],
+                "func": "==",
+                "value_right": ""
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.price",
+                "condition": [],
+                "func": "==",
+                "value_right": 0.94
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.num",
+                "condition": [],
+                "func": "==",
+                "value_right": 2
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.unit",
+                "condition": [],
+                "func": "==",
+                "value_right": "升"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.invoiceAmount",
+                "condition": [],
+                "func": "==",
+                "value_right": 1.88
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.taxAmount",
+                "condition": [],
+                "func": "==",
+                "value_right": 0.12
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sumAmount",
+                "condition": [],
+                "func": "==",
+                "value_right": 2
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.taxRate",
+                "condition": [],
+                "func": "==",
+                "value_right": "0.13"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.parentCode",
+                "condition": [],
+                "func": "==",
+                "value_right": "3079900000000000000"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.isVoided",
+                "condition": [],
+                "func": "==",
+                "value_right": "0"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.ldate",
+                "condition": [],
+                "func": "==",
+                "value_right": 202307
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.discountType",
+                "condition": [],
+                "func": "==",
+                "value_right": "0"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.preferentialFlag",
+                "condition": [],
+                "func": "==",
+                "value_right": "0"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.freeTax",
+                "condition": [],
+                "func": "==",
+                "value_right": ""
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.vatSpecialManagement",
+                "condition": [],
+                "func": "==",
+                "value_right": ""
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.taxFlag",
+                "condition": [],
+                "func": "==",
+                "value_right": "0"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.deductionAmount",
+                "condition": [],
+                "func": "==",
+                "value_right": 1
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.splitItem",
+                "condition": [],
+                "func": "==",
+                "value_right": false
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.priceExcludeTax",
+                "condition": [],
+                "func": "==",
+                "value_right": 0.94
+              }
+            }
+          ]
         },
         {
-          "name": "前台-根据查询的INVOICE_ID，进行发票开具接口；",
+          "name": "前台-根据查询的STR_ID，进行发票开具接口；",
           "desc": "",
           "type": "request",
           "params": {
@@ -614,7 +860,28 @@
               "ids": "{{INVOICE_ID}}"
             }
           },
-          "handlers": []
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "code",
+                "condition": [],
+                "func": "==",
+                "value_right": 200
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
         },
         {
           "name": "数据库查询开具发票接口，确定字段信息，并验证有效字段；",
@@ -626,400 +893,310 @@
               "user": "user1",
               "password": "123456",
               "db_name": "inv_xx",
-              "SQL": "select * from xx_sop_task_log where task_name = 1 and task_type = 1 and data_id = '{{INVOICE_ID}}'",
+              "SQL": "select * from xx_invoice_json_log where invoice_id = '{{INVOICE_ID}}'",
               "port": 5432,
               "field_list": [
                 {
                   "field": "response",
                   "row": 0,
-                  "col": 5
+                  "col": 4
                 }
               ]
             },
             "type": "pg_db"
           },
-          "handlers":[
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "bz",
-        "condition": [],
-        "func": "==",
-        "value_right": "*润滑油*1626136590057271298:1.00"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fplx",
-        "condition": [],
-        "func": "==",
-        "value_right": "06"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "getResultMethod",
-        "condition": [],
-        "func": "==",
-        "value_right": "1"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "gmfmc",
-        "condition": [],
-        "func": "==",
-        "value_right": "成品油-特殊票种"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "gmfnsrsbh",
-        "condition": [],
-        "func": "==",
-        "value_right": "91320114MA27H4CC5G"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "hjje",
-        "condition": [],
-        "func": "==",
-        "value_right": "0.88"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "hjse",
-        "condition": [],
-        "func": "==",
-        "value_right": "0.12"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "jshj",
-        "condition": [],
-        "func": "==",
-        "value_right": "1.00"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "kpr",
-        "condition": [],
-        "func": "==",
-        "value_right": "1"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "lzfpbz",
-        "condition": [],
-        "func": "==",
-        "value_right": "0"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "naturalPersonFlag",
-        "condition": [],
-        "func": "==",
-        "value_right": "0"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "qyDm",
-        "condition": [],
-        "func": "==",
-        "value_right": "50"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "sgfplxDm",
-        "condition": [],
-        "func": "==",
-        "value_right": ""
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "tdys",
-        "condition": [],
-        "func": "==",
-        "value_right": ""
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "xsfdh",
-        "condition": [],
-        "func": "==",
-        "value_right": "027-65022526"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "xsfdz",
-        "condition": [],
-        "func": "==",
-        "value_right": "武汉市东西湖区新沟镇油纱路73号1栋"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "xsfkhh",
-        "condition": [],
-        "func": "==",
-        "value_right": "中国光大银行武汉分行营业部"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "xsfkhhyhzh",
-        "condition": [],
-        "func": "==",
-        "value_right": "38310188000444553"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "xsfmc",
-        "condition": [],
-        "func": "==",
-        "value_right": "500102201007206608"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "xsfnsrsbh",
-        "condition": [],
-        "func": "==",
-        "value_right": "500102201007206608"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "xsfzh",
-        "condition": [],
-        "func": "==",
-        "value_right": "38310188000444553"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.dj",
-        "condition": [],
-        "func": "==",
-        "value_right": "0.88000000"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.dw",
-        "condition": [],
-        "func": "==",
-        "value_right": "升"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.dylzfpmxxh",
-        "condition": [],
-        "func": "==",
-        "value_right": "1"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.fphxz",
-        "condition": [],
-        "func": "==",
-        "value_right": "00"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.ggxh",
-        "condition": [],
-        "func": "==",
-        "value_right": ""
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.hsje",
-        "condition": [],
-        "func": "==",
-        "value_right": "1.00"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.hwhyslwfwmc",
-        "condition": [],
-        "func": "==",
-        "value_right": "1626136590057271298"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.je",
-        "condition": [],
-        "func": "==",
-        "value_right": "0.88"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.kce",
-        "condition": [],
-        "func": "==",
-        "value_right": "0"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.mxxh",
-        "condition": [],
-        "func": "==",
-        "value_right": "1"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.se",
-        "condition": [],
-        "func": "==",
-        "value_right": "0.12"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.sl",
-        "condition": [],
-        "func": "==",
-        "value_right": "1.00000000"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.slv",
-        "condition": [],
-        "func": "==",
-        "value_right": "0.13"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.spfwjc",
-        "condition": [],
-        "func": "==",
-        "value_right": "润滑油"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.sphfwssflhbbm",
-        "condition": [],
-        "func": "==",
-        "value_right": "1070101070100000000"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.xmmc",
-        "condition": [],
-        "func": "==",
-        "value_right": "*润滑油*1626136590057271298"
-      }
-    },
-    {
-      "type": "ext_asserts",
-      "params": {
-        "type": "json",
-        "path": "fpmxList.0.zeroTaxFlag",
-        "condition": [],
-        "func": "==",
-        "value_right": ""
-      }
-    }
-  ]
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "casherName",
+                "condition": [],
+                "func": "==",
+                "value_right": "王晗"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "machineCode",
+                "condition": [],
+                "func": "==",
+                "value_right": ""
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "tradeNo",
+                "condition": [],
+                "func": "==",
+                "value_right": "{{BILL_NO_MERGE}}"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "buyerBankAccount",
+                "condition": [],
+                "func": "==",
+                "value_right": "125914056010701"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "sellerAddress",
+                "condition": [],
+                "func": "==",
+                "value_right": "武汉市东西湖区新沟镇油纱路73号1栋"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "remark",
+                "condition": [],
+                "func": "==",
+                "value_right": "*生活服务*劳务派遣服务费:2.00"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "buyerName",
+                "condition": [],
+                "func": "==",
+                "value_right": "税控普票-差额征税-不含税-合并单据"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "buyerAddress",
+                "condition": [],
+                "func": "==",
+                "value_right": "南京市雨花台区软件大道66号华通科技园406室010-88233550"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "reviewerName",
+                "condition": [],
+                "func": "==",
+                "value_right": "范荣峥"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "buyerBankName",
+                "condition": [],
+                "func": "==",
+                "value_right": "招商银行股份有限公司南京雨花支行"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "sellerBankAccount",
+                "condition": [],
+                "func": "==",
+                "value_right": "38310188000444553"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "buyerTaxpayerNum",
+                "condition": [],
+                "func": "==",
+                "value_right": "123456787654111"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "sellerTel",
+                "condition": [],
+                "func": "==",
+                "value_right": "027-65022526"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "drawerName",
+                "condition": [],
+                "func": "==",
+                "value_right": "admin"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.unitPrice",
+                "condition": [],
+                "func": "==",
+                "value_right": "0.94000000"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.taxRateAmount",
+                "condition": [],
+                "func": "==",
+                "value_right": "0.12"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.taxRateValue",
+                "condition": [],
+                "func": "==",
+                "value_right": "0.13"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.specificationModel",
+                "condition": [],
+                "func": "==",
+                "value_right": ""
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.quantity",
+                "condition": [],
+                "func": "==",
+                "value_right": "2.00000000"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.deductionAmount",
+                "condition": [],
+                "func": "==",
+                "value_right": "1.00"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.taxClassificationCode",
+                "condition": [],
+                "func": "==",
+                "value_right": "3079900000000000000"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.invoiceAmount",
+                "condition": [],
+                "func": "==",
+                "value_right": "1.88"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.includeTaxFlag",
+                "condition": [],
+                "func": "==",
+                "value_right": "0"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.goodsName",
+                "condition": [],
+                "func": "==",
+                "value_right": "*生活服务*劳务派遣服务费"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.meteringUnit",
+                "condition": [],
+                "func": "==",
+                "value_right": "升"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "itemList.0.zeroTaxFlag",
+                "condition": [],
+                "func": "==",
+                "value_right": ""
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "taxpayerNum",
+                "condition": [],
+                "func": "==",
+                "value_right": "500102201007206608"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "extensionNum",
+                "condition": [],
+                "func": "==",
+                "value_right": "0"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "sellerBankName",
+                "condition": [],
+                "func": "==",
+                "value_right": "中国光大银行武汉分行营业部"
+              }
+            }
+          ]
         }
       ]
     }
