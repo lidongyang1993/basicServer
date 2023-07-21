@@ -360,9 +360,9 @@ class RunCase(RunBasic):
     @staticmethod
     def retry_func(step):
         for i in range(1, step.retry.get(RETRY.TIMES) + 1):
+            step.time = i
             step.Global.log(MSG.RETRY_THIS_ERROR.format(step.time), left=MSG.CUT_TWO)
             time.sleep(step.retry.get(RETRY.INTERVAL))
-            step.time = i
             try:
                 step.result = None
                 step.isPass = True
@@ -382,6 +382,8 @@ class RunCase(RunBasic):
     @staticmethod
     def try_jump_step(step):
         jump_handlers = step.retry.get(RETRY.JUMP)
+        if not jump_handlers:
+            return
         isPass = True
         result = None
         try:
@@ -869,10 +871,12 @@ class RunExtAssert(RunBasic):
         self._to_str()
         self.code = MSG.ASSERT_CODE.format(self.func_assert)
         self.result = eval(self.code)
-        if not self.result:
-            self.result = self.isPass = False
+        if not eval(self.code):
+            self.result = str(self.left) + "\t??\t" + str(self.right)
+            self.isPass = False
         else:
             self.result = self.isPass = True
+        self.Global.log(self.Params, left=MSG.CUT_FOUR + MSG.HANDLER_RESULT)
 
     def after(self):
         super().after()
@@ -962,6 +966,7 @@ class RunAsserts(RunBasic):
             self.isPass = False
         else:
             self.result = self.isPass = True
+        self.Global.log(self.Params, left=MSG.CUT_FOUR + MSG.HANDLER_RESULT)
 
     def _to_str(self):
         asserts_to_str(self)
