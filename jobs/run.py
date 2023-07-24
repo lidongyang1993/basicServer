@@ -550,6 +550,8 @@ class RunRequest(RunBasic):
             try:
                 self.result = self.response.json()
             except JSONDecodeError as e:
+                self.isPass = False
+                self.result = e.__str__()
                 raise RequestError(MSG.REQ_JSON_ERROR.format(e))
         super().after()
 
@@ -596,6 +598,8 @@ class RunRequest(RunBasic):
             self.isPass = False
             raise RequestError(MSG.REQ_FILE_GET_ERROR.format(e.__str__()))
         except KeyError as e:
+            self.isPass = False
+            self.result = e.__str__()
             raise RequestError(MSG.REQ_FILE_PARAMS_ERROR.format(e.__str__()))
         for _ in params:
             data.append((_[0], (None, _[1], UPLOAD.FORM_DATA)))

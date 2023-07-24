@@ -6,6 +6,7 @@
 # @File    : readResponse.py
 # @Software: PyCharm
 import json
+from copy import deepcopy
 
 from lxml import html
 
@@ -47,6 +48,7 @@ def lxml_html(attribute, data, val):
 
 # response数据读取， 当访问返回值是json时，通过这个方法提取想要的数据
 def get_path_dict_condition(_str: str, _dict: dict, condition: [dict] = None):
+    condition = deepcopy(condition)
     try:
         str_list = _str.split('.', 1)
         for rel in str_list:
