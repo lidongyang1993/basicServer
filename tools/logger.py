@@ -11,7 +11,7 @@ import re
 from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 
-from tools.read_cnf import read_data
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 file_path = "jobs/file/logs/"
@@ -25,7 +25,7 @@ def init_log(service_name, path=None):
     """
     # 日志基础路径
     if not path:
-        path = file_path
+        path = file_path_public
     log_path = BASE_DIR / path
     # 服务 日志路径
     service_log_path = os.path.join(log_path)
