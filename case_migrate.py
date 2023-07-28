@@ -48,4 +48,4 @@ if __name__ == '__main__':
     null = None
     false = False
     ture = True
-    get_plan(11)
+    get_plan(110)
