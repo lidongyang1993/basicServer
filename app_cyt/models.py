@@ -231,6 +231,17 @@ class MePlan(FieldsPublicBasicType):
         verbose_name = "测试计划"
         verbose_name_plural = "测试计划"
 
+    def dict_for_get(self):
+        res = self.dict_for_list()
+        res.update({
+            PLAN.VARIABLE: self.variable,
+            PLAN.ENVIRONMENT: self.environment.self_dict() if self.environment else {},
+
+            PLAN.CASE: [_.dict_for_get() for _ in self.mecase_set.all()]
+        })
+        return res
+
+
 class MeCase(FieldsPublicBasicType):
     plan = models.ForeignKey(MePlan,
                              on_delete=models.CASCADE,
