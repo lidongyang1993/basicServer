@@ -32,7 +32,8 @@ class StepError(publicError):
 
 class RequestError(publicError):
     """AssertsError"""
-
+class HandlerError(publicError):
+    """AssertsError"""
 
 class DoneError(publicError):
     """DoneError"""

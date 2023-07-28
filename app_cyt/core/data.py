@@ -54,30 +54,40 @@ class TePlanData(publicDatabase):
             this.variable = variable
             this.update_user = user
             this.save()
-        self.Model.objects.create(
-            name=name,
-            desc=desc,
-            variable=variable,
-            create_user=user
-        )
+        else:
+            self.Model.objects.create(
+                name=name,
+                desc=desc,
+                variable=variable,
+                create_user=user
+            )
 
 
 class PlanData(publicDatabase):
-    Model = Plan
+    Model = MePlan
 
-    def save_plan(self, name: str, desc: str, variable: dict, user: str):
+    def save_from_data(self, data: dict, user=None):
+        if not dict:
+            return
+        pk = data.get(BASIC.ID)
+        name = data.get(BASIC.NAME)
+        desc = data.get(BASIC.DESC)
+        var = data.get(PLAN.VARIABLE)
+        environment = data.get(PLAN.ENVIRONMENT)
+        if pk:
+            self.save(pk, name, desc, var, user, environment)
+        else:
+            self.add(name, desc, var, user, environment)
 
-        this: Plan = self.try_get(name=name)
+    def save(self, pk: int, name: str, desc: str, variable: dict, user: str, environment=None):
+        this: Plan = self.try_get(pk=pk)
         if this:
             this.name = name
             this.desc = desc
             this.variable = variable
+            this.environment_id = environment
             this.update_user = user
             this.save()
-            return this.dict_for_list()
-        else:
-            return None
-
 
     def add(self, name: str, desc: str, variable: dict, user: str, environment=None):
         return self.Model.objects.create(
@@ -101,7 +111,32 @@ class PlanData(publicDatabase):
 
 
 class CaseData(publicDatabase):
-    Model = Case
+    Model = MeCase
+
+    def save_from_data(self, data: dict, user=None, planId=None):
+        if not dict:
+            return
+        pk = data.get(BASIC.ID)
+        name = data.get(BASIC.NAME)
+        desc = data.get(BASIC.DESC)
+        var = data.get(CASE.VARIABLE)
+        if pk:
+            self.save(pk, name, desc, var, user)
+        else:
+            if not planId:
+                return
+            self.add(name, desc, var, user, planId)
+
+    def save(self, pk: int, name: str, desc: str, variable: dict, user: str, plan_id: int = None):
+        this: Plan = self.try_get(pk=pk)
+        if this:
+            this.name = name
+            this.desc = desc
+            this.variable = variable
+            this.update_user = user
+            if plan_id:
+                this.plan_id = plan_id
+            this.save()
 
     def add(self, name: str, desc: str, variable: dict, user: str, plan_id: int):
         return self.Model.objects.create(
@@ -126,6 +161,7 @@ class CaseData(publicDatabase):
             objs = objs.filter(desc__contains=desc)
         return objs
 
+
 class ModuleData(publicDatabase):
     Model = Module
 
@@ -145,6 +181,8 @@ class ModuleData(publicDatabase):
         if desc:
             objs = objs.filter(desc__contains=desc)
         return objs
+
+
 class LabelData(publicDatabase):
     Model = Labels
 
@@ -165,11 +203,54 @@ class LabelData(publicDatabase):
             objs = objs.filter(desc__contains=desc)
         return objs
 
+    def save(self, pk, name: str, desc: str, sleep: int, params: dict, retry: dict):
+        model = self.try_get(pk=pk)
+        model.name = name
+        model.desc = desc
+        model.sleep = sleep
+        model.params = params
+        model.retry = retry
+        model.save()
+        return model
+
 
 class StepData(publicDatabase):
     Model = Step
 
-    def add(self, name: str, desc: str, step_type: str, number: int, params: dict, sleep:int, case_id: int):
+    def save_from_data(self, data: dict, case_id=None):
+        if not dict:
+            return
+        pk = data.get(BASIC.ID)
+        name = data.get(BASIC.NAME)
+        desc = data.get(BASIC.DESC)
+        number = data.get(STEP.NUMBER)
+        step_type = data.get(STEP.STEP_TYPE)
+        if not step_type:
+            step_type = data.get(STEP.STEP_TYPE)
+        params = data.get(STEP.PARAMS)
+        sleep = data.get(STEP.SLEEP)
+
+        if pk:
+            self.save(pk, name, desc, step_type, number, params, sleep, case_id)
+        else:
+            if not case_id:
+                return
+            self.add(name, desc, step_type, number, params, sleep, case_id)
+
+    def save(self, pk: int, name: str, desc: str, step_type: str, number: int, params: dict, sleep: int, case_id: int = None):
+        this = self.try_get(pk=pk)
+        if this:
+            this.name = name
+            this.desc = desc
+            this.number = number
+            this.step_type = step_type
+            this.params = params
+            this.sleep = sleep
+            if case_id:
+                this.case_id = case_id
+        this.save()
+
+    def add(self, name: str, desc: str, step_type: str, number: int, params: dict, sleep: int, case_id: int):
         return self.Model.objects.create(
             name=name,
             desc=desc,
@@ -206,7 +287,7 @@ class FileData(publicDatabase):
             path=path
         )
 
-    def select(self,  pk=None, name=None):
+    def select(self, pk=None, name=None):
 
         if pk:
             objs = self.Model.objects.filter(pk=pk)
@@ -217,11 +298,10 @@ class FileData(publicDatabase):
         return objs
 
 
-
 class HandlersData(publicDatabase):
     Model = Handlers
 
-    def add_handlers(self, handler_type: str, params:dict, step_id: int):
+    def add_handlers(self, handler_type: str, params: dict, step_id: int):
         return self.Model.objects.create(
             handler_type=handler_type,
             params=params,
@@ -244,6 +324,14 @@ class HandlersData(publicDatabase):
         for obj in objs:
             resList.append(obj.dict_for_list())
         return resList
+
+    def save(self, pk, handler_type: str, params: dict, step_id: int):
+        model = self.try_get(pk=pk)
+        if model:
+            model.handler_type = handler_type
+            model.params = params
+            model.step_id = step_id
+            model.save()
 
 
 class wChatData(publicDatabase):

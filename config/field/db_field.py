@@ -5,6 +5,8 @@ class BASIC:
     DESC = "desc"
     LABEL = "label"
     MODULE = "module"
+    MODULE_ID = "module_id"
+    LABEL_ID_LIST = "label_id_list"
     UPDATED_TIME = "updated_time"
     CREATED_TIME = "created_time"
     UPDATE_USER = "update_user"
@@ -20,7 +22,7 @@ class PLAN(BASIC):
     CASE_ID = "case_id"
     VARIABLE = "variable"
     ENVIRONMENT = "environment"
-
+    ENVIRONMENT_ID = "environment_id"
 
     CASE = "case"
 

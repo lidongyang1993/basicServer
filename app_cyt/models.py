@@ -28,7 +28,6 @@ class PublicData(publicID):
         abstract = True
         ordering = ['created_time', "updated_time"]
 
-
 class BasicFields(publicID):
     name = models.CharField(max_length=100, default=None, blank=False, null=False)  # 名称
     desc = models.CharField(max_length=100, default=None, blank=False, null=False)  # 备注
@@ -56,7 +55,6 @@ class Labels(BasicFields):
     class Meta:
         verbose_name = "标签"
         verbose_name_plural = "标签"
-
 
 # 公共模块
 class Module(BasicFields):
@@ -225,6 +223,41 @@ class Handlers(publicID):
     def dict_for_get(self):
         res = self.dict_for_list()
         return res
+
+class MePlan(FieldsPublicBasicType):
+    variable = models.JSONField(max_length=1024, default=dict, blank=True, null=True)
+    environment = models.ForeignKey("Environment", on_delete=models.PROTECT, blank=True, null=True, max_length=5,default=1)
+    class Meta:
+        verbose_name = "测试计划"
+        verbose_name_plural = "测试计划"
+
+class MeCase(FieldsPublicBasicType):
+    plan = models.ForeignKey(MePlan,
+                             on_delete=models.CASCADE,
+                             default=None,
+                             blank=False,
+                             null=False,
+                             editable=True
+                             )
+
+    variable = models.JSONField(max_length=1024, default=dict, blank=True, null=True)
+    step = models.JSONField(max_length=10240, default=dict, blank=True, null=True)
+    termination = models.BooleanField(default=False, editable=True)  # 遇到失败，是否终止执行
+
+    class Meta:
+        verbose_name = "用例总集"
+        verbose_name_plural = "用例总集"
+
+    def dict_for_get(self):
+        res = self.dict_for_list()
+        res.update({
+            CASE.VARIABLE: self.variable,
+            CASE.TERMINATION: self.termination,
+            PLAN.ENVIRONMENT: self.plan.environment.self_dict() if self.plan.environment else {},
+            CASE.STEP: self.step
+        })
+        return res
+
 
 
 class TePlan(FieldsPublicBasicType):

@@ -5,6 +5,8 @@ import time
 from pathlib import Path
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+
+from config.error import StepError, HandlerError, CaseError, DoneError
 from jobs.run import RunGlobal, RunPlan
 from config.basics_request import RequestBasics
 from django.core.handlers.wsgi import WSGIRequest
@@ -14,9 +16,10 @@ from jobs.api_frame.case.check_plan import Check
 from tools.login import get_login_session
 from tools.read_cnf import read_data
 from app_cyt.core.data import *
-from config.field.res_field import KEY, RESULT, FILED, RESPONSE, DoError
+from config.field.res_field import KEY, RESULT, FILED, RESPONSE, DoError, COOKIES
 import threading
 
+import app_cyt.core.views as v
 from tools.read_json_to_ext_asserts import ReadHar
 from config.file_path import *
 
@@ -359,26 +362,26 @@ def get_plan_list(request: WSGIRequest):
 @require_POST
 def get_step_list(request: WSGIRequest):
     keys = [
-        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE: int},
-        {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
-        {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str},
         {KEY.NAME: STEP.CASE_ID, KEY.MUST: False, KEY.TYPE: int},
         {KEY.NAME: FILED.SIZE, KEY.MUST: False, KEY.TYPE: int},
         {KEY.NAME: FILED.CURRENT_PAGE, KEY.MUST: False, KEY.TYPE: int},
     ]
 
     def run_func(data):
-        pk = data.get(FILED.ID, None)
-        name = data.get(FILED.NAME, None)
-        desc = data.get(FILED.DESC, None)
         case_id = data.get(STEP.CASE_ID, None)
-        size = data.get(FILED.SIZE, 10)
+        size = 999
         current_page = data.get(FILED.CURRENT_PAGE, 1)
         try:
-            objs = StepData().select(case_id=case_id, pk=pk, name=name, desc=desc).order_by(STEP.NUMBER)
+            objs = CaseData().get_by_id(pk=case_id)
+            step = objs.get(CASE.STEP)
         except models.ObjectDoesNotExist:
-            objs = None
-        return make_data_list(current_page, size, objs)
+            step = []
+        return {
+            FILED.TOTAL: len(step),
+            FILED.CURRENT_PAGE: current_page,
+            FILED.SIZE: size,
+            FILED.DATALIST: step,
+        }
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
@@ -454,7 +457,7 @@ def save_file(request: WSGIRequest):
                 desc = file_name
             FileData().add(file_name, desc, file_all_path)
         except KeyError:
-            raise DoError(RESPONSE.FILE_ERROR)
+            raise DoError(RESPONSE.UN_GET_ERROR)
         finally:
             pass
 
@@ -568,3 +571,95 @@ def get_case_data(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
+
+
+
+@csrf_exempt
+def save_case_by_json(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
+        {KEY.NAME: FILED.PLAN_ID, KEY.MUST: False, KEY.TYPE: int},
+    ]
+
+    def run_func(data):
+        data = data.get(FILED.DATA)
+        token = request.COOKIES.get(COOKIES.TOKEN_KEY)
+        user = request.session.get(token, None)
+        try:
+            v.save_case_by_json(data, user=user)
+        except Exception:
+            raise DoneError(RESPONSE.UN_GET_ERROR)
+        return {}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+@csrf_exempt
+def add_case_by_json(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
+        {KEY.NAME: FILED.PLAN_ID, KEY.MUST: False, KEY.TYPE: int},
+    ]
+
+    def run_func(data):
+        data = data.get(FILED.DATA)
+        plan_id = data.get(FILED.PLAN_ID)
+        token = request.COOKIES.get(COOKIES.TOKEN_KEY)
+        user = request.session.get(token, None)
+        try:
+            result = v.add_case_by_json(data, user=user, plan_id=plan_id)
+        except Exception:
+            raise DoneError(RESPONSE.UN_GET_ERROR)
+        return {RESULT.RESULT: result}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+
+
+@csrf_exempt
+def save_plan_by_json(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict}
+    ]
+
+    def run_func(data):
+        data = data.get(FILED.DATA)
+        token = request.COOKIES.get(COOKIES.TOKEN_KEY)
+        user = request.session.get(token, None)
+        try:
+            v.save_plan_by_json(data, user=user)
+        except Exception:
+            raise DoneError(RESPONSE.UN_GET_ERROR)
+        return {}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+@csrf_exempt
+def add_plan_by_json(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict}
+    ]
+
+    def run_func(data):
+        data = data.get(FILED.DATA)
+        token = request.COOKIES.get(COOKIES.TOKEN_KEY)
+        user = request.session.get(token)
+        if not user:
+            user = "admin"
+        try:
+            result = v.add_plan_by_json(data, user=user)
+        except Exception:
+            raise DoneError(RESPONSE.UN_GET_ERROR)
+        return {RESULT.RESULT: result}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)

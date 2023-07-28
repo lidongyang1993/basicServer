@@ -32,42 +32,22 @@ class wChatBotAdmin(publicAdmin):
 
 
 
-
-@admin.register(TePlan)
-class wChatBotAdmin(publicAdmin):
-    fieldsets_with_inlines = [
-        (None, {'fields': ['name']}),
-    ]
-
-    list_display = (
-        "id", 'name', "created_time", "updated_time", "create_user", "update_user")
-
-
-
 @admin.register(Module)
-class wChatBotAdmin(admin.ModelAdmin):
+class ModuleAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(Case)
-class wChatBotAdmin(admin.ModelAdmin):
+@admin.register(MeCase)
+class CaseAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(Plan)
-class wChatBotAdmin(admin.ModelAdmin):
+
+
+@admin.register(MePlan)
+class PlanAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(Step)
-class wChatBotAdmin(admin.ModelAdmin):
-    pass
-
-@admin.register(Handlers)
-class wChatBotAdmin(admin.ModelAdmin):
-    pass
 
 @admin.register(Labels)
 class wChatBotAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(FileSave)
-class wChatBotAdmin(admin.ModelAdmin):
-    pass

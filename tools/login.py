@@ -67,6 +67,9 @@ def read_session(img_bytes):
 
 
 if __name__ == '__main__':
-    r = get_login_session("https://d-k8s-sso-fp.bigfintax.com", "wangyu.yang",
-                          password="c4ca4238a0b923820dcc509a6f75849b")
+    r = get_login_session(
+        "https://d-k8s-sso-fp.bigfintax.com",
+        "wangyu.yang",
+        password="c4ca4238a0b923820dcc509a6f75849b"
+    )
     print(r)

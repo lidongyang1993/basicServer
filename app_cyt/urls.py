@@ -32,11 +32,16 @@ class CaseManageEdit:
     urlpatterns = [
         path('list', views.get_case_list),
         path('get', views.get_case_data),
+        path('save', views.save_case_by_json),
+        path('add', views.add_case_by_json),
     ]
+
 class PlanManageEdit:
     urlpatterns = [
         path('list', views.get_plan_list),
         path('get', views.get_plan_data),
+        path('save', views.save_plan_by_json),
+        path('add', views.add_plan_by_json),
         path('getModuleList', views.get_module_list),
         path('getLabelList', views.get_label_list),
     ]

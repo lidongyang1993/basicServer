@@ -23,6 +23,9 @@ class LOGIN:
     OLD_PASSWORD = "old_password"
     NEW_PASSWORD = "new_password"
 
+class COOKIES:
+    TOKEN = "token"
+    TOKEN_KEY = "v3-admin-vite-token-key"
 
 class KEY:
     NAME = "name"
@@ -47,6 +50,7 @@ class FILED:
 
     W_BOT_ID = "w_bot_id"
     PLAN_ID = "planId"
+    CASE_ID = "caseId"
     DATALIST = "dataList"
     TOTAL = "total"
 
@@ -81,7 +85,7 @@ class RESPONSE:
     DATA_MODULE_ERROR = {RESULT.CODE: 104, RESULT.MESSAGE: "模型不存在，请检查！", RESULT.DATA: {}}
     FILE_NO_ERROR = {RESULT.CODE: 105, RESULT.MESSAGE: "没有文件，请检查！", RESULT.DATA: {}}
     FILE_EXIT_ERROR = {RESULT.CODE: 106, RESULT.MESSAGE: "文件名称已经存在，请检查！", RESULT.DATA: {}}
-    FILE_ERROR = {RESULT.CODE: 107, RESULT.MESSAGE: "未知错误，请联系管理员！", RESULT.DATA: {}}
+    UN_GET_ERROR = {RESULT.CODE: 107, RESULT.MESSAGE: "未知错误，请联系管理员！", RESULT.DATA: {}}
 
 
 
