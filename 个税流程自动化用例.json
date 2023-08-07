@@ -1,1 +1,3569 @@
-{"code": 0, "message": "访问成功！", "data": {"id": 3, "name": "个税流程自动化用例", "desc": "个税申报流程自动化", "module": null, "label": [], "create_user": "zhaoxiaobin", "update_user": "", "created_time": "2023-07-2618:53", "updated_time": "2023-07-2618:53", "variable": {"PWD": "202cb962ac59075b964b07152d234b70", "TEST_HOST": "https://test-gateway.bigfintax.com", "USER_NAME": "GSZDHCSJT_admin"}, "environment": {}, "case": [{"id": 9, "name": "个税流程自动化", "desc": "", "module": null, "label": [], "create_user": "zhaoxiaobin", "update_user": "", "created_time": "2023-07-2618:53", "updated_time": "2023-07-2618:53", "variable": {"COMPANY_NO": "TEST01", "COMPANY_NAME": "代扣代缴自动化测试股份有限公司", "COMPANY_NUMBER": "91140188029581508S"}, "termination": false, "environment": {}, "step": [{"id": 98, "number": 1, "name": "前台-账号登录", "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；", "type": "plugIn", "sleep": null, "params": {"type": "login", "params": {"pass_word": "{{PWD}}", "user_name": "{{USER_NAME}}", "cookies_field": "COOKIES"}}, "termination": false, "handlers": []}, {"id": 99, "number": 2, "name": "六万扣除列表", "desc": "六万扣除列表-获取公司id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdnf\",\"v\":\"2023\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "六万扣除采集-接口", "path": "/persontax-web/api/v1/bzlwxzNew/getCollectionList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 843, "type": "extract", "params": {"path": "data.0.baseid", "type": "json", "field": "YWR_ID", "condition": [{"orgname": "{{COMPANY_NAME}}"}]}}, {"id": 844, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 100, "number": 3, "name": "六万扣除采集", "desc": "代扣代缴自动化测试股份有限公司-六万扣除采集", "type": "request", "sleep": 15, "params": {"data": {"sdnf": 2023, "baseIds": "{{YWR_ID}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "六万扣除采集-接口", "path": "/persontax-web/api/v1/bzlwxz/collection", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 845, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 101, "number": 4, "name": "六万扣除-税局确认", "desc": "代扣代缴自动化测试股份有限公司-六万扣除-税局确认", "type": "request", "sleep": null, "params": {"data": {"sdnf": 2023, "baseIds": "{{YWR_ID}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "六万扣除确认-接口", "path": "/persontax-web/api/v1/bzlwxz/confirm", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 846, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 102, "number": 5, "name": "六万扣除-平台确认", "desc": "代扣代缴自动化测试股份有限公司-六万扣除-平台确认", "type": "request", "sleep": null, "params": {"data": {"sdnf": "2023", "baseIds": "{{YWR_ID}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "六万扣除平台确认-接口", "path": "/persontax-web/api/v1/bzlwxz/confirm", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 847, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 103, "number": 6, "name": "养老金获取", "desc": "代扣代缴自动化测试股份有限公司-养老金获取", "type": "request", "sleep": 5, "params": {"data": {}, "desc": "", "host": "{{TEST_HOST}}", "name": "养老金获取-接口", "path": "/persontax-web/api/v1/ylj/retryYljHq?id={{YWR_ID}}", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 848, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 104, "number": 7, "name": "专扣获取", "desc": "代扣代缴自动化测试股份有限公司-专扣获取", "type": "request", "sleep": 5, "params": {"data": {"ids": "{{YWR_ID}}", "sdyf": "202305"}, "desc": "", "host": "{{TEST_HOST}}", "name": "专扣获取-接口", "path": "/persontax-web/api/v1/zxkcfj/getZxfjkcList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 849, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 105, "number": 8, "name": "个税计算-获取report_id", "desc": "代扣代缴自动化测试股份有限公司-个税计算-获取report_id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取report_id", "path": "/persontax-web/api/v1/personalReport/queryPtReportList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 850, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "REPORT_ID", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}", "reportType": "1"}]}}, {"id": 851, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 106, "number": 9, "name": "个税计算-获取申报id", "desc": "代扣代缴自动化测试股份有限公司-个税计算-获取申报id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取申报列表-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 852, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 853, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "shenbao_id", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}]}}]}, {"id": 107, "number": 10, "name": "个税计算-更正申报", "desc": "代扣代缴自动化测试股份有限公司-个税计算-更正申报", "type": "request", "sleep": 5, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-更正申报-接口", "path": "/persontax-web/api/v1/personalDeclare/correct", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 854, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 108, "number": 11, "name": "个税计算-上传正常薪金文件", "desc": "个税计算-上传正常薪金文件", "type": "request", "sleep": null, "params": {"data": {"params": [["fxyf", "202305"], ["sdxm", "1001"], ["reportId", "{{REPORT_ID}}"]], "file_id": 1, "file_type": "application/vnd.ms-excel", "file_fields": "upload"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-上传正常薪金文件", "path": "/persontax-web/api/v1/personalCalc/uploadSalaryScale", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "upload", "response_type": "json"}, "termination": false, "handlers": []}, {"id": 109, "number": 12, "name": "个税计算-查看计算状态", "desc": "代扣代缴自动化测试股份有限公司-个税计算-核对计算结果", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"},{\"f\":\"jsZt\",\"v\":\"1\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-列表查询-接口", "path": "/persontax-web/api/v1/personalReport/queryPtReportList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 855, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 856, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.jsZt", "type": "json", "condition": [], "value_right": null}}]}, {"id": 110, "number": 13, "name": "个税计算-上传劳务报酬所得文件", "desc": "个税计算-上传劳务报酬所得文件", "type": "request", "sleep": null, "params": {"data": {"params": [["fxyf", "202305"], ["sdxm", "1004"], ["reportId", "{{REPORT_ID}}"]], "file_id": 2, "file_type": "application/vnd.ms-excel", "file_fields": "upload"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-上传劳务报酬所得文件", "path": "/persontax-web/api/v1/personalCalc/uploadSalaryScale", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "upload", "response_type": "json"}, "termination": false, "handlers": []}, {"id": 111, "number": 14, "name": "个税计算-查看计算状态", "desc": "代扣代缴自动化测试股份有限公司-个税计算-核对计算结果", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"},{\"f\":\"jsZt\",\"v\":\"1\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-列表查询-接口", "path": "/persontax-web/api/v1/personalReport/queryPtReportList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 857, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 858, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.jsZt", "type": "json", "condition": [], "value_right": null}}]}, {"id": 112, "number": 15, "name": "个税计算-查看计算", "desc": "代扣代缴自动化测试股份有限公司-个税计算-核对计算结果", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-列表查询-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 859, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 860, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.sbse", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}", "reportType": "1"}], "value_right": "1349.80"}}]}, {"id": 113, "number": 16, "name": "个税计算-申报表生成", "desc": "代扣代缴自动化测试股份有限公司-个税计算-申报表生成", "type": "request", "sleep": null, "params": {"data": {"ids": "{{REPORT_ID}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-申报表生成", "path": "/persontax-web/api/v1/personalReport/reportGenerate", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "form", "response_type": "json"}, "termination": false, "handlers": [{"id": 861, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 114, "number": 17, "name": "个税计算-申报", "desc": "代扣代缴自动化测试股份有限公司-申报", "type": "request", "sleep": null, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-申报", "path": "/persontax-web/api/v1/personalDeclare/declare", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 862, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 115, "number": 18, "name": "个税计算-检验申报状态", "desc": "代扣代缴自动化测试股份有限公司-检验申报状态", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取申报列表-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 863, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 864, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.sbZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": "2"}}]}, {"id": 116, "number": 19, "name": "个税计算-扣款", "desc": "代扣代缴自动化测试股份有限公司-扣款", "type": "request", "sleep": null, "params": {"data": {"ids": "{{REPORT_ID}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-扣款", "path": "/persontax-web/api/v1/personalDeclare/payment", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 865, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 117, "number": 20, "name": "个税计算-检验缴款状态", "desc": "代扣代缴自动化测试股份有限公司-检验缴款状态", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取申报列表-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 866, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 867, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.jnZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": "2"}}]}]}, {"id": 10, "name": "个税申报场景自动化用例", "desc": "", "module": null, "label": [], "create_user": "zhaoxiaobin", "update_user": "", "created_time": "2023-07-2618:53", "updated_time": "2023-07-2618:53", "variable": {"COMPANY_NO": "TEST03", "COMPANY_NAME": "个税税友测试公司", "COMPANY_NUMBER": "91110188542620104H"}, "termination": false, "environment": {}, "step": [{"id": 118, "number": 1, "name": "前台-账号登录", "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；", "type": "plugIn", "sleep": null, "params": {"type": "login", "params": {"pass_word": "{{PWD}}", "user_name": "{{USER_NAME}}", "cookies_field": "COOKIES"}}, "termination": false, "handlers": []}, {"id": 119, "number": 2, "name": "获取申报id", "desc": "申报列表页面-获取申报id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "申报列表查询接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 868, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "shenbao_id", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}]}}, {"id": 869, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 120, "number": 3, "name": "前置-个税计算-更正申报", "desc": "个税税友测试公司-个税计算-更正申报，为了申报成功缴款成功", "type": "request", "sleep": 15, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-更正申报-接口", "path": "/persontax-web/api/v1/personalDeclare/correct", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 870, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 121, "number": 4, "name": "前置-申报尝试", "desc": "确保申报已交款", "type": "request", "sleep": null, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-申报", "path": "/persontax-web/api/v1/personalDeclare/declare", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 871, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 122, "number": 5, "name": "前置-个税计算-检验申报状态", "desc": "个税税友测试公司-检验申报状态", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取申报列表-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 872, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 873, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.sbZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": "2"}}]}, {"id": 123, "number": 6, "name": "数据库修改缴费状态", "desc": "数据库修改缴费状态", "type": "plugIn", "sleep": null, "params": {"type": "pg_db", "params": {"SQL": "update t_pt_declare set jn_zt = '2' where id = '{{shenbao_id}}';", "host": "192.168.2.65", "port": 5432, "user": "user1", "db_name": "persontax", "password": "123456", "field_list": []}}, "termination": false, "handlers": []}, {"id": 124, "number": 7, "name": "作废申报", "desc": "缴费成功后--作废申报", "type": "request", "sleep": null, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "作废申报-接口", "path": "/persontax-web/api/v1/personalDeclare/cancel", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 874, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 875, "type": "extract", "params": {"path": "infos", "type": "json", "field": "INFOS", "condition": []}}, {"id": 876, "type": "asserts", "params": {"func": "in", "value_left": "已经缴款成功，不能发起申报撤销任务！", "value_right": "{{INFOS}}"}}]}, {"id": 125, "number": 8, "name": "个税计算-更正申报", "desc": "个税税友测试公司-个税计算-更正申报", "type": "request", "sleep": 5, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-更正申报-接口", "path": "/persontax-web/api/v1/personalDeclare/correct", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 877, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 126, "number": 9, "name": "重新申报", "desc": "重新申报", "type": "request", "sleep": null, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-申报", "path": "/persontax-web/api/v1/personalDeclare/declare", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 878, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 127, "number": 10, "name": "个税计算-检验申报状态", "desc": "个税税友测试公司-检验申报状态", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取申报列表-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 879, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 880, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.sbZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": "2"}}]}, {"id": 128, "number": 11, "name": "获取公司baseId", "desc": "获取公司baseId", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "sorttype": "desc", "condition": "[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司管理列表-接口", "path": "/authapi/api/v1/tenantCompany/queryPage", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 881, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 882, "type": "extract", "params": {"path": "data.0.orgId", "type": "json", "field": "YWR_ID", "condition": [{"companyName": "{{COMPANY_NAME}}"}]}}]}, {"id": 129, "number": 12, "name": "获取新增员工所用id", "desc": "获取新增员工所用id", "type": "request", "sleep": null, "params": {"data": {"id": "{{YWR_ID}}", "page": 1, "per_page": 10, "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司员工列表-接口", "path": "/persontax-web/api/v1/permission/getBaseList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 883, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 884, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "YWR_ID", "condition": [{"orgName": "{{COMPANY_NAME}}"}]}}]}, {"id": 130, "number": 13, "name": "新增员工", "desc": "新增员工-创造申报失败", "type": "request", "sleep": null, "params": {"data": {"bz": "", "gh": "", "gj": "中国", "id": "", "xb": "女", "xl": "", "xm": "测试申报作废", "bszt": "", "cjzh": "", "csny": "1996-05-22", "dzyx": "", "khyh": "", "lszh": "", "lxdh": "18811991606", "lxdz": "", "lzrq": "2022-07-09", "rydq": "境内", "sfcj": "否", "sfgl": "否", "sfgy": "雇员", "sfls": "否", "yhzh": "", "zzhm": "140302199605221924", "zzlx": "居民身份证", "nsrzt": "非正常", "sfzdw": "是", "baseId": "{{YWR_ID}}", "grgbbl": 0, "grgbze": 0, "lxdzJd": "", "lxdzQx": "", "rzsgrq": "2021-07-09", "hjszdJd": "", "hjszdQx": "", "lxdzShi": "", "hjszdShi": "", "khyhsfmz": "", "ryNsrsbh": "", "rzndjyqk": "", "hjszdXxdz": "", "lxdzSheng": "", "wjrlxdzJd": "", "wjrlxdzQx": "", "hjLocation": [], "hjszdSheng": "", "jzLocation": [], "lxLocation": [], "wjrlxdzShi": "", "wjrlxdzXxdz": "", "wjrlxdzSheng": ""}, "desc": "", "host": "{{TEST_HOST}}", "name": "新增员工-接口", "path": "/persontax-web/api/v1/personalManage/savePersonal", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 885, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 131, "number": 14, "name": "个税计算-更正申报", "desc": "个税税友测试公司-个税计算-更正申报", "type": "request", "sleep": 5, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-更正申报-接口", "path": "/persontax-web/api/v1/personalDeclare/correct", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 886, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 132, "number": 15, "name": "重新申报", "desc": "重新申报", "type": "request", "sleep": null, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-申报", "path": "/persontax-web/api/v1/personalDeclare/declare", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 887, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 133, "number": 16, "name": "个税计算-检验申报状态", "desc": "个税税友测试公司-检验申报状态", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取申报列表-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 888, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 889, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.sbZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": "2"}}]}, {"id": 134, "number": 17, "name": "清除数据-获取人员id", "desc": "清除数据-获取人员id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "baseId": "{{YWR_ID}}", "per_page": 10, "condition": "[{\"f\":\"baseId\",\"v\":{{YWR_ID}},\"op\":\"like\",\"t\":\"s\"},{\"f\":\"rydq\",\"v\":\"境内\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "员工列表-接口", "path": "/persontax-web/api/v1/personalManage/personalList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 890, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 891, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "per_id", "condition": [{"xm": "测试申报作废"}]}}]}, {"id": 135, "number": 18, "name": "清除数据-删除员工", "desc": "清除数据-删除员工", "type": "request", "sleep": null, "params": {"data": {"ids": "{{per_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "删除员工-接口", "path": "/persontax-web/api/v1/personalManage/delPersonal", "method": "DELETE", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": []}, {"id": 136, "number": 19, "name": "重新申报", "desc": "重新申报", "type": "request", "sleep": null, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-申报", "path": "/persontax-web/api/v1/personalDeclare/declare", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 892, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 137, "number": 20, "name": "个税计算-检验申报状态", "desc": "个税税友测试公司-检验申报状态", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取申报列表-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 893, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 894, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.sbZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": "2"}}]}]}, {"id": 11, "name": "作废往期申报自动化用例", "desc": "", "module": null, "label": [], "create_user": "zhaoxiaobin", "update_user": "", "created_time": "2023-07-2618:53", "updated_time": "2023-07-2618:53", "variable": {"COMPANY_NO": "TEST03", "COMPANY_NAME": "个税税友测试公司", "COMPANY_NUMBER": "91110188542620104H"}, "termination": false, "environment": {}, "step": [{"id": 138, "number": 1, "name": "前台-账号登录", "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；", "type": "plugIn", "sleep": null, "params": {"type": "login", "params": {"pass_word": "{{PWD}}", "user_name": "{{USER_NAME}}", "cookies_field": "COOKIES"}}, "termination": false, "handlers": []}, {"id": 139, "number": 2, "name": "获取申报id", "desc": "申报列表页面-获取申报id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "申报列表查询接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 895, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "shenbao_id", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}]}}, {"id": 896, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 140, "number": 3, "name": "申报尝试", "desc": "申报尝试，要保证申报成功", "type": "request", "sleep": null, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-申报", "path": "/persontax-web/api/v1/personalDeclare/declare", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 897, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 141, "number": 4, "name": "个税计算-检验申报状态", "desc": "个税税友测试公司-检验申报状态", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取申报列表-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 898, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 899, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.sbZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": "2"}}]}, {"id": 142, "number": 5, "name": "获取申报id", "desc": "申报列表页面-获取4月往期申报id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202304\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "申报列表查询接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 900, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "shenbao_id", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}]}}, {"id": 901, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 143, "number": 6, "name": "申报尝试", "desc": "申报尝试，要保证申报成功", "type": "request", "sleep": null, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-申报", "path": "/persontax-web/api/v1/personalDeclare/declare", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 902, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 144, "number": 7, "name": "个税计算-检验申报状态", "desc": "个税税友测试公司-检验申报状态", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取申报列表-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 903, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 904, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.sbZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": "2"}}]}, {"id": 145, "number": 8, "name": "作废申报", "desc": "作废往期申报", "type": "request", "sleep": null, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "作废申报-接口", "path": "/persontax-web/api/v1/personalDeclare/cancel", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 905, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 146, "number": 9, "name": "个税计算-检验作废申报状态", "desc": "个税税友测试公司-检验作废申报状态", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202304\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取申报列表-接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 906, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 907, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.zfZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": "3"}}]}]}, {"id": 12, "name": "异常校验场景自动化用例", "desc": "", "module": null, "label": [], "create_user": "zhaoxiaobin", "update_user": "", "created_time": "2023-07-2618:53", "updated_time": "2023-07-2618:53", "variable": {"DJXH": "10117110188542620104", "COMPANY_NO": "TEST03", "COMPANY_NAME": "个税税友测试公司", "COMPANY_NUMBER": "91110188542620104H"}, "termination": false, "environment": {}, "step": [{"id": 147, "number": 1, "name": "前台-账号登录", "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；", "type": "plugIn", "sleep": null, "params": {"type": "login", "params": {"pass_word": "{{PWD}}", "user_name": "{{USER_NAME}}", "cookies_field": "COOKIES"}}, "termination": false, "handlers": []}, {"id": 148, "number": 2, "name": "获取公司ID", "desc": "公司管理中-获取公司ID", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "sorttype": "desc", "condition": "[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]", "sortfield": ""}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司管理中-获取公司ID", "path": "/authapi/api/v1/tenantCompany/queryPage", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 908, "type": "extract", "params": {"path": "data.0.orgId", "type": "json", "field": "orgId", "condition": [{"companyName": "{{COMPANY_NAME}}"}]}}]}, {"id": 149, "number": 3, "name": "个税信息列表页-获取公司id", "desc": "个税信息列表页-获取公司id", "type": "request", "sleep": null, "params": {"data": {"orgId": "{{orgId}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税信息列表页-查询接口", "path": "/persontax-web/api/v1/personalTax/queryPtMessage", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 909, "type": "extract", "params": {"path": "data.id", "type": "json", "field": "comId", "condition": [{"companyName": "{{COMPANY_NAME}}"}]}}]}, {"id": 150, "number": 4, "name": "获取申报id", "desc": "申报列表页面-获取申报id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "申报列表查询接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 910, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "shenbao_id", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}]}}, {"id": 911, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 151, "number": 5, "name": "保存申报密码", "desc": "恢复申报密码", "type": "request", "sleep": null, "params": {"data": {"id": "{{comId}}", "orgId": "{{orgId}}", "djxhid": "{{DJXH}}", "pwdType": "0", "realPwd": "", "cityAddr": "110100", "countyAddr": "", "declarePwd": "Aa123456", "realAccount": "", "provinceAddr": "110000"}, "desc": "", "host": "{{TEST_HOST}}", "name": "恢复申报密码", "path": "/persontax-web/api/v1/personalTax/savePtRegistMsg", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": []}, {"id": 152, "number": 6, "name": "获取公司baseId", "desc": "获取公司baseId", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "sorttype": "desc", "condition": "[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司管理列表-接口", "path": "/authapi/api/v1/tenantCompany/queryPage", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 912, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 913, "type": "extract", "params": {"path": "data.0.orgId", "type": "json", "field": "YWR_ID", "condition": [{"companyName": "{{COMPANY_NAME}}"}]}}]}, {"id": 153, "number": 7, "name": "获取新增员工所用id", "desc": "获取新增员工所用id", "type": "request", "sleep": null, "params": {"data": {"id": "{{YWR_ID}}", "page": 1, "per_page": 10, "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司员工列表-接口", "path": "/persontax-web/api/v1/permission/getBaseList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 914, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 915, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "YWR_ID", "condition": [{"orgName": "{{COMPANY_NAME}}"}]}}]}, {"id": 154, "number": 8, "name": "清除数据-获取人员id", "desc": "清除数据-获取人员id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "baseId": "{{YWR_ID}}", "per_page": 10, "condition": "[{\"f\":\"baseId\",\"v\":{{YWR_ID}},\"op\":\"like\",\"t\":\"s\"},{\"f\":\"rydq\",\"v\":\"境内\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "员工列表-接口", "path": "/persontax-web/api/v1/personalManage/personalList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 916, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 917, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "per_id", "condition": [{"xm": "测试异常场景"}]}}]}, {"id": 155, "number": 9, "name": "编辑员工信息", "desc": "编辑员工信息", "type": "request", "sleep": null, "params": {"data": {"bz": "", "gh": "", "gj": "中国", "id": "{{per_id}}", "xb": "女", "xl": "", "xm": "测试异常场景", "bszt": "1", "cjzh": "", "csny": "1988-09-18", "dzyx": "", "khyh": "", "lszh": "", "lxdh": "18811122222", "lxdz": "", "lzrq": "2023-02-09", "rydq": "境内", "sfcj": "否", "sfgl": "否", "sfgy": "雇员", "sfls": "否", "yhzh": "", "zzhm": "140321198809181324", "zzlx": "居民身份证", "nsrzt": "非正常", "sfzdw": "是", "baseId": "{{YWR_ID}}", "grgbbl": "0", "grgbze": "0", "lxdzJd": "", "lxdzQx": "", "rzsgrq": "2023-02-08", "hjszdJd": "", "hjszdQx": "", "lxdzShi": "", "hjszdShi": "", "khyhsfmz": "", "ryNsrsbh": "140321198809181324", "rzndjyqk": "", "hjszdXxdz": "", "lxdzSheng": "", "wjrlxdzJd": "", "wjrlxdzQx": "", "hjLocation": [], "hjszdSheng": "", "jzLocation": [], "lxLocation": [], "wjrlxdzShi": "", "wjrlxdzXxdz": "", "wjrlxdzSheng": ""}, "desc": "", "host": "{{TEST_HOST}}", "name": "编辑员工信息-接口", "path": "/persontax-web/api/v1/personalManage/savePersonal", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 918, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 156, "number": 10, "name": "申报尝试", "desc": "申报尝试", "type": "request", "sleep": null, "params": {"data": {"ids": "{{shenbao_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-申报", "path": "/persontax-web/api/v1/personalDeclare/declare", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 919, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 157, "number": 11, "name": "校验申报失败", "desc": "申报列表页面-校验申报失败", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "申报列表查询接口", "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 920, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.sbZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": "2"}}]}, {"id": 158, "number": 12, "name": "编辑员工信息", "desc": "编辑员工信息", "type": "request", "sleep": null, "params": {"data": {"bz": "", "gh": "", "gj": "中国", "id": "{{per_id}}", "xb": "女", "xl": "", "xm": "测试异常场景", "bszt": "1", "cjzh": "", "csny": "1988-09-18", "dzyx": "", "khyh": "", "lszh": "", "lxdh": "18811111222", "lxdz": "", "lzrq": "2023-02-09", "rydq": "境内", "sfcj": "否", "sfgl": "否", "sfgy": "雇员", "sfls": "否", "yhzh": "", "zzhm": "140321198809181324", "zzlx": "居民身份证", "nsrzt": "非正常", "sfzdw": "是", "baseId": "{{YWR_ID}}", "grgbbl": "0", "grgbze": "0", "lxdzJd": "", "lxdzQx": "", "rzsgrq": "2023-02-08", "hjszdJd": "", "hjszdQx": "", "lxdzShi": "", "hjszdShi": "", "khyhsfmz": "", "ryNsrsbh": "140321198809181324", "rzndjyqk": "", "hjszdXxdz": "", "lxdzSheng": "", "wjrlxdzJd": "", "wjrlxdzQx": "", "hjLocation": [], "hjszdSheng": "", "jzLocation": [], "lxLocation": [], "wjrlxdzShi": "", "wjrlxdzXxdz": "", "wjrlxdzSheng": ""}, "desc": "", "host": "{{TEST_HOST}}", "name": "编辑员工信息-接口", "path": "/persontax-web/api/v1/personalManage/savePersonal", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 921, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 159, "number": 13, "name": "员工报送", "desc": "个税自动化测试公司-员工报送", "type": "request", "sleep": 20, "params": {"data": {"ids": "{{YWR_ID}}", "condition": "[]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "员工报送-接口", "path": "/persontax-web/api/v1/personalSumbit/toSubmit", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 922, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}]}, {"id": 13, "name": "添加员工后报送", "desc": "", "module": null, "label": [], "create_user": "zhaoxiaobin", "update_user": "", "created_time": "2023-07-2618:53", "updated_time": "2023-07-2618:53", "variable": {"COMPANY_NO": "TEST01", "COMPANY_NAME": "代扣代缴自动化测试股份有限公司", "COMPANY_NUMBER": "91440605MAC0UNRL92"}, "termination": false, "environment": {}, "step": [{"id": 160, "number": 1, "name": "前台-账号登录", "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；", "type": "plugIn", "sleep": null, "params": {"type": "login", "params": {"pass_word": "{{PWD}}", "user_name": "{{USER_NAME}}", "cookies_field": "COOKIES"}}, "termination": false, "handlers": []}, {"id": 161, "number": 2, "name": "获取公司baseId", "desc": "获取公司baseId", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "sorttype": "desc", "condition": "[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"代扣代缴自动化测试股份有限公司\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司管理列表-接口", "path": "/authapi/api/v1/tenantCompany/queryPage", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 923, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 924, "type": "extract", "params": {"path": "data.0.orgId", "type": "json", "field": "YWR_ID", "condition": [{"companyName": "{{COMPANY_NAME}}"}]}}]}, {"id": 162, "number": 3, "name": "获取新增员工所用id", "desc": "获取新增员工所用id", "type": "request", "sleep": null, "params": {"data": {"id": "{{YWR_ID}}", "page": 1, "per_page": 10, "condition": "[{\"f\":\"orgName\",\"v\":\"代扣代缴自动化测试股份有限公司\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司员工列表-接口", "path": "/persontax-web/api/v1/permission/getBaseList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 925, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 926, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "YWR_ID", "condition": [{"orgName": "{{COMPANY_NAME}}"}]}}]}, {"id": 163, "number": 4, "name": "清除数据-获取人员id", "desc": "清除数据-获取人员id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "baseId": "{{YWR_ID}}", "per_page": 10, "condition": "[{\"f\":\"baseId\",\"v\":{{YWR_ID}},\"op\":\"like\",\"t\":\"s\"},{\"f\":\"rydq\",\"v\":\"境内\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "员工列表-接口", "path": "/persontax-web/api/v1/personalManage/personalList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 927, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 928, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "per_id", "condition": [{"xm": "测试重新报送"}]}}]}, {"id": 164, "number": 5, "name": "清除数据-删除员工", "desc": "清除数据-删除员工", "type": "request", "sleep": null, "params": {"data": {"ids": "{{per_id}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "删除员工-接口", "path": "/persontax-web/api/v1/personalManage/delPersonal", "method": "DELETE", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 929, "type": "ext_asserts", "params": {"func": "==", "path": "code", "type": "json", "condition": [], "value_right": 200}}]}, {"id": 165, "number": 6, "name": "新增员工", "desc": "新增员工", "type": "request", "sleep": 5, "params": {"data": {"bz": "", "gh": "", "gj": "中国", "id": "", "xb": "男", "xl": "", "xm": "测试重新报送", "bszt": "", "cjzh": "", "csny": "1996-05-02", "dzyx": "", "khyh": "", "lszh": "", "lxdh": "18811996606", "lxdz": "", "lzrq": "2022-07-09", "rydq": "境内", "sfcj": "否", "sfgl": "否", "sfgy": "雇员", "sfls": "否", "yhzh": "", "zzhm": "140302199605021914", "zzlx": "居民身份证", "nsrzt": "非正常", "sfzdw": "是", "baseId": "{{YWR_ID}}", "grgbbl": 0, "grgbze": 0, "lxdzJd": "", "lxdzQx": "", "rzsgrq": "2021-07-09", "hjszdJd": "", "hjszdQx": "", "lxdzShi": "", "hjszdShi": "", "khyhsfmz": "", "ryNsrsbh": "", "rzndjyqk": "", "hjszdXxdz": "", "lxdzSheng": "", "wjrlxdzJd": "", "wjrlxdzQx": "", "hjLocation": [], "hjszdSheng": "", "jzLocation": [], "lxLocation": [], "wjrlxdzShi": "", "wjrlxdzXxdz": "", "wjrlxdzSheng": ""}, "desc": "", "host": "{{TEST_HOST}}", "name": "新增员工-接口", "path": "/persontax-web/api/v1/personalManage/savePersonal", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 930, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 166, "number": 7, "name": "待报送扣缴义务人查询", "desc": "待报送扣缴义务人查询", "type": "request", "sleep": null, "params": {"data": {"page": 1, "rybszt": 0, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202307\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "查询-接口", "path": "/persontax-web/api/v1/personalSumbit/getSubmitList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 931, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 932, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "YWR_ID", "condition": [{"gsmc": "TEST01/代扣代缴自动化测试股份有限公司"}]}}]}, {"id": 167, "number": 8, "name": "员工报送", "desc": "代扣代缴自动化测试股份有限公司-员工报送", "type": "request", "sleep": null, "params": {"data": {"ids": "{{YWR_ID}}", "condition": "[]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "员工报送-接口", "path": "/persontax-web/api/v1/personalSumbit/toSubmit", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 933, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 168, "number": 9, "name": "查看-员工报送中是否有数据", "desc": "查看-员工报送中是否有数据", "type": "request", "sleep": null, "params": {"data": {"page": 1, "rybszt": "1", "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202307\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "员工报送-接口", "path": "/persontax-web/api/v1/personalSumbit/getSubmitList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 934, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 935, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.id", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": null}}]}]}, {"id": 14, "name": "编辑员工后报送", "desc": "", "module": null, "label": [], "create_user": "zhaoxiaobin", "update_user": "", "created_time": "2023-07-2618:53", "updated_time": "2023-07-2618:53", "variable": {"COMPANY_NO": "TEST01", "COMPANY_NAME": "代扣代缴自动化测试股份有限公司", "COMPANY_NUMBER": "91440605MAC0UNRL92"}, "termination": false, "environment": {}, "step": [{"id": 169, "number": 1, "name": "前台-账号登录", "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；", "type": "plugIn", "sleep": null, "params": {"type": "login", "params": {"pass_word": "{{PWD}}", "user_name": "{{USER_NAME}}", "cookies_field": "COOKIES"}}, "termination": false, "handlers": []}, {"id": 170, "number": 2, "name": "获取公司baseId", "desc": "获取公司baseId", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "sorttype": "desc", "condition": "[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"代扣代缴自动化测试股份有限公司\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司管理列表-接口", "path": "/authapi/api/v1/tenantCompany/queryPage", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 936, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 937, "type": "extract", "params": {"path": "data.0.orgId", "type": "json", "field": "YWR_ID", "condition": [{"companyName": "{{COMPANY_NAME}}"}]}}]}, {"id": 171, "number": 3, "name": "获取新增员工所用id", "desc": "获取新增员工所用id", "type": "request", "sleep": null, "params": {"data": {"id": "{{YWR_ID}}", "page": 1, "per_page": 10, "condition": "[{\"f\":\"orgName\",\"v\":\"代扣代缴自动化测试股份有限公司\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司员工列表-接口", "path": "/persontax-web/api/v1/permission/getBaseList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 938, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 939, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "YWR_ID", "condition": [{"orgName": "{{COMPANY_NAME}}"}]}}]}, {"id": 172, "number": 4, "name": "清除数据-获取人员id", "desc": "清除数据-获取人员id", "type": "request", "sleep": 10, "params": {"data": {"page": 1, "baseId": "{{YWR_ID}}", "per_page": 10, "condition": "[{\"f\":\"baseId\",\"v\":{{YWR_ID}},\"op\":\"like\",\"t\":\"s\"},{\"f\":\"rydq\",\"v\":\"境内\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "员工列表-接口", "path": "/persontax-web/api/v1/personalManage/personalList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 940, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 941, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "per_id", "condition": [{"xm": "测试重新报送"}]}}]}, {"id": 173, "number": 5, "name": "随机字符串插件", "desc": "随机字符串插件", "type": "plugIn", "sleep": null, "params": {"type": "random", "params": {"length": 10, "get_field": "PHONE", "random_type": "int"}}, "termination": false, "handlers": []}, {"id": 174, "number": 6, "name": "编辑员工信息", "desc": "编辑员工信息", "type": "request", "sleep": 5, "params": {"data": {"bz": "", "gh": "", "gj": "中国", "id": "{{per_id}}", "xb": "男", "xl": "", "xm": "测试重新报送", "bszt": "", "cjzh": "", "csny": "1996-05-02", "dzyx": "", "khyh": "", "lszh": "", "lxdh": "1{{PHONE}}", "lxdz": "", "lzrq": "2022-07-09", "rydq": "境内", "sfcj": "否", "sfgl": "否", "sfgy": "雇员", "sfls": "否", "yhzh": "", "zzhm": "140302199605021914", "zzlx": "居民身份证", "nsrzt": "非正常", "sfzdw": "是", "baseId": "{{YWR_ID}}", "grgbbl": "0", "grgbze": "0", "lxdzJd": "", "lxdzQx": "", "rzsgrq": "2021-07-09", "hjszdJd": "", "hjszdQx": "", "lxdzShi": "", "hjszdShi": "", "khyhsfmz": "", "ryNsrsbh": "140302199605021914", "rzndjyqk": "", "hjszdXxdz": "", "lxdzSheng": "", "wjrlxdzJd": "", "wjrlxdzQx": "", "hjLocation": [], "hjszdSheng": "", "jzLocation": [], "lxLocation": [], "wjrlxdzShi": "", "wjrlxdzXxdz": "", "wjrlxdzSheng": ""}, "desc": "", "host": "{{TEST_HOST}}", "name": "编辑员工信息-接口", "path": "/persontax-web/api/v1/personalManage/savePersonal", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 942, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 175, "number": 7, "name": "待报送扣缴义务人查询", "desc": "待报送扣缴义务人查询", "type": "request", "sleep": null, "params": {"data": {"page": 1, "rybszt": 0, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202307\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "员工报送-接口", "path": "/persontax-web/api/v1/personalSumbit/getSubmitList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 943, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 944, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "YWR_ID", "condition": [{"gsmc": "TEST01/代扣代缴自动化测试股份有限公司"}]}}]}, {"id": 176, "number": 8, "name": "员工报送", "desc": "代扣代缴自动化测试股份有限公司-员工报送", "type": "request", "sleep": null, "params": {"data": {"ids": "{{YWR_ID}}", "condition": "[]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "员工报送-接口", "path": "/persontax-web/api/v1/personalSumbit/toSubmit", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 945, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 177, "number": 9, "name": "查看-员工报送中是否有数据", "desc": "查看-员工报送中是否有数据", "type": "request", "sleep": null, "params": {"data": {"page": 1, "rybszt": "1", "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202307\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "员工报送-接口", "path": "/persontax-web/api/v1/personalSumbit/getSubmitList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 946, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 947, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.id", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}], "value_right": null}}]}]}, {"id": 15, "name": "个税-税务登记信息获取", "desc": "", "module": null, "label": [], "create_user": "zhaoxiaobin", "update_user": "", "created_time": "2023-07-2618:53", "updated_time": "2023-07-2618:53", "variable": {"DJXH": "10117140188029581508", "COMPANY_NAME": "代扣代缴自动化测试股份有限公司", "COMPANY_NUMBER": "91140188029581508S"}, "termination": false, "environment": {}, "step": [{"id": 178, "number": 1, "name": "前台-账号登录", "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；", "type": "plugIn", "sleep": null, "params": {"type": "login", "params": {"pass_word": "{{PWD}}", "user_name": "{{USER_NAME}}", "cookies_field": "COOKIES"}}, "termination": false, "handlers": []}, {"id": 179, "number": 2, "name": "获取公司ID", "desc": "公司管理中-获取公司ID", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "sorttype": "desc", "condition": "[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]", "sortfield": ""}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司管理中-获取公司ID", "path": "/authapi/api/v1/tenantCompany/queryPage", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 948, "type": "extract", "params": {"path": "data.0.orgId", "type": "json", "field": "orgId", "condition": [{"companyName": "代扣代缴自动化测试股份有限公司"}]}}]}, {"id": 180, "number": 3, "name": "个税信息列表页-获取公司id", "desc": "个税信息列表页-获取公司id", "type": "request", "sleep": null, "params": {"data": {"orgId": "{{orgId}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税信息列表页-查询接口", "path": "/persontax-web/api/v1/personalTax/queryPtMessage", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 949, "type": "extract", "params": {"path": "data.id", "type": "json", "field": "comId", "condition": [{"companyName": "代扣代缴自动化测试股份有限公司"}]}}]}, {"id": 181, "number": 4, "name": "获取税务登记信息", "desc": "获取税务登记信息", "type": "request", "sleep": null, "params": {"data": {"id": "{{comId}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "获取税务登记信息", "path": "/persontax-web/api/v1/personalTax/getPtRegistMsgList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 950, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 182, "number": 5, "name": "检验申报密码", "desc": "检验申报密码", "type": "request", "sleep": null, "params": {"data": {"condition": "[{\"f\":\"pwdType\",\"v\":\"0\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"declarePwd\",\"v\":\"Aa123456\",\"op\":\"get,ge\",\"t\":\"s\"},{\"f\":\"realAccount\",\"v\":\"\",\"op\":\"let,le\",\"t\":\"s\"},{\"f\":\"realPwd\",\"v\":\"\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"djxhid\",\"v\":\"{{DJXH}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"taxArea\",\"v\":\"140100\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"qymc\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"nsrsbm\",\"v\":\"{{COMPANY_NUMBER}}\",\"op\":\"like\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "检验申报密码", "path": "/persontax-web/api/v1/personalTax/checkPw", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 951, "type": "ext_asserts", "params": {"func": "==", "path": "infos", "type": "json", "condition": [], "value_right": "密码正确验证成功"}}]}]}, {"id": 16, "name": "附表规则维护场景自动化", "desc": "", "module": null, "label": [], "create_user": "zhaoxiaobin", "update_user": "", "created_time": "2023-07-2618:53", "updated_time": "2023-07-2618:53", "variable": {"DJXH": "10117110188542620104", "COMPANY_NO": "TEST03", "COMPANY_NAME": "个税税友测试公司", "COMPANY_NUMBER": "91110188542620104H"}, "termination": false, "environment": {}, "step": [{"id": 183, "number": 1, "name": "前台-账号登录", "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；", "type": "plugIn", "sleep": null, "params": {"type": "login", "params": {"pass_word": "{{PWD}}", "user_name": "{{USER_NAME}}", "cookies_field": "COOKIES"}}, "termination": false, "handlers": []}, {"id": 184, "number": 2, "name": "获取公司baseId", "desc": "获取公司baseId", "type": "request", "sleep": null, "params": {"data": {}, "desc": "", "host": "{{TEST_HOST}}", "name": "公司管理列表-接口", "path": "/persontax-web/api/v1/personalReport/getPending?", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 952, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 953, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "YWR_ID", "condition": [{"qymc": "{{COMPANY_NAME}}"}]}}]}, {"id": 185, "number": 3, "name": "删除附表信息", "desc": "删除附表信息", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "删除附表信息-接口", "path": "/persontax-web/api/v1/jmpz/listData", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 954, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 955, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "FB_ID", "condition": [{"sdfl": "综合所得", "ygxm": "陈大同"}]}}]}, {"id": 186, "number": 4, "name": "删除附表信息-获取附表id", "desc": "删除附表信息-获取附表id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "删除附表信息-获取附表id-接口", "path": "/persontax-web/api/v1/jmpz/listData", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 956, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 957, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "FB_ID", "condition": [{"sdfl": "综合所得", "ygxm": "陈大同"}]}}]}, {"id": 187, "number": 5, "name": "删除附表信息", "desc": "删除附表信息", "type": "request", "sleep": null, "params": {"data": {"ids": "{{FB_ID}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "删除附表信息-接口", "path": "/persontax-web/api/v1/jmpz/deleteData", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": []}, {"id": 188, "number": 6, "name": "添加附表信息", "desc": "添加附表信息", "type": "request", "sleep": null, "params": {"data": {"djxh": "{{DJXH}}", "jmbl": "0.50", "jmfs": "减免税额", "jmsx": "其他自然灾害受灾减免个人所得税", "jmxs": "比例减征", "jmxz": "《中华人民共和国个人所得税法》 中华人民共和国主席令第48号第五条第二项", "mssr": "", "sdfl": "综合所得", "sdxm": "正常工资薪金", "ygxm": "陈大同", "zjhm": "140211199109181987", "zjlx": "居民身份证", "baseId": "{{YWR_ID}}"}, "desc": "", "host": "{{TEST_HOST}}", "name": "添加附表信息-接口", "path": "/persontax-web/api/v1/jmpz/saveData", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 958, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 189, "number": 7, "name": "个税计算-获取report_id", "desc": "代扣代缴自动化测试股份有限公司-个税计算-获取report_id", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-获取report_id", "path": "/persontax-web/api/v1/personalReport/queryPtReportList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 959, "type": "extract", "params": {"path": "data.0.id", "type": "json", "field": "REPORT_ID", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}", "reportType": "1"}]}}, {"id": 960, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}]}, {"id": 190, "number": 8, "name": "个税计算-上传正常薪金文件", "desc": "个税计算-上传正常薪金文件", "type": "request", "sleep": null, "params": {"data": {"params": [["fxyf", "202305"], ["sdxm", "1001"], ["reportId", "{{REPORT_ID}}"]], "file_id": 4, "file_type": "application/vnd.ms-excel", "file_fields": "upload"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-上传正常薪金文件", "path": "/persontax-web/api/v1/personalCalc/uploadSalaryScale", "method": "POST", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "upload", "response_type": "json"}, "termination": false, "handlers": []}, {"id": 191, "number": 9, "name": "个税计算-查看计算状态", "desc": "代扣代缴自动化测试股份有限公司-个税计算-核对计算结果", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"},{\"f\":\"jsZt\",\"v\":\"1\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-列表查询-接口", "path": "/persontax-web/api/v1/personalReport/queryPtReportList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 961, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 962, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.jsZt", "type": "json", "condition": [], "value_right": null}}]}, {"id": 192, "number": 10, "name": "个税计算-查看计算状态", "desc": "个税税友测试公司-个税计算-核对计算结果", "type": "request", "sleep": null, "params": {"data": {"page": 1, "per_page": 10, "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}, "desc": "", "host": "{{TEST_HOST}}", "name": "个税计算-列表查询-接口", "path": "/persontax-web/api/v1/personalReport/queryPtReportList", "method": "GET", "cookies": {"test_cas_access_token": "{{COOKIES}}"}, "headers": null, "post_type": "json", "response_type": "json"}, "termination": false, "handlers": [{"id": 963, "type": "ext_asserts", "params": {"func": "==", "path": "result", "type": "json", "condition": [], "value_right": "success"}}, {"id": 964, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.jsZt", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}", "reportType": "1"}], "value_right": "2"}}, {"id": 965, "type": "ext_asserts", "params": {"func": "==", "path": "data.0.ybtse", "type": "json", "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}", "reportType": "1"}], "value_right": "400.47"}}]}]}]}}
+{
+  "name": "个税流程自动化用例",
+  "desc": "个税申报流程自动化",
+  "variable": {
+    "TEST_HOST": "https://test-gateway.bigfintax.com",
+    "USER_NAME": "GSZDHCSJT_admin",
+    "PWD": "202cb962ac59075b964b07152d234b70"},
+  "case": [
+{
+      "name": "个税流程自动化",
+      "desc": "",
+      "variable": {
+        "COMPANY_NAME": "代扣代缴自动化测试股份有限公司",
+        "COMPANY_NUMBER": "91140188029581508S",
+        "COMPANY_NO": "TEST01"
+      },
+      "step": [
+        {
+          "name": "前台-账号登录",
+          "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "params": {
+              "pass_word": "{{PWD}}",
+              "user_name": "{{USER_NAME}}",
+              "cookies_field": "COOKIES"
+            },
+            "type": "login"
+          },
+          "handlers": []
+        },
+        {
+          "name": "六万扣除列表",
+          "desc": "六万扣除列表-获取公司id",
+          "type": "request",
+          "params": {
+            "name": "六万扣除采集-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/bzlwxzNew/getCollectionList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page":10,"condition":"[{\"f\":\"sdnf\",\"v\":\"2023\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.baseid",
+                "condition": [
+                  {
+                    "orgname": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+
+        },
+        {
+          "name": "六万扣除采集",
+          "desc": "代扣代缴自动化测试股份有限公司-六万扣除采集",
+          "type": "request",
+          "params": {
+            "name": "六万扣除采集-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/bzlwxz/collection",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"baseIds":"{{YWR_ID}}","sdnf":2023}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }],"sleep": 15
+        },
+        {
+          "name": "六万扣除-税局确认",
+          "desc": "代扣代缴自动化测试股份有限公司-六万扣除-税局确认",
+          "type": "request",
+          "params": {
+            "name": "六万扣除确认-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/bzlwxz/confirm",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"baseIds":"{{YWR_ID}}","sdnf":2023}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }]
+        },
+        {
+          "name": "六万扣除-平台确认",
+          "desc": "代扣代缴自动化测试股份有限公司-六万扣除-平台确认",
+          "type": "request",
+          "params": {
+            "name": "六万扣除平台确认-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/bzlwxz/confirm",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"baseIds":"{{YWR_ID}}","sdnf":"2023"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }]
+        },
+        {
+          "name": "养老金获取",
+          "desc": "代扣代缴自动化测试股份有限公司-养老金获取",
+          "type": "request",
+          "params": {
+            "name": "养老金获取-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/ylj/retryYljHq?id={{YWR_ID}}",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }],
+          "sleep": 5
+        },
+        {
+          "name": "专扣获取",
+          "desc": "代扣代缴自动化测试股份有限公司-专扣获取",
+          "type": "request",
+          "params": {
+            "name": "专扣获取-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/zxkcfj/getZxfjkcList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{YWR_ID}}","sdyf":"202305"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }],"sleep": 5
+        },
+        {
+          "name": "个税计算-获取report_id",
+          "desc": "代扣代缴自动化测试股份有限公司-个税计算-获取report_id",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取report_id",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalReport/queryPtReportList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page":10,"condition":"[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "REPORT_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}",
+                    "reportType": "1"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-获取申报id",
+          "desc": "代扣代缴自动化测试股份有限公司-个税计算-获取申报id",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取申报列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "shenbao_id",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-更正申报",
+          "desc": "代扣代缴自动化测试股份有限公司-个税计算-更正申报",
+          "type": "request",
+          "params": {
+            "name": "个税计算-更正申报-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/correct",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{shenbao_id}}"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }],
+          "sleep": 5
+        },
+        {
+          "name": "个税计算-上传正常薪金文件",
+          "desc": "个税计算-上传正常薪金文件",
+          "type": "request",
+          "params": {
+            "name": "个税计算-上传正常薪金文件",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalCalc/uploadSalaryScale",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "upload",
+            "headers": null,
+            "data": {
+              "params": [
+                ["fxyf","202305"],
+                ["sdxm", "1001"],
+                ["reportId","{{REPORT_ID}}"]],
+              "file_id": 1,
+              "file_fields": "upload",
+              "file_type": "application/vnd.ms-excel"
+            }
+
+        },
+          "handlers": [
+          ]
+        },
+{
+          "name": "个税计算-查看计算状态",
+          "desc": "代扣代缴自动化测试股份有限公司-个税计算-核对计算结果",
+          "type": "request",
+          "params": {
+            "name": "个税计算-列表查询-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalReport/queryPtReportList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"},{\"f\":\"jsZt\",\"v\":\"1\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.jsZt",
+                "condition": [],
+                "func": "==",
+                "value_right": null
+              }
+            }
+          ],
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              ]
+          }
+        },
+        {
+          "name": "个税计算-上传劳务报酬所得文件",
+          "desc": "个税计算-上传劳务报酬所得文件",
+          "type": "request",
+          "params": {
+            "name": "个税计算-上传劳务报酬所得文件",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalCalc/uploadSalaryScale",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "upload",
+            "headers": null,
+            "data": {
+              "params": [
+                ["fxyf","202305"],
+                ["sdxm", "1004"],
+                ["reportId","{{REPORT_ID}}"]],
+              "file_id": 2,
+              "file_fields": "upload",
+              "file_type": "application/vnd.ms-excel"
+            }
+
+        },
+          "handlers": [
+          ]
+        },
+
+{
+          "name": "个税计算-查看计算状态",
+          "desc": "代扣代缴自动化测试股份有限公司-个税计算-核对计算结果",
+          "type": "request",
+          "params": {
+            "name": "个税计算-列表查询-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalReport/queryPtReportList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"},{\"f\":\"jsZt\",\"v\":\"1\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.jsZt",
+                "condition": [],
+                "func": "==",
+                "value_right": null
+              }
+            }
+          ],
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              ]
+          }
+        },
+        {
+          "name": "个税计算-查看计算",
+          "desc": "代扣代缴自动化测试股份有限公司-个税计算-核对计算结果",
+          "type": "request",
+          "params": {
+            "name": "个税计算-列表查询-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbse",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}","reportType": "1"}],
+                "func": "==",
+                "value_right": "1349.80"
+              }
+            }
+          ]
+
+        },
+        {
+          "name": "个税计算-申报表生成",
+            "desc": "代扣代缴自动化测试股份有限公司-个税计算-申报表生成",
+          "type": "request",
+          "params": {
+            "name": "个税计算-申报表生成",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalReport/reportGenerate",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "form",
+            "headers": null,
+            "data": {"ids":"{{REPORT_ID}}"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }]
+        },
+        {
+          "name": "个税计算-申报",
+          "desc": "代扣代缴自动化测试股份有限公司-申报",
+          "type": "request",
+          "params": {
+            "name": "个税计算-申报",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/declare",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{shenbao_id}}"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }]
+        },
+        {
+          "name": "个税计算-检验申报状态",
+          "desc": "代扣代缴自动化测试股份有限公司-检验申报状态",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取申报列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "==",
+                "value_right": "2"
+              }
+            }
+          ],
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "!=",
+                "value_right": "1"
+              }
+            }
+              ]
+
+          }
+        },
+        {
+          "name": "个税计算-扣款",
+          "desc": "代扣代缴自动化测试股份有限公司-扣款",
+          "type": "request",
+          "params": {
+            "name": "个税计算-扣款",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/payment",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{REPORT_ID}}"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-检验缴款状态",
+          "desc": "代扣代缴自动化测试股份有限公司-检验缴款状态",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取申报列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.jnZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "==",
+                "value_right": "2"
+              }
+            }
+          ],
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.jnZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "!=",
+                "value_right": "1"
+              }
+            }
+              ]
+
+          }
+        }
+      ]
+    },
+    {
+      "name": "个税申报场景自动化用例",
+      "desc": "",
+      "variable": {
+        "COMPANY_NAME": "个税税友测试公司",
+        "COMPANY_NUMBER": "91110188542620104H",
+        "COMPANY_NO": "TEST03"
+      },
+      "step": [
+        {
+          "name": "前台-账号登录",
+          "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "params": {
+              "pass_word": "{{PWD}}",
+              "user_name": "{{USER_NAME}}",
+              "cookies_field": "COOKIES"
+            },
+            "type": "login"
+          },
+          "handlers": []
+        },
+        {
+          "name": "获取申报id",
+          "desc": "申报列表页面-获取申报id",
+          "type": "request",
+          "params": {
+            "name": "申报列表查询接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page":10,"condition":"[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "shenbao_id",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "前置-个税计算-更正申报",
+          "desc": "个税税友测试公司-个税计算-更正申报，为了申报成功缴款成功",
+          "type": "request",
+          "params": {
+            "name": "个税计算-更正申报-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/correct",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{shenbao_id}}"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }],
+          "sleep": 15
+        },
+        {
+          "name": "前置-申报尝试",
+          "desc": "确保申报已交款",
+          "type": "request",
+          "params": {
+            "name": "个税计算-申报",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/declare",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{shenbao_id}}"}},
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "前置-个税计算-检验申报状态",
+          "desc": "个税税友测试公司-检验申报状态",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取申报列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "!=",
+                "value_right": "1"
+              }
+            }
+              ]
+
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "==",
+                "value_right": "2"
+              }
+            }
+          ]
+        },
+        {
+          "name": "数据库修改缴费状态",
+          "desc": "数据库修改缴费状态",
+          "type": "plugIn",
+          "params": {
+                            "type": "pg_db",
+                            "params": {
+                                "SQL": "update t_pt_declare set jn_zt = '2' where id = '{{shenbao_id}}';",
+                                "host": "192.168.2.65",
+                                "port": 5432,
+                                "user": "user1",
+                                "db_name": "persontax",
+                                "password": "123456",
+                                "field_list": []
+                            }
+                        },
+          "handlers": [
+          ]
+    },
+        {
+          "name": "作废申报",
+          "desc": "缴费成功后--作废申报",
+          "type": "request",
+          "params": {
+            "name": "作废申报-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/cancel",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{shenbao_id}}"}},
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "INFOS",
+                "path": "infos",
+                "condition": [
+
+                ]
+              }
+            },
+            {
+              "type": "asserts",
+              "params": {
+                "func": "in",
+                "value_left": "已经缴款成功，不能发起申报撤销任务！",
+                "value_right": "{{INFOS}}"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-更正申报",
+          "desc": "个税税友测试公司-个税计算-更正申报",
+          "type": "request",
+          "params": {
+            "name": "个税计算-更正申报-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/correct",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{shenbao_id}}"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }],
+          "sleep": 5
+        },
+        {
+          "name": "重新申报",
+          "desc": "重新申报",
+          "type": "request",
+          "params": {
+            "name": "个税计算-申报",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/declare",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{shenbao_id}}"}},
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-检验申报状态",
+          "desc": "个税税友测试公司-检验申报状态",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取申报列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "!=",
+                "value_right": "1"
+              }
+            }
+              ]
+
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "==",
+                "value_right": "2"
+              }
+            }
+          ]
+        },
+        {
+          "name": "获取公司baseId",
+          "desc": "获取公司baseId",
+          "type": "request",
+          "params": {
+            "name": "公司管理列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/authapi/api/v1/tenantCompany/queryPage",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "sorttype": "desc",
+              "condition": "[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]"}},
+            "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.orgId",
+                "condition": [
+                  {
+                    "companyName": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "获取新增员工所用id",
+          "desc": "获取新增员工所用id",
+          "type": "request",
+          "params": {
+            "name": "公司员工列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/permission/getBaseList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"}]",
+              "id": "{{YWR_ID}}"}},
+            "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "orgName": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {"name": "新增员工",
+          "desc": "新增员工-创造申报失败",
+          "type": "request",
+          "params": {
+            "name": "新增员工-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/savePersonal",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"zzlx":"居民身份证","zzhm":"140302199605221924","xm":"测试申报作废","gj":"中国","xb":"女","xl":"","csny":"1996-05-22","sfcj":"否","sfls":"否","sfgl":"否","cjzh":"","lszh":"","ryNsrsbh":"","bz":"","lxdh":"18811991606","dzyx":"","jzLocation":[],"lxdzSheng":"","lxdzShi":"","lxdzQx":"","lxdzJd":"","lxdz":"","lxLocation":[],"wjrlxdzSheng":"","wjrlxdzShi":"","wjrlxdzQx":"","wjrlxdzJd":"","wjrlxdzXxdz":"","hjLocation":[],"hjszdSheng":"","hjszdShi":"","hjszdQx":"","hjszdJd":"","hjszdXxdz":"","khyh":"","khyhsfmz":"","yhzh":"","nsrzt":"非正常","sfgy":"雇员","rzsgrq":"2021-07-09","lzrq":"2022-07-09","sfzdw":"是","rzndjyqk":"","gh":"","grgbze":0,"grgbbl":0,"id":"","baseId":"{{YWR_ID}}","rydq":"境内","bszt":""}
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]},
+        {
+          "name": "个税计算-更正申报",
+          "desc": "个税税友测试公司-个税计算-更正申报",
+          "type": "request",
+          "params": {
+            "name": "个税计算-更正申报-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/correct",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{shenbao_id}}"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }],
+          "sleep": 5
+        },
+        {
+          "name": "重新申报",
+          "desc": "重新申报",
+          "type": "request",
+          "params": {
+            "name": "个税计算-申报",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/declare",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{shenbao_id}}"}},
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-检验申报状态",
+          "desc": "个税税友测试公司-检验申报状态",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取申报列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "!=",
+                "value_right": "1"
+              }
+            }
+              ]
+
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "==",
+                "value_right": "2"
+              }
+            }
+          ]
+        },
+        {
+          "name": "清除数据-获取人员id",
+          "desc": "清除数据-获取人员id",
+          "type": "request",
+          "params": {
+            "name": "员工列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/personalList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"page": 1,"per_page": 10,"condition": "[{\"f\":\"baseId\",\"v\":{{YWR_ID}},\"op\":\"like\",\"t\":\"s\"},{\"f\":\"rydq\",\"v\":\"境内\",\"op\":\"like\",\"t\":\"s\"}]","baseId": "{{YWR_ID}}"}
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "per_id",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "xm": "测试申报作废"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "清除数据-删除员工",
+          "desc": "清除数据-删除员工",
+          "type": "request",
+          "params": {
+            "name": "删除员工-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/delPersonal",
+            "method": "DELETE",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"ids":"{{per_id}}"}
+          },
+          "handlers": [
+          ]
+        },
+        {
+          "name": "重新申报",
+          "desc": "重新申报",
+          "type": "request",
+          "params": {
+            "name": "个税计算-申报",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/declare",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"ids":"{{shenbao_id}}"}},
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-检验申报状态",
+          "desc": "个税税友测试公司-检验申报状态",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取申报列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "!=",
+                "value_right": "1"
+              }
+            }
+              ]
+
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "==",
+                "value_right": "2"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "作废往期申报自动化用例",
+      "desc": "",
+      "variable": {
+        "COMPANY_NAME": "个税税友测试公司",
+        "COMPANY_NUMBER": "91110188542620104H",
+        "COMPANY_NO": "TEST03"
+      },
+      "step": [
+        {
+          "name": "前台-账号登录",
+          "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "params": {
+              "pass_word": "{{PWD}}",
+              "user_name": "{{USER_NAME}}",
+              "cookies_field": "COOKIES"
+            },
+            "type": "login"
+          },
+          "handlers": []
+        },
+        {
+          "name": "获取申报id",
+          "desc": "申报列表页面-获取申报id",
+          "type": "request",
+          "params": {
+            "name": "申报列表查询接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "shenbao_id",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "申报尝试",
+          "desc": "申报尝试，要保证申报成功",
+          "type": "request",
+          "params": {
+            "name": "个税计算-申报",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/declare",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {
+              "ids": "{{shenbao_id}}"
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-检验申报状态",
+          "desc": "个税税友测试公司-检验申报状态",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取申报列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "!=",
+                "value_right": "1"
+              }
+            }
+              ]
+
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "==",
+                "value_right": "2"
+              }
+            }
+          ]
+        },
+        {
+          "name": "获取申报id",
+          "desc": "申报列表页面-获取4月往期申报id",
+          "type": "request",
+          "params": {
+            "name": "申报列表查询接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202304\",\"op\":\"eq\",\"t\":\"s\"}]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "shenbao_id",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "申报尝试",
+          "desc": "申报尝试，要保证申报成功",
+          "type": "request",
+          "params": {
+            "name": "个税计算-申报",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/declare",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {
+              "ids": "{{shenbao_id}}"
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-检验申报状态",
+          "desc": "个税税友测试公司-检验申报状态",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取申报列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "!=",
+                "value_right": "1"
+              }
+            }
+              ]
+
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "==",
+                "value_right": "2"
+              }
+            }
+          ]
+        },
+        {
+          "name": "作废申报",
+          "desc": "作废往期申报",
+          "type": "request",
+          "params": {
+            "name": "作废申报-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/cancel",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {
+              "ids": "{{shenbao_id}}"
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-检验作废申报状态",
+          "desc": "个税税友测试公司-检验作废申报状态",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取申报列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202304\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.zfZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "==",
+                "value_right": "3"
+              }
+            }
+          ],
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.zfZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "!=",
+                "value_right": "1"
+              }
+            }
+              ]
+
+          }
+        }
+      ]
+    },
+    {
+      "name": "异常校验场景自动化用例",
+      "desc": "",
+      "variable": {
+        "COMPANY_NAME": "个税税友测试公司",
+        "COMPANY_NUMBER": "91110188542620104H",
+        "COMPANY_NO": "TEST03",
+        "DJXH": "10117110188542620104"
+      },
+      "step": [
+        {
+          "name": "前台-账号登录",
+          "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "params": {
+              "pass_word": "{{PWD}}",
+              "user_name": "{{USER_NAME}}",
+              "cookies_field": "COOKIES"
+            },
+            "type": "login"
+          },
+          "handlers": []
+        },
+        {"name": "获取公司ID",
+          "desc": "公司管理中-获取公司ID",
+          "type": "request",
+          "params": {
+            "name": "公司管理中-获取公司ID",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/authapi/api/v1/tenantCompany/queryPage",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"page":1,"per_page":10,"condition":"[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]","sorttype":"desc","sortfield": ""}
+          },
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "orgId",
+                "path": "data.0.orgId",
+                "condition": [
+                  {
+                    "companyName": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税信息列表页-获取公司id",
+          "desc": "个税信息列表页-获取公司id",
+          "type": "request",
+          "params": {
+            "name": "个税信息列表页-查询接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalTax/queryPtMessage",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"orgId":"{{orgId}}"}
+        }, "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "comId",
+                "path": "data.id",
+                "condition": [
+                  {
+                    "companyName": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+},
+        {
+          "name": "获取申报id",
+          "desc": "申报列表页面-获取申报id",
+          "type": "request",
+          "params": {
+            "name": "申报列表查询接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "shenbao_id",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "保存申报密码",
+          "desc": "恢复申报密码",
+          "type": "request",
+          "params": {
+            "name": "恢复申报密码",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalTax/savePtRegistMsg",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"provinceAddr":"110000","cityAddr":"110100","countyAddr":"","pwdType":"0","declarePwd":"Aa123456","realAccount":"","realPwd":"","id":"{{comId}}","orgId":"{{orgId}}","djxhid":"{{DJXH}}"}
+
+        },"handlers": []},
+        {
+          "name": "获取公司baseId",
+          "desc": "获取公司baseId",
+          "type": "request",
+          "params": {
+            "name": "公司管理列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/authapi/api/v1/tenantCompany/queryPage",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "sorttype": "desc",
+              "condition": "[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]"}},
+            "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.orgId",
+                "condition": [
+                  {
+                    "companyName": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "获取新增员工所用id",
+          "desc": "获取新增员工所用id",
+          "type": "request",
+          "params": {
+            "name": "公司员工列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/permission/getBaseList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"}]",
+              "id": "{{YWR_ID}}"}},
+            "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "orgName": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "清除数据-获取人员id",
+          "desc": "清除数据-获取人员id",
+          "type": "request",
+          "params": {
+            "name": "员工列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/personalList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"page": 1,"per_page": 10,"condition": "[{\"f\":\"baseId\",\"v\":{{YWR_ID}},\"op\":\"like\",\"t\":\"s\"},{\"f\":\"rydq\",\"v\":\"境内\",\"op\":\"like\",\"t\":\"s\"}]","baseId": "{{YWR_ID}}"}
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "per_id",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "xm": "测试异常场景"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {"name": "编辑员工信息",
+          "desc": "编辑员工信息",
+          "type": "request",
+          "params": {
+            "name": "编辑员工信息-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/savePersonal",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"zzlx":"居民身份证","zzhm":"140321198809181324","xm":"测试异常场景","gj":"中国","xb":"女","xl":"","csny":"1988-09-18","sfcj":"否","sfls":"否","sfgl":"否","cjzh":"","lszh":"","ryNsrsbh":"140321198809181324","bz":"","lxdh":"18811122222","dzyx":"","lxdzSheng":"","lxdzShi":"","lxdzQx":"","lxdzJd":"","lxdz":"","wjrlxdzSheng":"","wjrlxdzShi":"","wjrlxdzQx":"","wjrlxdzJd":"","wjrlxdzXxdz":"","hjszdSheng":"","hjszdShi":"","hjszdQx":"","hjszdJd":"","hjszdXxdz":"","khyh":"","khyhsfmz":"","yhzh":"","jzLocation":[],"hjLocation":[],"lxLocation":[],"nsrzt":"非正常","sfgy":"雇员","rzsgrq":"2023-02-08","lzrq":"2023-02-09","sfzdw":"是","rzndjyqk":"","gh":"","grgbze":"0","grgbbl":"0","id":"{{per_id}}","baseId":"{{YWR_ID}}","rydq":"境内","bszt":"1"}
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]},
+        {
+          "name": "申报尝试",
+          "desc": "申报尝试",
+          "type": "request",
+          "params": {
+            "name": "个税计算-申报",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/declare",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {
+              "ids": "{{shenbao_id}}"
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "校验申报失败",
+          "desc": "申报列表页面-校验申报失败",
+          "type": "request",
+          "params": {
+            "name": "申报列表查询接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalDeclare/queryDeclareList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"orgName\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [
+                  {"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}
+                ],
+                "func": "==",
+                "value_right": "2"
+              }
+            }
+          ],
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.sbZt",
+                "condition": [{"gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}"}],
+                "func": "!=",
+                "value_right": "1"
+              }
+            }
+              ]
+
+          }
+        },
+        {"name": "编辑员工信息",
+          "desc": "编辑员工信息",
+          "type": "request",
+          "params": {
+            "name": "编辑员工信息-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/savePersonal",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"zzlx":"居民身份证","zzhm":"140321198809181324","xm":"测试异常场景","gj":"中国","xb":"女","xl":"","csny":"1988-09-18","sfcj":"否","sfls":"否","sfgl":"否","cjzh":"","lszh":"","ryNsrsbh":"140321198809181324","bz":"","lxdh":"18811111222","dzyx":"","lxdzSheng":"","lxdzShi":"","lxdzQx":"","lxdzJd":"","lxdz":"","wjrlxdzSheng":"","wjrlxdzShi":"","wjrlxdzQx":"","wjrlxdzJd":"","wjrlxdzXxdz":"","hjszdSheng":"","hjszdShi":"","hjszdQx":"","hjszdJd":"","hjszdXxdz":"","khyh":"","khyhsfmz":"","yhzh":"","jzLocation":[],"hjLocation":[],"lxLocation":[],"nsrzt":"非正常","sfgy":"雇员","rzsgrq":"2023-02-08","lzrq":"2023-02-09","sfzdw":"是","rzndjyqk":"","gh":"","grgbze":"0","grgbbl":"0","id":"{{per_id}}","baseId":"{{YWR_ID}}","rydq":"境内","bszt":"1"}
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]},
+        {
+          "name": "员工报送",
+          "desc": "个税自动化测试公司-员工报送",
+          "type": "request",
+          "params": {
+            "name": "员工报送-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalSumbit/toSubmit",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"condition":"[]","ids":"{{YWR_ID}}"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }],
+          "sleep": 20
+        }
+      ]
+    }
+ ,
+    {
+      "name": "添加员工后报送",
+      "desc": "",
+      "variable": {
+        "COMPANY_NAME": "代扣代缴自动化测试股份有限公司",
+        "COMPANY_NUMBER": "91440605MAC0UNRL92",
+        "COMPANY_NO": "TEST01"
+      },
+      "step": [
+        {
+          "name": "前台-账号登录",
+          "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "params": {
+              "pass_word": "{{PWD}}",
+              "user_name": "{{USER_NAME}}",
+              "cookies_field": "COOKIES"
+            },
+            "type": "login"
+          },
+          "handlers": []
+        },
+        {
+          "name": "获取公司baseId",
+          "desc": "获取公司baseId",
+          "type": "request",
+          "params": {
+            "name": "公司管理列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/authapi/api/v1/tenantCompany/queryPage",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "sorttype": "desc",
+              "condition": "[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"代扣代缴自动化测试股份有限公司\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]"}},
+            "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.orgId",
+                "condition": [
+                  {
+                    "companyName": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },{
+          "name": "获取新增员工所用id",
+          "desc": "获取新增员工所用id",
+          "type": "request",
+          "params": {
+            "name": "公司员工列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/permission/getBaseList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"orgName\",\"v\":\"代扣代缴自动化测试股份有限公司\",\"op\":\"like\",\"t\":\"s\"}]",
+              "id": "{{YWR_ID}}"}},
+            "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "orgName": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },{
+          "name": "清除数据-获取人员id",
+          "desc": "清除数据-获取人员id",
+          "type": "request",
+          "params": {
+            "name": "员工列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/personalList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"page": 1,"per_page": 10,"condition": "[{\"f\":\"baseId\",\"v\":{{YWR_ID}},\"op\":\"like\",\"t\":\"s\"},{\"f\":\"rydq\",\"v\":\"境内\",\"op\":\"like\",\"t\":\"s\"}]","baseId": "{{YWR_ID}}"}
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "per_id",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "xm": "测试重新报送"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "清除数据-删除员工",
+          "desc": "清除数据-删除员工",
+          "type": "request",
+          "params": {
+            "name": "删除员工-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/delPersonal",
+            "method": "DELETE",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"ids":"{{per_id}}"}
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "code",
+                "condition": [],
+                "func": "==",
+                "value_right":200
+              }
+            }
+          ]
+
+        },
+        {"name": "新增员工",
+          "desc": "新增员工",
+          "type": "request",
+          "params": {
+            "name": "新增员工-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/savePersonal",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"zzlx":"居民身份证","zzhm":"140302199605021914","xm":"测试重新报送","gj":"中国","xb":"男","xl":"","csny":"1996-05-02","sfcj":"否","sfls":"否","sfgl":"否","cjzh":"","lszh":"","ryNsrsbh":"","bz":"","lxdh":"18811996606","dzyx":"","jzLocation":[],"lxdzSheng":"","lxdzShi":"","lxdzQx":"","lxdzJd":"","lxdz":"","lxLocation":[],"wjrlxdzSheng":"","wjrlxdzShi":"","wjrlxdzQx":"","wjrlxdzJd":"","wjrlxdzXxdz":"","hjLocation":[],"hjszdSheng":"","hjszdShi":"","hjszdQx":"","hjszdJd":"","hjszdXxdz":"","khyh":"","khyhsfmz":"","yhzh":"","nsrzt":"非正常","sfgy":"雇员","rzsgrq":"2021-07-09","lzrq":"2022-07-09","sfzdw":"是","rzndjyqk":"","gh":"","grgbze":0,"grgbbl":0,"id":"","baseId":"{{YWR_ID}}","rydq":"境内","bszt":""}
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ],
+          "sleep": 5
+        },
+        {"name": "待报送扣缴义务人查询",
+          "desc": "待报送扣缴义务人查询",
+          "type": "request",
+          "params": {
+            "name": "查询-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalSumbit/getSubmitList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"page":1,"per_page":10,"condition":"[{\"f\":\"sdyf\",\"v\":\"202307\",\"op\":\"eq\",\"t\":\"s\"}]","rybszt":0}
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "gsmc": "TEST01/代扣代缴自动化测试股份有限公司"
+                  }
+                ]
+              }
+            }
+          ]},
+        {
+          "name": "员工报送",
+          "desc": "代扣代缴自动化测试股份有限公司-员工报送",
+          "type": "request",
+          "params": {
+            "name": "员工报送-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalSumbit/toSubmit",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"condition":"[]","ids":"{{YWR_ID}}"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }]
+        },{
+          "name": "查看-员工报送中是否有数据",
+          "desc": "查看-员工报送中是否有数据",
+          "type": "request",
+          "params": {
+            "name": "员工报送-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalSumbit/getSubmitList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page":10,"condition":"[{\"f\":\"sdyf\",\"v\":\"202307\",\"op\":\"eq\",\"t\":\"s\"}]","rybszt": "1"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }},
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.id",
+                "condition": [{"gsmc":"{{COMPANY_NO}}/{{COMPANY_NAME}}" }],
+                "func": "==",
+                "value_right": null
+            }
+            }],
+          "retry": {
+            "interval": 30,
+            "times":6,
+            "jump":[
+
+              ]
+
+          }
+        }
+      ]
+    },
+    {
+      "name": "编辑员工后报送",
+      "desc": "",
+      "variable": {
+        "COMPANY_NAME": "代扣代缴自动化测试股份有限公司",
+        "COMPANY_NUMBER": "91440605MAC0UNRL92",
+        "COMPANY_NO": "TEST01"
+      },
+      "step": [
+
+        {
+          "name": "前台-账号登录",
+          "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "params": {
+              "pass_word": "{{PWD}}",
+              "user_name": "{{USER_NAME}}",
+              "cookies_field": "COOKIES"
+            },
+            "type": "login"
+          },
+          "handlers": []
+        },
+        {
+          "name": "获取公司baseId",
+          "desc": "获取公司baseId",
+          "type": "request",
+          "params": {
+            "name": "公司管理列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/authapi/api/v1/tenantCompany/queryPage",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "sorttype": "desc",
+              "condition": "[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"代扣代缴自动化测试股份有限公司\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]"}},
+            "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.orgId",
+                "condition": [
+                  {
+                    "companyName": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },{
+          "name": "获取新增员工所用id",
+          "desc": "获取新增员工所用id",
+          "type": "request",
+          "params": {
+            "name": "公司员工列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/permission/getBaseList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"orgName\",\"v\":\"代扣代缴自动化测试股份有限公司\",\"op\":\"like\",\"t\":\"s\"}]",
+              "id": "{{YWR_ID}}"}},
+            "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "orgName": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "清除数据-获取人员id",
+          "desc": "清除数据-获取人员id",
+          "type": "request",
+          "params": {
+            "name": "员工列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/personalList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"page": 1,"per_page": 10,"condition": "[{\"f\":\"baseId\",\"v\":{{YWR_ID}},\"op\":\"like\",\"t\":\"s\"},{\"f\":\"rydq\",\"v\":\"境内\",\"op\":\"like\",\"t\":\"s\"}]","baseId": "{{YWR_ID}}"}
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "per_id",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "xm": "测试重新报送"
+                  }
+                ]
+              }
+            }
+          ],"sleep": 10
+        },
+        {
+                        "name": "随机字符串插件",
+                        "desc": "随机字符串插件",
+                        "type": "plugIn",
+                        "params": {
+                            "type": "random",
+                            "params": {
+                                "random_type": "int",
+                                "length": 10,
+                                "get_field": "PHONE"
+                            }
+                        },
+                        "handlers": []
+                    },
+        {"name": "编辑员工信息",
+          "desc": "编辑员工信息",
+          "type": "request",
+          "params": {
+            "name": "编辑员工信息-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalManage/savePersonal",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"zzlx":"居民身份证","zzhm":"140302199605021914","xm":"测试重新报送","gj":"中国","xb":"男","xl":"","csny":"1996-05-02","sfcj":"否","sfls":"否","sfgl":"否","cjzh":"","lszh":"","ryNsrsbh":"140302199605021914","bz":"","lxdh":"1{{PHONE}}","dzyx":"","lxdzSheng":"","lxdzShi":"","lxdzQx":"","lxdzJd":"","lxdz":"","wjrlxdzSheng":"","wjrlxdzShi":"","wjrlxdzQx":"","wjrlxdzJd":"","wjrlxdzXxdz":"","hjszdSheng":"","hjszdShi":"","hjszdQx":"","hjszdJd":"","hjszdXxdz":"","khyh":"","khyhsfmz":"","yhzh":"","jzLocation":[],"hjLocation":[],"lxLocation":[],"nsrzt":"非正常","sfgy":"雇员","rzsgrq":"2021-07-09","lzrq":"2022-07-09","sfzdw":"是","rzndjyqk":"","gh":"","grgbze":"0","grgbbl":"0","id":"{{per_id}}","baseId":"{{YWR_ID}}","rydq":"境内","bszt":""}
+          },
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ],
+        "sleep": 5},
+        {"name": "待报送扣缴义务人查询",
+          "desc": "待报送扣缴义务人查询",
+          "type": "request",
+          "params": {
+            "name": "员工报送-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalSumbit/getSubmitList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"page":1,"per_page":10,"condition":"[{\"f\":\"sdyf\",\"v\":\"202307\",\"op\":\"eq\",\"t\":\"s\"}]","rybszt":0}
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "gsmc": "TEST01/代扣代缴自动化测试股份有限公司"
+                  }
+                ]
+              }
+            }
+          ]},
+        {
+          "name": "员工报送",
+          "desc": "代扣代缴自动化测试股份有限公司-员工报送",
+          "type": "request",
+          "params": {
+            "name": "员工报送-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalSumbit/toSubmit",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"condition":"[]","ids":"{{YWR_ID}}"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }]
+        },
+        {
+          "name": "查看-员工报送中是否有数据",
+          "desc": "查看-员工报送中是否有数据",
+          "type": "request",
+          "params": {
+            "name": "员工报送-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalSumbit/getSubmitList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page":10,"condition":"[{\"f\":\"sdyf\",\"v\":\"202307\",\"op\":\"eq\",\"t\":\"s\"}]","rybszt": "1"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }},
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.id",
+                "condition": [{"gsmc":"{{COMPANY_NO}}/{{COMPANY_NAME}}" }],
+                "func": "==",
+                "value_right": null
+            }
+            }],
+          "retry": {
+            "interval": 30,
+            "times":6,
+            "jump":[]
+          }
+        }
+      ]
+    },
+    {
+      "name": "个税-税务登记信息获取",
+      "desc": "",
+      "variable": {
+        "COMPANY_NAME": "代扣代缴自动化测试股份有限公司",
+        "COMPANY_NUMBER": "91140188029581508S",
+        "DJXH": "10117140188029581508"
+      },
+      "step": [
+        {
+          "name": "前台-账号登录",
+          "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "params": {
+              "pass_word": "{{PWD}}",
+              "user_name": "{{USER_NAME}}",
+              "cookies_field": "COOKIES"
+            },
+            "type": "login"
+          },
+          "handlers": []
+        },
+        {"name": "获取公司ID",
+          "desc": "公司管理中-获取公司ID",
+          "type": "request",
+          "params": {
+            "name": "公司管理中-获取公司ID",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/authapi/api/v1/tenantCompany/queryPage",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {"page":1,"per_page":10,"condition":"[{\"f\":\"companyName/companyAbbr/creditCode/outCompanyCode\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"isTestCp\",\"v\":\"N\",\"op\":\"like\",\"t\":\"s\"}]","sorttype":"desc","sortfield": ""}
+          },
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "orgId",
+                "path": "data.0.orgId",
+                "condition": [
+                  {
+                    "companyName": "代扣代缴自动化测试股份有限公司"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税信息列表页-获取公司id",
+          "desc": "个税信息列表页-获取公司id",
+          "type": "request",
+          "params": {
+            "name": "个税信息列表页-查询接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalTax/queryPtMessage",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"orgId":"{{orgId}}"}
+        }, "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "comId",
+                "path": "data.id",
+                "condition": [
+                  {
+                    "companyName": "代扣代缴自动化测试股份有限公司"
+                  }
+                ]
+              }
+            }
+          ]
+},
+        {
+          "name": "获取税务登记信息",
+          "desc": "获取税务登记信息",
+          "type": "request",
+          "params": {
+            "name": "获取税务登记信息",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalTax/getPtRegistMsgList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"id":"{{comId}}"}
+
+        },"handlers": [
+          {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+        ]},
+        {
+          "name": "检验申报密码",
+          "desc": "检验申报密码",
+          "type": "request",
+          "params": {
+            "name": "检验申报密码",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalTax/checkPw",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"condition":"[{\"f\":\"pwdType\",\"v\":\"0\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"declarePwd\",\"v\":\"Aa123456\",\"op\":\"get,ge\",\"t\":\"s\"},{\"f\":\"realAccount\",\"v\":\"\",\"op\":\"let,le\",\"t\":\"s\"},{\"f\":\"realPwd\",\"v\":\"\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"djxhid\",\"v\":\"{{DJXH}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"taxArea\",\"v\":\"140100\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"qymc\",\"v\":\"{{COMPANY_NAME}}\",\"op\":\"like\",\"t\":\"s\"},{\"f\":\"nsrsbm\",\"v\":\"{{COMPANY_NUMBER}}\",\"op\":\"like\",\"t\":\"s\"}]"}
+
+        },"handlers": [
+          {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "infos",
+                "condition": [],
+                "func": "==",
+                "value_right": "密码正确验证成功"
+              }
+            }
+        ]}
+
+      ]
+    },
+    {
+      "name": "附表规则维护场景自动化",
+      "desc": "",
+      "variable": {
+        "COMPANY_NAME": "个税税友测试公司",
+        "COMPANY_NUMBER": "91110188542620104H",
+        "COMPANY_NO": "TEST03",
+        "DJXH": "10117110188542620104"
+      },
+      "step": [
+        {
+          "name": "前台-账号登录",
+          "desc": "使用登录插件，通过后台账号密码登录-并将test_cas_access_token，存储至全局变量；",
+          "type": "plugIn",
+          "params": {
+            "params": {
+              "pass_word": "{{PWD}}",
+              "user_name": "{{USER_NAME}}",
+              "cookies_field": "COOKIES"
+            },
+            "type": "login"
+          },
+          "handlers": []
+        },
+        {
+          "name": "获取公司baseId",
+          "desc": "获取公司baseId",
+          "type": "request",
+          "params": {
+            "name": "公司管理列表-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalReport/getPending?",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {}
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "YWR_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "qymc": "{{COMPANY_NAME}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "删除附表信息",
+          "desc": "删除附表信息",
+          "type": "request",
+          "params": {
+            "name": "删除附表信息-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/jmpz/listData",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "FB_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "ygxm": "陈大同",
+                    "sdfl": "综合所得"
+                  }
+                ]
+              }
+            }
+
+          ]
+        },{
+          "name": "删除附表信息-获取附表id",
+          "desc": "删除附表信息-获取附表id",
+          "type": "request",
+          "params": {
+            "name": "删除附表信息-获取附表id-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/jmpz/listData",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },{
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "FB_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "ygxm": "陈大同",
+                    "sdfl": "综合所得"
+                  }
+                ]
+              }
+            }
+
+          ]
+        },{
+          "name": "删除附表信息",
+          "desc": "删除附表信息",
+          "type": "request",
+          "params": {
+            "name": "删除附表信息-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/jmpz/deleteData",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "ids": "{{FB_ID}}"
+            }
+          },
+          "handlers": [
+          ]
+        },
+        {
+          "name": "添加附表信息",
+          "desc": "添加附表信息",
+          "type": "request",
+          "params": {
+            "name": "添加附表信息-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/jmpz/saveData",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "headers": null,
+            "post_type": "json",
+            "data": {
+              "baseId": "{{YWR_ID}}",
+              "djxh": "{{DJXH}}",
+              "ygxm": "陈大同",
+              "zjlx": "居民身份证",
+              "zjhm": "140211199109181987",
+              "sdfl": "综合所得",
+              "sdxm": "正常工资薪金",
+              "jmfs": "减免税额",
+              "jmxs": "比例减征",
+              "jmbl": "0.50",
+              "jmsx": "其他自然灾害受灾减免个人所得税",
+              "jmxz": "《中华人民共和国个人所得税法》 中华人民共和国主席令第48号第五条第二项",
+              "mssr": ""
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-获取report_id",
+          "desc": "代扣代缴自动化测试股份有限公司-个税计算-获取report_id",
+          "type": "request",
+          "params": {
+            "name": "个税计算-获取report_id",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalReport/queryPtReportList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "extract",
+              "params": {
+                "type": "json",
+                "field": "REPORT_ID",
+                "path": "data.0.id",
+                "condition": [
+                  {
+                    "gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}",
+                    "reportType": "1"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            }
+          ]
+        },
+        {
+          "name": "个税计算-上传正常薪金文件",
+          "desc": "个税计算-上传正常薪金文件",
+          "type": "request",
+          "params": {
+            "name": "个税计算-上传正常薪金文件",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalCalc/uploadSalaryScale",
+            "method": "POST",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "upload",
+            "headers": null,
+            "data": {
+              "params": [
+                [
+                  "fxyf",
+                  "202305"
+                ],
+                [
+                  "sdxm",
+                  "1001"
+                ],
+                [
+                  "reportId",
+                  "{{REPORT_ID}}"
+                ]
+              ],
+              "file_id": 4,
+              "file_fields": "upload",
+              "file_type": "application/vnd.ms-excel"
+            }
+          },
+          "handlers": [
+          ]
+        },
+        {
+          "name": "个税计算-查看计算状态",
+          "desc": "代扣代缴自动化测试股份有限公司-个税计算-核对计算结果",
+          "type": "request",
+          "params": {
+            "name": "个税计算-列表查询-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalReport/queryPtReportList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {"page":1,"per_page": 10,"condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"},{\"f\":\"jsZt\",\"v\":\"1\",\"op\":\"eq\",\"t\":\"s\"}]"}},
+          "handlers": [{
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.jsZt",
+                "condition": [],
+                "func": "==",
+                "value_right": null
+              }
+            }
+          ],
+          "retry": {
+            "interval": 15,
+            "times":10,
+            "jump":[
+              ]
+          }
+        },
+        {
+          "name": "个税计算-查看计算状态",
+          "desc": "个税税友测试公司-个税计算-核对计算结果",
+          "type": "request",
+          "params": {
+            "name": "个税计算-列表查询-接口",
+            "desc": "",
+            "host": "{{TEST_HOST}}",
+            "path": "/persontax-web/api/v1/personalReport/queryPtReportList",
+            "method": "GET",
+            "cookies": {
+              "test_cas_access_token": "{{COOKIES}}"
+            },
+            "response_type": "json",
+            "post_type": "json",
+            "headers": null,
+            "data": {
+              "page": 1,
+              "per_page": 10,
+              "condition": "[{\"f\":\"sdyf\",\"v\":\"202305\",\"op\":\"eq\",\"t\":\"s\"}]"
+            }
+          },
+          "handlers": [
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "result",
+                "condition": [],
+                "func": "==",
+                "value_right": "success"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.jsZt",
+                "condition": [
+                  {
+                    "gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}",
+                    "reportType": "1"
+                  }
+                ],
+                "func": "==",
+                "value_right": "2"
+              }
+            },
+            {
+              "type": "ext_asserts",
+              "params": {
+                "type": "json",
+                "path": "data.0.ybtse",
+                "condition": [
+                  {
+                    "gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}",
+                    "reportType": "1"
+                  }
+                ],
+                "func": "==",
+                "value_right": "400.47"
+              }
+            }
+          ],
+          "retry": {
+            "interval": 15,
+            "times": 10,
+            "jump": [
+              {
+                "type": "ext_asserts",
+                "params": {
+                  "type": "json",
+                  "path": "data.0.jsZt",
+                  "condition": [
+                    {
+                      "gsmc": "{{COMPANY_NO}}/{{COMPANY_NAME}}",
+                      "reportType": "1"
+                    }
+                  ],
+                  "func": "!=",
+                  "value_right": "1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
