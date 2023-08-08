@@ -1,7 +1,6 @@
 from django.db import models
 from django.forms import model_to_dict
 import uuid
-from app_cyt.manager import PropertyManager
 from config.field.db_field import *
 
 
