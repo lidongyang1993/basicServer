@@ -604,13 +604,13 @@ def add_case_by_json(request: WSGIRequest):
     ]
 
     def run_func(data):
-        data = data.get(FILED.DATA)
+        the_data = data.get(FILED.DATA)
         plan_id = data.get(FILED.PLAN_ID)
         token = request.COOKIES.get(COOKIES.TOKEN_KEY)
         user = request.session.get(token, None)
         try:
-            result = v.add_case_by_json(data, user=user, plan_id=plan_id)
-        except Exception:
+            result = v.add_case_by_json(the_data, user=user, plan_id=plan_id)
+        except JsonResponse:
             raise DoneError(RESPONSE.UN_GET_ERROR)
         return {RESULT.RESULT: result}
 
@@ -654,10 +654,11 @@ def add_plan_by_json(request: WSGIRequest):
         user = request.session.get(token)
         if not user:
             user = "admin"
+        result = v.add_plan_by_json(data, user=user)
         try:
             result = v.add_plan_by_json(data, user=user)
         except Exception:
-            raise DoneError(RESPONSE.UN_GET_ERROR)
+            raise DoError(RESPONSE.UN_GET_ERROR)
         return {RESULT.RESULT: result}
 
     req = RequestBasics(request, keys)

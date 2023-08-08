@@ -19,8 +19,6 @@ def add_case_by_json(data: dict, user, plan_id):
     step = data.get(CASE.STEP)
     if not name:
         return -1002
-    if not step:
-        return -1003
     case = MeCase.objects.create(
         plan_id=plan_id,
         name=name,
