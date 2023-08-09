@@ -34,6 +34,7 @@ class CaseManageEdit:
         path('get', views.get_case_data),
         path('save', views.save_case_by_json),
         path('add', views.add_case_by_json),
+        path('getPlan', views.get_plan_by_only_case),
     ]
 
 class PlanManageEdit:

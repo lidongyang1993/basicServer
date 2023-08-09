@@ -22,7 +22,7 @@ class Check:
             {KEY.NAME: f.BASIC.NAME, KEY.MUST: True, KEY.TYPE: str},
             {KEY.NAME: f.BASIC.DESC, KEY.MUST: True, KEY.TYPE: str},
             {KEY.NAME: f.PLAN.CASE, KEY.MUST: True, KEY.TYPE: list},
-            {KEY.NAME: f.PLAN.VARIABLE, KEY.MUST: True, KEY.TYPE: dict}
+            {KEY.NAME: f.PLAN.VARIABLE, KEY.MUST: False, KEY.TYPE: dict}
         ]
         check = self.public_check(data, keys)
         if not check.get(RESULT.CODE) == 0:

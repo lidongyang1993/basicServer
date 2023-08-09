@@ -85,7 +85,7 @@ def add_case_by_module(request: WSGIRequest):
     keys = [
         {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
         {KEY.NAME: FILED.MODULE, KEY.MUST: True, KEY.TYPE: str},
-        {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str}
+        {KEY.NAME: FILED.USER, KEY.MUST: None, KEY.TYPE: str}
     ]
 
     def run_func(data):
@@ -229,12 +229,15 @@ def get_case_by_module_plan_name(request: WSGIRequest):
 def run_case_by_module_test(request: WSGIRequest):
     keys = [
         {KEY.NAME: FILED.DATA, KEY.MUST: True, KEY.TYPE: dict},
-        {KEY.NAME: FILED.USER, KEY.MUST: True, KEY.TYPE: str}
+        {KEY.NAME: FILED.USER, KEY.MUST: False, KEY.TYPE: str}
     ]
 
     def run_func(data):
         plan = data.get(FILED.DATA, None)
         user = data.get(FILED.USER, None)
+        if not user:
+            token = request.COOKIES.get(COOKIES.TOKEN_KEY)
+            user = request.session.get(token, None)
         data_check = Check().check_plan(plan)
         if data_check.get(RESULT.CODE) != 0:
             return {"result": False, "info": data_check}
@@ -588,7 +591,7 @@ def save_case_by_json(request: WSGIRequest):
         try:
             v.save_case_by_json(data, user=user)
         except Exception:
-            raise DoneError(RESPONSE.UN_GET_ERROR)
+            raise DoError(RESPONSE.UN_GET_ERROR)
         return {}
 
     req = RequestBasics(request, keys)
@@ -611,8 +614,31 @@ def add_case_by_json(request: WSGIRequest):
         try:
             result = v.add_case_by_json(the_data, user=user, plan_id=plan_id)
         except JsonResponse:
-            raise DoneError(RESPONSE.UN_GET_ERROR)
+            raise DoError(RESPONSE.UN_GET_ERROR)
         return {RESULT.RESULT: result}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+@csrf_exempt
+def get_plan_by_only_case(request: WSGIRequest):
+    keys = [
+        {KEY.NAME: FILED.ID, KEY.MUST: True, KEY.TYPE: int},
+    ]
+
+    def run_func(data):
+        pk = data.get(FILED.ID)
+        try:
+            case = MeCase.objects.get(pk=pk)
+            result = case.plan.dict_for_list()
+            result.update(
+                dict(case=[case.dict_for_get()])
+            )
+        except ObjectDoesNotExist:
+            raise DoError(RESPONSE.UN_GET_ERROR)
+        return result
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
