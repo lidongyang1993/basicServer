@@ -240,6 +240,15 @@ class MePlan(FieldsPublicBasicType):
         })
         return res
 
+    def dict_for_list(self):
+        res = super().dict_for_list()
+        res.update(
+            {
+                CASE.VARIABLE: self.variable
+            }
+        )
+        return res
+
 
 class MeCase(FieldsPublicBasicType):
     plan = models.ForeignKey(MePlan,
