@@ -654,7 +654,6 @@ def add_plan_by_json(request: WSGIRequest):
         user = request.session.get(token)
         if not user:
             user = "admin"
-        result = v.add_plan_by_json(data, user=user)
         try:
             result = v.add_plan_by_json(data, user=user)
         except Exception:
