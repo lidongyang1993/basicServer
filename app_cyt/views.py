@@ -528,10 +528,7 @@ def make_data_list(current_page, size,  objs):
     index_end = current_page * size
     resList = []
     if objs:
-        if len(objs) <= index_end:
-            l_obs = objs
-        else:
-            l_obs = objs[index_start:index_end]
+        l_obs = objs[index_start:index_end]
         for obj in l_obs:
             resList.append(obj.dict_for_list())
     return {
