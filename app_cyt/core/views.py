@@ -121,7 +121,7 @@ def make_label(obj, label_list):
             if isinstance(_, dict):
                 label = Labels.objects.get(pk=_.get(BASIC.ID))
             elif isinstance(_, int):
-                label = Labels.objects.get(_)
+                label = Labels.objects.get(pk=_)
             else:
                 continue
         except ObjectDoesNotExist:
