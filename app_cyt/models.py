@@ -81,7 +81,7 @@ class FieldsPublicBasicType(BasicFields, PublicData, BasicType):
             BASIC.NAME: self.name,
             BASIC.DESC: self.desc,
             BASIC.MODULE: self.module.self_dict() if self.module else None,
-            BASIC.MODULE_ID: self.module.self_dict() if self.module else None,
+            BASIC.MODULE_ID: self.module.id if self.module else None,
             BASIC.LABEL: [_.self_dict() for _ in self.label.all()],
             BASIC.LABEL_ID_LIST: [_.pk for _ in self.label.all()],
             BASIC.CREATE_USER: self.create_user,
