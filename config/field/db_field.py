@@ -119,8 +119,10 @@ class UPLOAD:
 class LOGIN_PLUG:
     USER_NAME = "user_name"
     PASS_WORD = "pass_word"
+    VENV = "venv"
     COOKIES_FIELD = "cookies_field"
     CODE = "code"
+    HOST = "host"
 
 class HOST:
     TEST = "https://d-k8s-sso-fp.bigfintax.com"

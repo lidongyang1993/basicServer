@@ -680,11 +680,14 @@ class RunPlugIn(RunBasic):
     def login_run(self):
         user = self.params.get(LOGIN_PLUG.USER_NAME)
         pwd = self.params.get(LOGIN_PLUG.PASS_WORD)
+        venv = self.params.get(LOGIN_PLUG.VENV)
+        host = self.params.get(LOGIN_PLUG.HOST)
         cookies_field = self.params.get(LOGIN_PLUG.COOKIES_FIELD)
         code = self.params.get(LOGIN_PLUG.CODE)
         if not user or not pwd or not cookies_field:
             raise StepError(MSG.LOGIN_PARAMS_ERROR)
-        cookies = test_login(user, pwd, code)
+
+        cookies = test_login(user, pwd, host, code, venv)
         self.result = {cookies_field: cookies}
         self.Global.log(self.result,  left=MSG.CUT_THREE + MSG.LOGIN_RESULT)
         self.Global.update_global(self.result)
@@ -1014,8 +1017,4 @@ def asserts_to_str(run):
 
 
 if __name__ == '__main__':
-    RG = RunGlobal("调试")
-    from tools.test_data_3 import data_test
-
-    rp = RunPlan(RG, data_test)
-    rp.main()
+    pass

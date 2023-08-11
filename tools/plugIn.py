@@ -74,8 +74,17 @@ def random_field(r_type, length=None):
     return res
 
 
-def test_login(user, pwd, host=None, code=None):
+def test_login(user, pwd, host=None, code=None, venv=None):
     if not host:
         host = HOST.TEST
     cookies = get_login_session(host, user, pwd, code)
-    return cookies
+
+    if venv == "dev":
+        return cookies.get("dev_cas_access_token")
+    if venv == "uat":
+        return cookies.get("uat_cas_access_token")
+    if venv == "pro":
+        return cookies.get("cas_access_token")
+    if venv == "poc":
+        return cookies.get("poc_cas_access_token")
+    return cookies.get("test_cas_access_token")

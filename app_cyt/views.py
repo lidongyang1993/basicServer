@@ -266,7 +266,7 @@ def login_res(request: WSGIRequest):
         password = data.get(FILED.PASSWORD, None)
         user = data.get(FILED.USER, None)
 
-        return {"test_cas_access_token":  get_login_session(None, user, password)}
+        return {"token":  get_login_session(None, user, password)}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)

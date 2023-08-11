@@ -33,7 +33,7 @@ def get_login_session(host=None, account=None, password=None, code=None):
     if host is None:
         host = "https://d-k8s-sso-fp.bigfintax.com"
     login_data = {
-        "backUrl": "https://d-k8s-sso-fp.bigfintax.com",
+        "backUrl": host.replace("login", "index"),
         "account": "wangyu.yang",
         "password": "c4ca4238a0b923820dcc509a6f75849b",
         "captcha": '',
@@ -57,7 +57,7 @@ def get_login_session(host=None, account=None, password=None, code=None):
         res_session = read_session(res.content)
         login_data.update(dict(captcha=res_session))
     response = session.post(host + PATH_LOGIN, data=login_data, headers=headers, allow_redirects=False, verify=False)
-    return response.cookies.get("test_cas_access_token", None)
+    return response.cookies
 
 
 def read_session(img_bytes):

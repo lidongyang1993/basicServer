@@ -51,9 +51,17 @@ def replace_math(text: str, replace: dict):
 
 # 尝试从字符串中找寻变量，并完成替换
 def dict_replace(data: dict, replace):
+    new_data = {}
     for data_key in data.keys():
-        data[data_key] = data_replace(data[data_key], replace)
-    return data
+        if "{{" in data_key and "}}" in data_key:
+            key_new = data_replace(data_key, replace)
+            new_data[key_new] = data[data_key]
+            new_data[key_new] = data_replace(data[data_key], replace)
+            # del data[data_key]
+        else:
+            new_data[data_key] = data_replace(data[data_key], replace)
+
+    return new_data
 
 
 # 尝试从列表中找寻变量，并完成替换
