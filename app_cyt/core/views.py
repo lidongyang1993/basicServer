@@ -106,12 +106,19 @@ def save_plan_by_json(data: dict, user, ):
     if label_id_list:
         make_label(plan, label_id_list)
     if case_list:
+        case_id_list = []
         for case in case_list:
             case_id = case.get(CASE.ID)
             if not case_id:
-                add_case_by_json(case, user, plan_id=plan.pk)
+                _case = add_case_by_json(case, user, plan_id=plan.pk)
             else:
-                save_case_by_json(case, user, plan_id=plan.pk)
+                _case = save_case_by_json(case, user, plan_id=plan.pk)
+            case_id_list.append(_case.get(CASE.ID))
+
+        for case__ in plan.mecase_set.all():
+            if case__.pk not in case_id_list:
+                Case.delete(case__)
+
     plan.save()
     return plan.dict_for_get()
 
