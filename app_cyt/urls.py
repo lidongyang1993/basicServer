@@ -54,5 +54,6 @@ class FileManageEdit:
     urlpatterns = [
         path('list', views.get_file_list),
         path('get', views.get_file_data),
+        path('callback', views.public_callback),
         path('upload', views.save_file)
     ]

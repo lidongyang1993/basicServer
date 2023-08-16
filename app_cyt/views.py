@@ -49,6 +49,7 @@ def call_back_file(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
+
 @csrf_exempt
 @require_POST
 def check_case(request: WSGIRequest):
@@ -79,6 +80,7 @@ def check_case(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
+
 @csrf_exempt
 @require_POST
 def add_case_by_module(request: WSGIRequest):
@@ -103,6 +105,7 @@ def add_case_by_module(request: WSGIRequest):
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
 
 @csrf_exempt
 @require_POST
@@ -130,6 +133,7 @@ def update_case_by_module(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
+
 @csrf_exempt
 @require_POST
 def run_case_by_module(request: WSGIRequest):
@@ -154,7 +158,7 @@ def run_case_by_module(request: WSGIRequest):
 
         if not w_bot_url:
             return {"report_url": None, "msg": "找不到机器人"}
-        command = '/bin/sh start_run.sh "{}" "{}" "{}" "{}" "{}"'\
+        command = '/bin/sh start_run.sh "{}" "{}" "{}" "{}" "{}"' \
             .format(user, test_module, report_name, report_desc, w_bot_url)
         os.system(command)
         return {"report_url": "http://{}:{}/{}".format(HOST_FILE, PORT_REPORT_FILE, user)}
@@ -203,8 +207,6 @@ def run_case_by_db(request: WSGIRequest):
     return JsonResponse(res)
 
 
-
-
 @csrf_exempt
 @require_POST
 def get_case_by_module_plan_name(request: WSGIRequest):
@@ -220,9 +222,11 @@ def get_case_by_module_plan_name(request: WSGIRequest):
         for _ in data_list:
             if _["name"] == plan_name:
                 return _
+
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
 
 @csrf_exempt
 @require_POST
@@ -254,6 +258,7 @@ def run_case_by_module_test(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
+
 @csrf_exempt
 @require_POST
 def login_res(request: WSGIRequest):
@@ -266,7 +271,7 @@ def login_res(request: WSGIRequest):
         password = data.get(FILED.PASSWORD, None)
         user = data.get(FILED.USER, None)
 
-        return {"token":  get_login_session(None, user, password)}
+        return {"token": get_login_session(None, user, password)}
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -333,6 +338,8 @@ def get_case_list(request: WSGIRequest):
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
+
 @csrf_exempt
 @require_POST
 def get_plan_list(request: WSGIRequest):
@@ -356,6 +363,7 @@ def get_plan_list(request: WSGIRequest):
         except models.ObjectDoesNotExist:
             objs = None
         return make_data_list(current_page, size, objs)
+
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
@@ -385,9 +393,11 @@ def get_step_list(request: WSGIRequest):
             FILED.SIZE: size,
             FILED.DATALIST: step,
         }
+
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
 
 @csrf_exempt
 @require_POST
@@ -408,6 +418,7 @@ def get_file_data(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
+
 @csrf_exempt
 @require_POST
 def get_file_list(request: WSGIRequest):
@@ -426,14 +437,15 @@ def get_file_list(request: WSGIRequest):
         except models.ObjectDoesNotExist:
             objs = None
         return make_data_list(current_page, size, objs)
+
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
+
 @csrf_exempt
 @require_POST
 def save_file(request: WSGIRequest):
-
-
     keys = [
         {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: int},
     ]
@@ -465,6 +477,22 @@ def save_file(request: WSGIRequest):
             pass
 
         return {"file_name": file_name, "file_path": file_path.__str__()}
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
+@csrf_exempt
+def public_callback(request: WSGIRequest):
+    keys = [
+    ]
+
+    def run_func(data):
+        with open("callback.json", "w") as f:
+            f.write(json.dumps(data))
+        f.close()
+        print(data)
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
@@ -521,9 +549,7 @@ def get_module_list(request: WSGIRequest):
     return JsonResponse(res)
 
 
-
-
-def make_data_list(current_page, size,  objs):
+def make_data_list(current_page, size, objs):
     index_start = (current_page - 1) * size
     index_end = current_page * size
     resList = []
@@ -555,6 +581,7 @@ def get_plan_data(request: WSGIRequest):
     res = req.main(run_func)
     return JsonResponse(res)
 
+
 @csrf_exempt
 @require_POST
 def get_case_data(request: WSGIRequest):
@@ -570,8 +597,6 @@ def get_case_data(request: WSGIRequest):
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
-
-
 
 
 @csrf_exempt
@@ -640,8 +665,6 @@ def get_plan_by_only_case(request: WSGIRequest):
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
-
-
 
 
 @csrf_exempt
