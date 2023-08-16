@@ -325,3 +325,11 @@ class FileSave(BasicFields):
     class Meta:
         verbose_name = "预存文件"
         verbose_name_plural = "预存文件"
+
+
+class callBack(BasicFields):
+    data = models.JSONField(max_length=1024, default=dict, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "回调数据"
+        verbose_name_plural = "回调数据"

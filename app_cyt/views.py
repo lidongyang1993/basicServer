@@ -489,6 +489,7 @@ def public_callback(request: WSGIRequest):
     print(request.method)
     print(request.GET)
     print(request.POST)
+    print(request.body)
 
     keys = [
         {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str},
