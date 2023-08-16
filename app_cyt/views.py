@@ -485,8 +485,16 @@ def save_file(request: WSGIRequest):
 
 @csrf_exempt
 def public_callback(request: WSGIRequest):
+
+    print(request.method)
+    print(request.GET)
+    print(request.POST)
+
     keys = [
+        {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
     ]
+
 
     def run_func(data):
         with open("callback.json", "w") as f:
