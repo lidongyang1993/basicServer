@@ -6,7 +6,7 @@ import os
 import multiprocessing
 
 bind = '0.0.0.0:8000'      # 绑定ip和端口号
-# chdir = '/opt/workspace/bookstore'  # 目录切换
+# chdir = '/opt/workspace/bookstore'  # 目录切换`
 # backlog = 500              # 监听队列
 timeout = 60                 # 超时
 worker_class = 'sync'  # 使用gevent模式，还可以使用sync 模式，默认的是sync模式
