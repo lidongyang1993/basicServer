@@ -15,6 +15,7 @@ class BASIC:
 
 
 class METHOD:
+    self = "method"
     POST = "POST"
     GET = "GET"
 

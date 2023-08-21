@@ -28,8 +28,8 @@ class PublicData(publicID):
         ordering = ['created_time', "updated_time"]
 
 class BasicFields(publicID):
-    name = models.CharField(max_length=100, default=None, blank=False, null=False)  # 名称
-    desc = models.CharField(max_length=100, default=None, blank=False, null=False)  # 备注
+    name = models.CharField(max_length=100, default=None, blank=True, null=True)  # 名称
+    desc = models.CharField(max_length=100, default=None, blank=True, null=True)  # 备注
 
     class Meta:
         abstract = True  # 基础模型
@@ -328,6 +328,7 @@ class FileSave(BasicFields):
 
 
 class callBack(BasicFields):
+    uid = models.CharField(max_length=16, default=None, blank=False, null=False)
     data = models.JSONField(max_length=1024, default=dict, blank=True, null=True)
 
     class Meta:

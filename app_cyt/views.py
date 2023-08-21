@@ -486,26 +486,39 @@ def save_file(request: WSGIRequest):
 @csrf_exempt
 def public_callback(request: WSGIRequest):
 
-    print(request.method)
-    print(request.GET)
-    print(request.POST)
-    print(request.body)
-
     keys = [
-        {KEY.NAME: FILED.DESC, KEY.MUST: False, KEY.TYPE: str},
         {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
+        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE:  str},
     ]
 
 
     def run_func(data):
-        with open("callback.json", "w") as f:
-            f.write(json.dumps(data))
-        f.close()
-        print(data)
+        u_uid = data.get(FILED.ID)
+        name = data.get(FILED.NAME)
+        call_data = data
+        if not uuid:
+            model = create_call_back(u_uid=uuid_8(), name=name, data=call_data)
+        else:
+            try:
+                model = callBack.objects.get(uid=u_uid)
+                model.name = name
+            except ObjectDoesNotExist:
+                model = create_call_back(u_uid=u_uid, name=name, data=call_data)
+        model.data = call_data
+        model.save()
+        return model.dict_for_get()
+
+    def create_call_back(u_uid, name, data):
+        return callBack.objects.create(
+            name=name,
+            data=data,
+            uid=u_uid
+        )
 
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
 
 
 @csrf_exempt

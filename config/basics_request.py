@@ -16,8 +16,12 @@ from config.field.res_field import RESPONSE, KEY, RESULT, DoError
 class RequestBasics:
 
     def __init__(self, reqeust, keys):
+
         self.reqeust = reqeust
         self.data = {}
+        self.body = None
+        self.form = {}
+        self.params = {}
         self.keys = keys
         self.response = RESPONSE()
         self.error = None
@@ -26,18 +30,26 @@ class RequestBasics:
     # 读取数据
     def read_data(self):
         request = self.reqeust
-        if request.method == METHOD.POST:
-            if request.POST:
-                self.data = request.POST.dict()
-            else:
-                try:
-                    self.data = json.loads(request.body)
-                except TypeError:
-                    self.data = {}
-                except RawPostDataException:
-                    self.data = {}
-        else:
-            self.data = request.GET.dict()
+        self.params = request.GET.dict()
+        self.form = request.POST.dict()
+        try:
+            self.body = request.body
+        except TypeError:
+            self.body = None
+        except RawPostDataException:
+            self.body = None
+        self.read_method()
+
+    def read_method(self):
+        if self.reqeust.method == METHOD.GET:
+            self.data.update(self.params)
+        if self.reqeust.method == METHOD.POST:
+            self.data.update(self.form)
+            self.data.update(self.params)
+        if self.reqeust.content_type == "application/json":
+            if self.body:
+                self.data.update(json.loads(self.body))
+
 
     # 验证字段
     def assert_fields(self):
