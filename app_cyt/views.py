@@ -488,15 +488,15 @@ def public_callback(request: WSGIRequest):
 
     keys = [
         {KEY.NAME: FILED.NAME, KEY.MUST: False, KEY.TYPE: str},
-        {KEY.NAME: FILED.ID, KEY.MUST: False, KEY.TYPE:  str},
+        {KEY.NAME: FILED.UID, KEY.MUST: False, KEY.TYPE:  str},
     ]
 
 
     def run_func(data):
-        u_uid = data.get(FILED.ID)
+        u_uid = data.get(FILED.UID)
         name = data.get(FILED.NAME)
         call_data = data
-        if not uuid:
+        if not u_uid:
             model = create_call_back(u_uid=uuid_8(), name=name, data=call_data)
         else:
             try:

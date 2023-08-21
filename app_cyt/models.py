@@ -328,7 +328,7 @@ class FileSave(BasicFields):
 
 
 class callBack(BasicFields):
-    uid = models.CharField(max_length=16, default=None, blank=False, null=False)
+    uid = models.CharField(max_length=16, default=None, blank=True, null=True)
     data = models.JSONField(max_length=1024, default=dict, blank=True, null=True)
 
     class Meta:

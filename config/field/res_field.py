@@ -55,6 +55,7 @@ class FILED:
     TOTAL = "total"
 
     ID = "id"
+    UID = "uid"
     TYPE = "type"
     NAME = "name"
     DESC = "desc"
