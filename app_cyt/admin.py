@@ -51,3 +51,8 @@ class PlanAdmin(admin.ModelAdmin):
 class wChatBotAdmin(admin.ModelAdmin):
     pass
 
+
+@admin.register(callBack)
+class wChatBotAdmin(admin.ModelAdmin):
+    pass
+
