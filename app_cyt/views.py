@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 import time
+from copy import deepcopy
 from pathlib import Path
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -495,7 +496,11 @@ def public_callback(request: WSGIRequest):
     def run_func(data):
         u_uid = data.get(FILED.UID)
         name = data.get(FILED.NAME)
-        call_data = data
+        call_data = deepcopy(data)
+        if FILED.UID in call_data:
+            del call_data[FILED.UID]
+        if FILED.NAME in call_data:
+            del call_data[FILED.NAME]
         if not u_uid:
             model = create_call_back(u_uid=uuid_8(), name=name, data=call_data)
         else:
@@ -518,6 +523,34 @@ def public_callback(request: WSGIRequest):
     req = RequestBasics(request, keys)
     res = req.main(run_func)
     return JsonResponse(res)
+
+
+
+@csrf_exempt
+def get_callback_data(request: WSGIRequest):
+
+    keys = [
+        {KEY.NAME: FILED.UID, KEY.MUST: False, KEY.TYPE:  str},
+    ]
+
+    def run_func(data):
+        u_uid = data.get(FILED.UID)
+        if not u_uid:
+            return {}
+        else:
+            try:
+                model = callBack.objects.get(uid=u_uid)
+            except ObjectDoesNotExist:
+                return {}
+        return model.dict_for_get()
+
+
+
+    req = RequestBasics(request, keys)
+    res = req.main(run_func)
+    return JsonResponse(res)
+
+
 
 
 
