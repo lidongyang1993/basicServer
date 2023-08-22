@@ -35,7 +35,10 @@ class BasicFields(publicID):
         abstract = True  # 基础模型
 
     def __str__(self):
-        return self.name
+        if self.name:
+            return self.name
+        else:
+            return ''
 
     def self_dict(self):
         return model_to_dict(self)
