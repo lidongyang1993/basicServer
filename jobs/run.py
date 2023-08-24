@@ -5,6 +5,7 @@
 # @Site    : 
 # @File    : run.py
 # @Software: PyCharm
+import datetime
 import time
 from json import JSONDecodeError
 
@@ -643,6 +644,16 @@ class RunPlugIn(RunBasic):
             self.random_run()
         if self.type == PLUGIN.PG_DB:
             self.pg_run()
+        if self.type == PLUGIN.DATA_NOW:
+            self.data_now_str()
+
+    def data_now_str(self):
+        str_format = self.params.get(DATA_NOW.STR_FORMAT)
+        fields = self.params.get(DATA_NOW.FIELDS)
+        if not str_format:
+            str_format = "%Y-%m-%d %H:%M:%s"
+        now = datetime.datetime.now()
+        self.Global.update_global({fields: now.strftime(str_format)})
 
     def pg_run(self):
         database = self.params.get(PG_DB.DB_NAME)

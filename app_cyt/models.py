@@ -89,8 +89,8 @@ class FieldsPublicBasicType(BasicFields, PublicData, BasicType):
             BASIC.LABEL_ID_LIST: [_.pk for _ in self.label.all()],
             BASIC.CREATE_USER: self.create_user,
             BASIC.UPDATE_USER: self.update_user,
-            BASIC.CREATED_TIME: self.created_time.strftime("%Y-%m-%d%H:%M"),
-            BASIC.UPDATED_TIME: self.updated_time.strftime("%Y-%m-%d%H:%M"),
+            BASIC.CREATED_TIME: self.created_time.strftime("%Y-%m-%d %H:%M"),
+            BASIC.UPDATED_TIME: self.updated_time.strftime("%Y-%m-%d %H:%M"),
         }
 
 

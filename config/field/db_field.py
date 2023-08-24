@@ -86,7 +86,7 @@ class PLUGIN:
     LOGIN = "login"
     RANDOM = "random"
     PG_DB = "pg_db"
-
+    DATA_NOW = "data_now"
 
 class HANDLERS_TYPE:
     ASSERTS = "asserts"
@@ -124,6 +124,10 @@ class LOGIN_PLUG:
     COOKIES_FIELD = "cookies_field"
     CODE = "code"
     HOST = "host"
+
+class DATA_NOW:
+    STR_FORMAT = "str_format"
+    FIELDS = "fields"
 
 class HOST:
     TEST = "https://d-k8s-sso-fp.bigfintax.com"
