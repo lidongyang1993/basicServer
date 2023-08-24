@@ -497,6 +497,14 @@ def public_callback(request: WSGIRequest):
         u_uid = data.get(FILED.UID)
         name = data.get(FILED.NAME)
         call_data = deepcopy(data)
+        content = call_data.get("content")
+        if content:
+            try:
+                cont = json.loads(content)
+            except Exception as e:
+                cont = {"text": content, "error": e.__str__()}
+        else:
+            cont = {}
         if FILED.UID in call_data:
             del call_data[FILED.UID]
         if FILED.NAME in call_data:
@@ -510,6 +518,7 @@ def public_callback(request: WSGIRequest):
             except ObjectDoesNotExist:
                 model = create_call_back(u_uid=u_uid, name=name, data=call_data)
         model.data = call_data
+        model.content = cont
         model.save()
         return model.dict_for_get()
 
