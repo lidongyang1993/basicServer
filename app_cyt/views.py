@@ -497,7 +497,9 @@ def public_callback(request: WSGIRequest):
         u_uid = data.get(FILED.UID)
         name = data.get(FILED.NAME)
         call_data = deepcopy(data)
-        content = call_data.get("content")
+        content = None
+        if call_data.get("data"):
+            content = call_data.get("data").get("content")
         if content:
             try:
                 cont = json.loads(content)
