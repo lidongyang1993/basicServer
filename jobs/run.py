@@ -950,7 +950,6 @@ class RunExtract(RunBasic):
         super().end()
     def final(self):
         pass
-
 class RunAsserts(RunBasic):
     RUN_TYPE = OTHER.YANG_ZHENG_QI
 

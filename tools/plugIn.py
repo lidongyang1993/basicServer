@@ -59,6 +59,7 @@ def random_field(r_type, length=None):
         res = ""
         for _ in range(length):
             res += random.choice(RANDOM.RANDOM_str)
+
     if r_type == "int":
         res = ""
         for _ in range(length):
@@ -71,6 +72,10 @@ def random_field(r_type, length=None):
         res = ""
         for _ in range(length):
             res += random.choice(RANDOM.RANDOM_STR + RANDOM.RANDOM_int)
+    if r_type == "str_int":
+        res = ""
+        for _ in range(length):
+            res += random.choice(RANDOM.RANDOM_str + RANDOM.RANDOM_int)
     return res
 
 
