@@ -24,6 +24,39 @@ from config.field.db_field import *
 from config.field.msg import MSG
 
 
+def asserts_to_str(run):
+    if run.left is None or run.right is None:
+        pass
+    if isinstance(run.left, str) and isinstance(run.right, str):
+        return
+    if isinstance(run.right, dict):
+        run.right = json.dumps(run.right)
+    if isinstance(run.left, dict):
+        run.left = json.dumps(run.left)
+    if isinstance(run.left, str) and isinstance(run.right, int):
+        try:
+            run.left = int(run.left)
+        except Exception as e:
+            run.result = e
+
+    if isinstance(run.right, str) and isinstance(run.left, int):
+        try:
+            run.right = int(run.right)
+        except Exception as e:
+            run.result = e
+
+    if isinstance(run.left, str) and isinstance(run.right, float):
+        try:
+            run.left = float(run.left)
+        except Exception as e:
+            run.result = e
+    if isinstance(run.right, str) and isinstance(run.left, float):
+        try:
+            run.right = float(run.right)
+        except Exception as e:
+            run.result = e
+
+
 
 def get_res_from_html_json(run):
     result = None
@@ -991,39 +1024,6 @@ class RunAsserts(RunBasic):
 
     def final(self):
         pass
-
-
-def asserts_to_str(run):
-    if run.left is None or run.right is None:
-        pass
-    if isinstance(run.left, str) and isinstance(run.right, str):
-        return
-    if isinstance(run.right, dict):
-        run.right = json.dumps(run.right)
-    if isinstance(run.left, dict):
-        run.left = json.dumps(run.left)
-    if isinstance(run.left, str) and isinstance(run.right, int):
-        try:
-            run.left = int(run.left)
-        except Exception as e:
-            run.result = e
-
-    if isinstance(run.right, str) and isinstance(run.left, int):
-        try:
-            run.right = int(run.right)
-        except Exception as e:
-            run.result = e
-
-    if isinstance(run.left, str) and isinstance(run.right, float):
-        try:
-            run.left = float(run.left)
-        except Exception as e:
-            run.result = e
-    if isinstance(run.right, str) and isinstance(run.left, float):
-        try:
-            run.right = float(run.right)
-        except Exception as e:
-            run.result = e
 
 
 if __name__ == '__main__':
