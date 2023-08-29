@@ -4,9 +4,8 @@ from app_cyt.models import *
 # Register your models here.
 
 class publicAdmin(admin.ModelAdmin):
-    list_display = ["id", 'name', "created_time", "updated_time"]  # 展示字段
+    list_display = ["id", 'name']  # 展示字段
     list_display_links = ["id", "name"]  # 展示字段链
-    readonly_fields = ["created_time", "updated_time"]  # 只读字段
     search_fields = ["name", "id"]  # 搜索字段
     empty_value_display = '无'  # 默认空值展示字段
     list_select_related = True  # 开启关系型搜索
@@ -44,7 +43,7 @@ class CaseAdmin(admin.ModelAdmin):
 
 @admin.register(MePlan)
 class PlanAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", 'name', "uid"]  # 展示字段
 
 
 @admin.register(Labels)
@@ -53,6 +52,6 @@ class wChatBotAdmin(admin.ModelAdmin):
 
 
 @admin.register(callBack)
-class wChatBotAdmin(admin.ModelAdmin):
+class wChatBotAdmin(publicAdmin):
     pass
 
